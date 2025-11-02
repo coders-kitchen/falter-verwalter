@@ -64,8 +64,8 @@
 
     @if($showModal)
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-base-100 rounded-lg p-8 max-w-md w-full">
-                <h3 class="text-2xl font-bold mb-6">
+            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8 max-w-md w-full">
+                <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
                     {{ $distributionArea ? 'Verbreitungsgebiet bearbeiten' : 'Neues Verbreitungsgebiet' }}
                 </h3>
 
