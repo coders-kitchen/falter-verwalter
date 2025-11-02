@@ -69,7 +69,7 @@ class DistributionAreaManager extends Component
         if ($this->distributionArea) {
             $this->distributionArea->update($this->form);
         } else {
-            DistributionArea::create($this->form);
+            DistributionArea::create(array_merge($this->form, ['user_id' => auth()->id()]));
         }
 
         $this->closeModal();

@@ -83,7 +83,7 @@ class HabitatManager extends Component
 
             $this->habitat->update($this->form);
         } else {
-            Habitat::create($this->form);
+            Habitat::create(array_merge($this->form, ['user_id' => auth()->id()]));
         }
 
         $this->closeModal();

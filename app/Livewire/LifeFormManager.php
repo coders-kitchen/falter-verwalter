@@ -86,7 +86,7 @@ class LifeFormManager extends Component
         if ($this->lifeForm) {
             $this->lifeForm->update($formData);
         } else {
-            LifeForm::create($formData);
+            LifeForm::create(array_merge($formData, ['user_id' => auth()->id()]));
         }
 
         $this->closeModal();

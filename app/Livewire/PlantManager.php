@@ -138,7 +138,7 @@ class PlantManager extends Component
             $habitatIds = $this->form['habitat_ids'];
             unset($formData['habitat_ids']);
 
-            $plant = Plant::create($formData);
+            $plant = Plant::create(array_merge($formData, ['user_id' => auth()->id()]));
             $plant->habitats()->sync($habitatIds);
         }
 
