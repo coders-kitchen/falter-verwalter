@@ -36,8 +36,8 @@ class SpeciesManager extends Component
         'form.size_category' => 'required|in:XS,S,M,L,XL',
         'form.generations_per_year' => 'nullable|integer|min:1',
         'form.hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
-        // Validation for new regions feature
-        'form.selected_region_ids' => 'required|array|min:1',
+        // Validation for new regions feature - optional for creation, can be added later
+        'form.selected_region_ids' => 'nullable|array',
         'form.selected_region_ids.*' => 'integer|exists:regions,id',
         'form.conservation_status.*' => 'in:nicht_gefährdet,gefährdet',
     ];

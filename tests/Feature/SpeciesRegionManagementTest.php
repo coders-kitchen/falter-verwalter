@@ -91,22 +91,25 @@ class SpeciesRegionManagementTest extends TestCase
     }
 
     /**
-     * Test T023: Admin cannot save species without regions (validation)
-     * A species can be created without regions, but in the UI form validation
-     * requires at least one region to be selected before saving
+     * Test T023: Species can be created without regions initially
+     * Regions can be added after creation for better UX
      */
-    public function test_admin_cannot_save_species_without_regions(): void
+    public function test_species_can_be_created_without_regions(): void
     {
         $species = Species::factory()->create(['family_id' => $this->family->id]);
 
-        // Species can exist without regions in the database,
-        // but form validation requires at least one region
+        // Species can exist without regions in the database
+        // This allows admins to create species first, then add regions later
         $this->assertCount(0, $species->regions);
 
-        // Verify that when we try to add a species with empty regions array via form validation,
-        // it would be rejected (this would be tested at the controller/Livewire level)
-        // For now, we verify the relationship works correctly with empty state
-        $this->assertTrue(true);
+        // Now add a region to the species
+        $region = $this->createRegion('NRW');
+        $species->regions()->attach($region->id, [
+            'conservation_status' => 'nicht_gefährdet'
+        ]);
+
+        // Verify region was added
+        $this->assertCount(1, $species->fresh()->regions);
     }
 
     /**
