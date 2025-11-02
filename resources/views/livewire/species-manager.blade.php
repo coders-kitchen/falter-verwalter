@@ -74,7 +74,7 @@
 
     <!-- Modal -->
     @if($showModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
             <div class="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto shadow-lg">
                 <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
                     {{ $species ? 'Art bearbeiten' : 'Neue Art erstellen' }}
