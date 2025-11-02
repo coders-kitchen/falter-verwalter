@@ -1,0 +1,930 @@
+openapi: 3.0.0
+info:
+  title: Falter Verwalter Admin API
+  description: REST API für die Verwaltung von Schmetterlingsarten, Pflanzen und Basis-Daten
+  version: 1.0.0
+  contact:
+    name: Falter Verwalter
+
+servers:
+  - url: http://localhost:8000/api/admin
+    description: Local Development
+  - url: https://api.falter-verwalter.de/api/admin
+    description: Production
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Admin Login
+      description: Login mit Email und Password. Gibt JWT Token oder Session zurück (Laravel Sanctum).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        200:
+          description: Login erfolgreich
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: API Token (if using Sanctum with token auth)
+        401:
+          description: Ungültige Anmeldedaten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Admin Logout
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: Logout erfolgreich
+
+  /families:
+    get:
+      tags:
+        - Families
+      summary: Liste aller Schmetterlingsarten-Familien
+      security:
+        - sanctum: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Filter nach Name
+      responses:
+        200:
+          description: Liste der Familien
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyListResponse'
+        401:
+          description: Nicht authentifiziert
+
+    post:
+      tags:
+        - Families
+      summary: Neue Familie erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Nymphalidae
+                description:
+                  type: string
+      responses:
+        201:
+          description: Familie erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Family'
+        400:
+          description: Validierungsfehler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /families/{id}:
+    get:
+      tags:
+        - Families
+      summary: Familie abrufen
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Familie Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Family'
+
+    put:
+      tags:
+        - Families
+      summary: Familie aktualisieren
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        200:
+          description: Familie aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Family'
+
+    delete:
+      tags:
+        - Families
+      summary: Familie löschen
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Familie gelöscht
+        409:
+          description: Konflikt - Familie wird noch von Arten verwendet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /species:
+    get:
+      tags:
+        - Species
+      summary: Liste aller Schmetterlingsarten
+      security:
+        - sanctum: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: family_id
+          in: query
+          schema:
+            type: integer
+        - name: size_category
+          in: query
+          schema:
+            type: string
+            enum: [XS, S, M, L, XL]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Liste der Arten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeciesListResponse'
+
+    post:
+      tags:
+        - Species
+      summary: Neue Schmetterlingsart erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeciesInput'
+      responses:
+        201:
+          description: Art erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+        400:
+          description: Validierungsfehler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /species/{id}:
+    get:
+      tags:
+        - Species
+      summary: Schmetterlingsart abrufen
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Art Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+
+    put:
+      tags:
+        - Species
+      summary: Schmetterlingsart aktualisieren
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeciesInput'
+      responses:
+        200:
+          description: Art aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+
+    delete:
+      tags:
+        - Species
+      summary: Schmetterlingsart löschen
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Art gelöscht
+
+  /habitats:
+    get:
+      tags:
+        - Habitats
+      summary: Liste aller Lebensräume (hierarchisch)
+      security:
+        - sanctum: []
+      parameters:
+        - name: parent_id
+          in: query
+          schema:
+            type: integer
+          description: Filter nach Oberkategorie
+        - name: level
+          in: query
+          schema:
+            type: integer
+            enum: [1, 2]
+      responses:
+        200:
+          description: Hierarchische Liste der Habitate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitatListResponse'
+
+    post:
+      tags:
+        - Habitats
+      summary: Neues Habitat erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - level
+              properties:
+                name:
+                  type: string
+                parent_id:
+                  type: integer
+                  description: Nur für Unterkategorien (level 2)
+                description:
+                  type: string
+                level:
+                  type: integer
+                  enum: [1, 2]
+      responses:
+        201:
+          description: Habitat erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habitat'
+
+  /plants:
+    get:
+      tags:
+        - Plants
+      summary: Liste aller Pflanzen
+      security:
+        - sanctum: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: is_native
+          in: query
+          schema:
+            type: boolean
+        - name: is_invasive
+          in: query
+          schema:
+            type: boolean
+        - name: light_number
+          in: query
+          schema:
+            type: integer
+          description: Filter nach Lichtzahl (1-9)
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Liste der Pflanzen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlantListResponse'
+
+    post:
+      tags:
+        - Plants
+      summary: Neue Pflanze erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlantInput'
+      responses:
+        201:
+          description: Pflanze erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plant'
+
+  /life-forms:
+    get:
+      tags:
+        - LifeForms
+      summary: Liste aller Lebensarten
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: Liste der Lebensarten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifeFormListResponse'
+
+    post:
+      tags:
+        - LifeForms
+      summary: Neue Lebensart erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: Lebensart erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifeForm'
+
+  /distribution-areas:
+    get:
+      tags:
+        - DistributionAreas
+      summary: Liste aller Verbreitungsgebiete
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: Liste der Verbreitungsgebiete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionAreaListResponse'
+
+    post:
+      tags:
+        - DistributionAreas
+      summary: Neues Verbreitungsgebiet erstellen
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        201:
+          description: Verbreitungsgebiet erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionArea'
+
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      description: Laravel Sanctum Token oder Session-based Authentication
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, viewer]
+        is_active:
+          type: boolean
+
+    Family:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    FamilyListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Family'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Species:
+      type: object
+      properties:
+        id:
+          type: integer
+        family_id:
+          type: integer
+        name:
+          type: string
+        scientific_name:
+          type: string
+        size_category:
+          type: string
+          enum: [XS, S, M, L, XL]
+        color_description:
+          type: string
+        generations_per_year:
+          type: integer
+        hibernation_stage:
+          type: string
+          enum: [egg, larva, pupa, imago]
+        protection_status:
+          type: string
+          enum: [none, national, european]
+        distribution_areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionArea'
+        habitats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Habitat'
+        host_plants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Plant'
+        created_at:
+          type: string
+          format: date-time
+
+    SpeciesInput:
+      type: object
+      required:
+        - name
+        - scientific_name
+        - family_id
+        - size_category
+        - generations_per_year
+        - hibernation_stage
+      properties:
+        family_id:
+          type: integer
+        name:
+          type: string
+        scientific_name:
+          type: string
+        size_category:
+          type: string
+          enum: [XS, S, M, L, XL]
+        color_description:
+          type: string
+        special_features:
+          type: string
+        gender_differences:
+          type: string
+        generations_per_year:
+          type: integer
+        hibernation_stage:
+          type: string
+          enum: [egg, larva, pupa, imago]
+        pupal_duration_days:
+          type: integer
+        red_list_status_de:
+          type: string
+        red_list_status_eu:
+          type: string
+        abundance_trend:
+          type: string
+        protection_status:
+          type: string
+          enum: [none, national, european]
+        distribution_area_ids:
+          type: array
+          items:
+            type: integer
+        habitat_ids:
+          type: array
+          items:
+            type: integer
+        host_plant_ids:
+          type: array
+          items:
+            type: integer
+
+    SpeciesListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Species'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Plant:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        scientific_name:
+          type: string
+        life_form:
+          $ref: '#/components/schemas/LifeForm'
+        light_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        temperature_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        continentality_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        reaction_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        moisture_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        nitrogen_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        bloom_months:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 12
+        plant_height_cm:
+          type: integer
+        lifespan:
+          type: string
+          enum: [annual, biennial, perennial]
+        is_native:
+          type: boolean
+        is_invasive:
+          type: boolean
+        habitats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Habitat'
+
+    PlantInput:
+      type: object
+      required:
+        - name
+        - scientific_name
+        - life_form_id
+        - light_number
+        - temperature_number
+        - continentality_number
+        - reaction_number
+        - moisture_number
+        - nitrogen_number
+        - lifespan
+      properties:
+        name:
+          type: string
+        scientific_name:
+          type: string
+        family_genus:
+          type: string
+        life_form_id:
+          type: integer
+        light_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        temperature_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        continentality_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        reaction_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        moisture_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        moisture_variation:
+          type: string
+        nitrogen_number:
+          type: integer
+          minimum: 1
+          maximum: 9
+        bloom_months:
+          type: array
+          items:
+            type: integer
+        bloom_color:
+          type: string
+        plant_height_cm:
+          type: integer
+        lifespan:
+          type: string
+          enum: [annual, biennial, perennial]
+        location:
+          type: string
+        is_native:
+          type: boolean
+        is_invasive:
+          type: boolean
+        threat_status:
+          type: string
+        persistence_organs:
+          type: string
+        habitat_ids:
+          type: array
+          items:
+            type: integer
+
+    PlantListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Plant'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    Habitat:
+      type: object
+      properties:
+        id:
+          type: integer
+        parent_id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        level:
+          type: integer
+          enum: [1, 2]
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Habitat'
+
+    HabitatListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Habitat'
+
+    LifeForm:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        examples:
+          type: string
+
+    LifeFormListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifeForm'
+
+    DistributionArea:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+    DistributionAreaListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionArea'
+
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        last_page:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string

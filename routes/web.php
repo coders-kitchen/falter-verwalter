@@ -2,10 +2,48 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Public Routes (Visitor-facing, no authentication required)
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/species', function () {
+    if (auth()->check()) {
+        return redirect('/admin/dashboard');
+    }
+    return view('public.species-list');
+})->name('species.index');
+
+Route::get('/species/{species}', function (\App\Models\Species $species) {
+    if (auth()->check()) {
+        return redirect('/admin/dashboard');
+    }
+    return view('public.species-detail', ['species' => $species]);
+})->name('species.show');
+
+Route::get('/discover-butterflies', function () {
+    if (auth()->check()) {
+        return redirect('/admin/dashboard');
+    }
+    return view('public.discover-butterflies');
+})->name('discover.index');
+
+Route::get('/plants/{plant}', function (\App\Models\Plant $plant) {
+    if (auth()->check()) {
+        return redirect('/admin/dashboard');
+    }
+    return view('public.plant-detail', ['plant' => $plant]);
+})->name('plants.show');
+
+Route::get('/map', function () {
+    if (auth()->check()) {
+        return redirect('/admin/dashboard');
+    }
+    return view('public.map');
+})->name('map.index');
+
+
+// Admin Routes (authenticated)
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
@@ -18,6 +56,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('families', function () {
         return view('admin.families');
     })->name('families.index');
+
+    Route::get('endangered-regions', function () {
+        return view('admin.endangered-regions');
+    })->name('endangered-regions.index');
 
     Route::get('habitats', function () {
         return view('admin.habitats');
@@ -34,6 +76,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('distribution-areas', function () {
         return view('admin.distribution-areas');
     })->name('distribution-areas.index');
+
+    Route::get('species/{species}/generations', function ($speciesId) {
+        return view('admin.generations', ['speciesId' => $speciesId]);
+    })->name('generations.index');
 });
 
 Route::get('/login', function () {

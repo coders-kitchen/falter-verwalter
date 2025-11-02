@@ -14,6 +14,7 @@ class Plant extends Model
     protected $fillable = [
         'user_id',
         'life_form_id',
+        'family_id',
         'name',
         'scientific_name',
         'family_genus',
@@ -44,6 +45,11 @@ class Plant extends Model
     public function lifeForm(): BelongsTo
     {
         return $this->belongsTo(LifeForm::class);
+    }
+
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
     }
 
     public function habitats(): BelongsToMany

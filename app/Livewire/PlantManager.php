@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Plant;
 use App\Models\LifeForm;
 use App\Models\Habitat;
+use App\Models\Family;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -19,6 +20,7 @@ class PlantManager extends Component
     public $form = [
         'name' => '',
         'scientific_name' => '',
+        'family_id' => null,
         'life_form_id' => null,
         'light_number' => 5,
         'temperature_number' => 5,
@@ -41,6 +43,7 @@ class PlantManager extends Component
     protected $rules = [
         'form.name' => 'required|string|max:255',
         'form.scientific_name' => 'nullable|string|max:255',
+        'form.family_id' => 'nullable|exists:families,id',
         'form.life_form_id' => 'required|exists:life_forms,id',
         'form.light_number' => 'required|integer|between:1,9',
         'form.temperature_number' => 'required|integer|between:1,9',
@@ -68,18 +71,51 @@ class PlantManager extends Component
                   ->orWhere('scientific_name', 'like', '%' . $this->search . '%');
         }
 
-        $items = $query->with('lifeForm')
+        $items = $query->with('lifeForm', 'family')
                        ->orderBy('name')
                        ->paginate(50);
 
+        $families = Family::where('type', 'plant')->orderBy('name')->get();
         $lifeForms = LifeForm::orderBy('name')->get();
-        $habitats = Habitat::orderBy('name')->get();
+
+        // Get habitats with hierarchy ordering (root nodes first, then children)
+        $habitats = $this->getHierarchicalHabitats();
 
         return view('livewire.plant-manager', [
             'items' => $items,
+            'families' => $families,
             'lifeForms' => $lifeForms,
             'habitats' => $habitats,
         ]);
+    }
+
+    /**
+     * Get habitats ordered hierarchically with level information
+     */
+    private function getHierarchicalHabitats()
+    {
+        $habitats = Habitat::with('children')
+            ->whereNull('parent_id')
+            ->orderBy('name')
+            ->get();
+
+        $result = [];
+        $this->flattenHabitats($habitats, $result, 0);
+        return $result;
+    }
+
+    /**
+     * Recursively flatten habitat hierarchy while preserving level
+     */
+    private function flattenHabitats($habitats, &$result, $level)
+    {
+        foreach ($habitats as $habitat) {
+            $habitat->level = $level;
+            $result[] = $habitat;
+            if ($habitat->children->isNotEmpty()) {
+                $this->flattenHabitats($habitat->children, $result, $level + 1);
+            }
+        }
     }
 
     public function openCreateModal()
@@ -96,6 +132,7 @@ class PlantManager extends Component
         $this->form = [
             'name' => $plant->name,
             'scientific_name' => $plant->scientific_name,
+            'family_id' => $plant->family_id,
             'life_form_id' => $plant->life_form_id,
             'light_number' => $plant->light_number,
             'temperature_number' => $plant->temperature_number,
@@ -112,7 +149,7 @@ class PlantManager extends Component
             'is_native' => (bool) $plant->is_native,
             'is_invasive' => (bool) $plant->is_invasive,
             'threat_status' => $plant->threat_status,
-            'habitat_ids' => $plant->habitats()->pluck('id')->toArray(),
+            'habitat_ids' => $plant->habitats()->pluck('habitats.id')->toArray(),
         ];
 
         $this->showModal = true;
