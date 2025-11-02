@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +18,13 @@ class FamilyFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => fake()->unique()->bothify('???', false),
+            'user_id' => User::factory(),
             'name' => fake()->words(2, true),
+            'subfamily' => fake()->optional()->word(),
+            'genus' => fake()->optional()->word(),
+            'tribe' => fake()->optional()->word(),
+            'type' => fake()->randomElement(['butterfly', 'plant']),
+            'description' => fake()->optional()->sentence(),
         ];
     }
 }

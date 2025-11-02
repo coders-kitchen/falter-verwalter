@@ -19,11 +19,11 @@ class SpeciesFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'family_id' => Family::factory(),
+            'user_id' => User::factory()->create()->id,
+            'family_id' => Family::factory()->create()->id,
             'name' => fake()->words(2, true),
             'scientific_name' => fake()->words(2, true),
-            'size_category' => fake()->randomElement(['small', 'medium', 'large']),
+            'size_category' => fake()->randomElement(['XS', 'S', 'M', 'L', 'XL']),
             'color_description' => fake()->sentence(),
             'special_features' => fake()->sentence(),
             'gender_differences' => fake()->sentence(),
