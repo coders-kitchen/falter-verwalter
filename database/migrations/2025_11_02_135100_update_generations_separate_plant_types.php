@@ -12,9 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('generations', function (Blueprint $table) {
-            // Add two separate plant type columns
-            $table->json('nectar_plants')->nullable()->after('host_plants')->comment('JSON array of plant IDs for nectar plants (Nektarpflanzen)');
-            $table->json('larval_host_plants')->nullable()->after('nectar_plants')->comment('JSON array of plant IDs for host plants (Futterpflanzen for larvae)');
+            // Add two separate plant type columns only if they don't exist
+            if (!Schema::hasColumn('generations', 'nectar_plants')) {
+                $table->json('nectar_plants')->nullable()->after('host_plants')->comment('JSON array of plant IDs for nectar plants (Nektarpflanzen)');
+            }
+            if (!Schema::hasColumn('generations', 'larval_host_plants')) {
+                $table->json('larval_host_plants')->nullable()->after('nectar_plants')->comment('JSON array of plant IDs for host plants (Futterpflanzen for larvae)');
+            }
         });
     }
 
