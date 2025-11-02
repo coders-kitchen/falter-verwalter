@@ -41,47 +41,86 @@
         <!-- Sidebar -->
         <div class="drawer-side">
             <label for="sidebar-toggle" class="drawer-overlay"></label>
-            <ul class="menu p-4 w-80 bg-base-200 text-base-content space-y-2">
-                <li class="menu-title">
-                    <span>Verwaltung</span>
-                </li>
+            <div class="p-4 w-80 bg-base-200 text-base-content min-h-screen flex flex-col">
+                <!-- Sidebar Header -->
+                <h2 class="text-xl font-bold mb-6">🦋 Verwaltung</h2>
 
-                <li>
-                    <a href="{{ route('admin.species.index') }}" @class(['active' => request()->routeIs('admin.species.*')])>
-                        🦋 Schmetterlingsarten
-                    </a>
-                </li>
+                <!-- Navigation Menu -->
+                <ul class="menu space-y-2 flex-1">
+                    <!-- Schmetterlinge Section -->
+                    <li>
+                        <details open class="group">
+                            <summary class="cursor-pointer font-semibold text-base flex items-center gap-2">
+                                <span>🦋 Schmetterlinge</span>
+                                <span class="ml-auto transition-transform group-open:rotate-180">▼</span>
+                            </summary>
+                            <ul class="pl-4 space-y-1 mt-2">
+                                <li>
+                                    <a href="{{ route('admin.species.index') }}" @class(['active' => request()->routeIs('admin.species.*')])>
+                                        Arten verwalten
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.families.index') }}" @class(['active' => request()->routeIs('admin.families.*')])>
+                                        Familien verwalten
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
 
-                <li>
-                    <a href="{{ route('admin.families.index') }}" @class(['active' => request()->routeIs('admin.families.*')])>
-                        👨‍👩‍👧 Familien
-                    </a>
-                </li>
+                    <!-- Lebensraum Section -->
+                    <li>
+                        <details class="group">
+                            <summary class="cursor-pointer font-semibold text-base flex items-center gap-2">
+                                <span>🌲 Lebensraum</span>
+                                <span class="ml-auto transition-transform group-open:rotate-180">▼</span>
+                            </summary>
+                            <ul class="pl-4 space-y-1 mt-2">
+                                <li>
+                                    <a href="{{ route('admin.habitats.index') }}" @class(['active' => request()->routeIs('admin.habitats.*')])>
+                                        Lebensräume verwalten
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.plants.index') }}" @class(['active' => request()->routeIs('admin.plants.*')])>
+                                        Pflanzen verwalten
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
 
-                <li>
-                    <a href="{{ route('admin.habitats.index') }}" @class(['active' => request()->routeIs('admin.habitats.*')])>
-                        🌲 Lebensräume
-                    </a>
-                </li>
+                    <!-- Klassifikation Section -->
+                    <li>
+                        <details class="group">
+                            <summary class="cursor-pointer font-semibold text-base flex items-center gap-2">
+                                <span>📚 Klassifikation</span>
+                                <span class="ml-auto transition-transform group-open:rotate-180">▼</span>
+                            </summary>
+                            <ul class="pl-4 space-y-1 mt-2">
+                                <li>
+                                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*')])>
+                                        Lebensarten verwalten
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.distribution-areas.index') }}" @class(['active' => request()->routeIs('admin.distribution-areas.*')])>
+                                        Verbreitungsgebiete verwalten
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
 
-                <li>
-                    <a href="{{ route('admin.plants.index') }}" @class(['active' => request()->routeIs('admin.plants.*')])>
-                        🌱 Pflanzen
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*')])>
-                        🌿 Lebensarten
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('admin.distribution-areas.index') }}" @class(['active' => request()->routeIs('admin.distribution-areas.*')])>
-                        🗺️ Verbreitungsgebiete
-                    </a>
-                </li>
-            </ul>
+                <!-- Footer Info -->
+                <div class="divider my-4"></div>
+                <div class="text-xs text-base-content/60">
+                    <p>Logged in as:</p>
+                    <p class="font-semibold">{{ Auth::user()->name ?? 'User' }}</p>
+                </div>
+            </div>
         </div>
     </div>
 
