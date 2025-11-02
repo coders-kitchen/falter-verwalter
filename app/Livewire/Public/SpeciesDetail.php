@@ -22,11 +22,6 @@ class SpeciesDetail extends Component
                 $query->orderBy('generation_number');
             }
         ]);
-
-        // Load plants for each generation
-        foreach ($this->species->generations as $generation) {
-            $generation->plants = $generation->plants();
-        }
     }
 
     public function render()
