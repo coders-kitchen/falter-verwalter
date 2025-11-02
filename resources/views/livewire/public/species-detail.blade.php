@@ -8,12 +8,17 @@
             <p class="text-base leading-relaxed max-w-3xl">{{ $species->description }}</p>
         @endif
 
-        <!-- Endangered Regions Badges -->
-        @if ($species->endangeredRegions->count() > 0)
+        <!-- All Regions Badges -->
+        @if ($species->regions->count() > 0)
             <div class="flex flex-wrap gap-2 mt-4">
-                @foreach ($species->endangeredRegions as $region)
-                    <span class="badge badge-error badge-lg">
-                        ⚠️ {{ $region->code }} - {{ $region->name }}
+                @foreach ($species->regions as $region)
+                    @php
+                        $status = $region->pivot->conservation_status;
+                        $badgeClass = $status === 'gefährdet' ? 'badge-error' : 'badge-success';
+                        $icon = $status === 'gefährdet' ? '⚠️' : '✓';
+                    @endphp
+                    <span class="badge {{ $badgeClass }} badge-lg">
+                        {{ $icon }} {{ $region->code }} - {{ $region->name }}
                     </span>
                 @endforeach
             </div>
@@ -191,15 +196,46 @@
             <div class="space-y-6">
                 <h3 class="text-2xl font-bold mb-4">Geografische Verbreitung</h3>
 
-                @if ($species->endangeredRegions->count() > 0)
+                @if ($species->regions->count() > 0)
+                    <!-- Endangered Regions -->
+                    @php
+                        $endangeredRegions = $species->regions->where('pivot.conservation_status', 'gefährdet');
+                    @endphp
+                    @if ($endangeredRegions->count() > 0)
+                        <div>
+                            <h4 class="text-lg font-bold mb-3">⚠️ Gefährdete Regionen</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                @foreach ($endangeredRegions as $region)
+                                    <div class="card bg-error text-error-content">
+                                        <div class="card-body py-3">
+                                            <p class="font-semibold">{{ $region->code }}</p>
+                                            <p class="text-sm">{{ $region->name }}</p>
+                                            @if ($region->description)
+                                                <p class="text-xs opacity-75 mt-2">{{ $region->description }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- All Regions (Complete Distribution) -->
                     <div>
-                        <h4 class="text-lg font-bold mb-3">⚠️ Gefährdete Regionen</h4>
+                        <h4 class="text-lg font-bold mb-3">📍 Gesamte Verbreitung</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            @foreach ($species->endangeredRegions as $region)
-                                <div class="card bg-error text-error-content">
+                            @foreach ($species->regions as $region)
+                                @php
+                                    $status = $region->pivot->conservation_status;
+                                    $bgClass = $status === 'gefährdet' ? 'bg-error text-error-content' : 'bg-success text-success-content';
+                                @endphp
+                                <div class="card {{ $bgClass }}">
                                     <div class="card-body py-3">
                                         <p class="font-semibold">{{ $region->code }}</p>
                                         <p class="text-sm">{{ $region->name }}</p>
+                                        <p class="text-xs opacity-75 mt-1">
+                                            Status: {{ $status === 'gefährdet' ? 'Gefährdet' : 'Nicht gefährdet' }}
+                                        </p>
                                         @if ($region->description)
                                             <p class="text-xs opacity-75 mt-2">{{ $region->description }}</p>
                                         @endif
@@ -209,12 +245,9 @@
                         </div>
                     </div>
                 @else
-                    <div class="alert alert-success">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <div>
-                            <h3 class="font-bold">Nicht gefährdet</h3>
-                            <div class="text-sm">Diese Art ist derzeit in keiner Region als gefährdet eingestuft.</div>
-                        </div>
+                    <div class="alert alert-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>Keine Verbreitungsdaten verfügbar</div>
                     </div>
                 @endif
             </div>

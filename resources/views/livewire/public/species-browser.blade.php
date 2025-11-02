@@ -83,7 +83,7 @@
         <!-- Regions Multi-Select -->
         <div class="form-control">
             <label class="label">
-                <span class="label-text font-semibold">📍 Gefährdete Regionen</span>
+                <span class="label-text font-semibold">📍 Regionen</span>
             </label>
             <select
                 wire:model.live="regionIds"
@@ -91,7 +91,7 @@
                 size="4"
                 class="select select-bordered w-full"
             >
-                @foreach ($endangeredRegions as $region)
+                @foreach ($regions as $region)
                     <option value="{{ $region->id }}">
                         {{ $region->code }} - {{ $region->name }}
                     </option>
@@ -142,9 +142,14 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if ($item->endangeredRegions->count() > 0)
+                                @php
+                                    $endangeredCount = $item->regions
+                                        ->where('pivot.conservation_status', 'gefährdet')
+                                        ->count();
+                                @endphp
+                                @if ($endangeredCount > 0)
                                     <span class="badge badge-error badge-sm">
-                                        {{ $item->endangeredRegions->count() }}
+                                        {{ $endangeredCount }}
                                     </span>
                                 @else
                                     <span class="text-gray-400">—</span>

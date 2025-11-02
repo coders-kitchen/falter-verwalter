@@ -14,7 +14,10 @@ class SpeciesDetail extends Component
         $this->species = $species->load([
             'family',
             'habitats',
-            'endangeredRegions',
+            'regions' => function ($query) {
+                $query->orderBy('code');
+            },
+            'endangeredRegionsList',
             'generations' => function ($query) {
                 $query->orderBy('generation_number');
             }

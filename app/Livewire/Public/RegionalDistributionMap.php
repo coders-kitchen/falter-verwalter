@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\EndangeredRegion;
+use App\Models\Region;
 use App\Models\Species;
 use Livewire\Component;
 
 class RegionalDistributionMap extends Component
 {
     public $species = null;
-    public $displayMode = 'endangered';
+    public $displayMode = 'all'; // 'all' or 'endangered'
     public $regionData = [];
     public $selectedRegion = null;
     public $maxCount = 0;
@@ -34,7 +34,7 @@ class RegionalDistributionMap extends Component
 
     public function aggregateRegionData()
     {
-        $regions = EndangeredRegion::all();
+        $regions = Region::all();
         $this->regionData = [];
         $this->maxCount = 0;
 
@@ -42,15 +42,16 @@ class RegionalDistributionMap extends Component
             if ($this->displayMode === 'endangered') {
                 // Count endangered species in this region
                 $count = $region->species()
+                    ->wherePivot('conservation_status', 'gefährdet')
                     ->when($this->species, function ($query) {
-                        $query->where('species_endangered_region.species_id', $this->species->id);
+                        $query->where('species_region.species_id', $this->species->id);
                     })
                     ->count('species.id');
             } else {
                 // Count all species in this region
                 $count = $region->species()
                     ->when($this->species, function ($query) {
-                        $query->where('species_endangered_region.species_id', $this->species->id);
+                        $query->where('species_region.species_id', $this->species->id);
                     })
                     ->count('species.id');
             }

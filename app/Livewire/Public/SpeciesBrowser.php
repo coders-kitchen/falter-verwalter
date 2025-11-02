@@ -5,6 +5,7 @@ namespace App\Livewire\Public;
 use App\Models\Species;
 use App\Models\Family;
 use App\Models\Habitat;
+use App\Models\Region;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,7 +24,7 @@ class SpeciesBrowser extends Component
 
     public function render()
     {
-        $query = Species::with('family', 'habitats', 'endangeredRegions')
+        $query = Species::with('family', 'habitats', 'regions')
             ->orderBy('name');
 
         // Search filter
@@ -44,17 +45,21 @@ class SpeciesBrowser extends Component
             });
         }
 
-        // Endangered status filter
+        // Endangered status filter - now based on pivot conservation_status
         if ($this->endangeredStatus === 'endangered') {
-            $query->whereHas('endangeredRegions');
+            $query->whereHas('regions', function ($q) {
+                $q->wherePivot('conservation_status', 'gefährdet');
+            });
         } elseif ($this->endangeredStatus === 'not_endangered') {
-            $query->whereDoesntHave('endangeredRegions');
+            $query->whereDoesntHave('regions', function ($q) {
+                $q->wherePivot('conservation_status', 'gefährdet');
+            });
         }
 
-        // Region filter
+        // Region filter - filter by specific regions
         if (!empty($this->regionIds)) {
-            $query->whereHas('endangeredRegions', function ($q) {
-                $q->whereIn('endangered_regions.id', $this->regionIds);
+            $query->whereHas('regions', function ($q) {
+                $q->whereIn('regions.id', $this->regionIds);
             });
         }
 
@@ -62,7 +67,7 @@ class SpeciesBrowser extends Component
             'species' => $query->paginate(50),
             'families' => Family::where('type', 'butterfly')->orderBy('name')->get(),
             'habitats' => Habitat::orderBy('name')->get(),
-            'endangeredRegions' => \App\Models\EndangeredRegion::orderBy('code')->get(),
+            'regions' => Region::orderBy('code')->get(),
         ]);
     }
 
