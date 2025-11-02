@@ -177,10 +177,10 @@
                         </select>
                     </div>
 
-                    <!-- Endangered Regions -->
+                    <!-- Endangered Regions (Legacy) -->
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">⚠️ Gefährdete Regionen/Gebiete</span>
+                            <span class="label-text font-semibold">⚠️ Gefährdete Regionen/Gebiete (Veraltet)</span>
                         </label>
                         <select
                             wire:model="form.endangered_region_ids"
@@ -194,6 +194,78 @@
                         </select>
                         <p class="text-xs text-base-content/60 mt-2">Wählen Sie alle Regionen aus, in denen diese Art gefährdet ist</p>
                     </div>
+
+                    <!-- NEW: Geographic Distribution Section -->
+                    <div class="divider">Neue Regionsmodellierung</div>
+
+                    <!-- Geographic Distribution -->
+                    <div class="card bg-base-200">
+                        <div class="card-body">
+                            <h4 class="card-title text-lg">📍 Geografische Verbreitung</h4>
+                            <p class="text-sm opacity-75 mb-4">Wähle Regionen, in denen die Art vorkommt</p>
+
+                            <!-- Region Selector (Checkboxes) -->
+                            <div class="space-y-2">
+                                @foreach($allRegions as $region)
+                                    <label class="label cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            wire:model="form.selected_region_ids"
+                                            value="{{ $region->id }}"
+                                            class="checkbox"
+                                        />
+                                        <span class="label-text">{{ $region->code }} - {{ $region->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            @error('form.selected_region_ids')
+                                <p class="text-error text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Conservation Status Section -->
+                    @if(!empty($form['selected_region_ids']))
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <h4 class="card-title text-lg">⚠️ Gefährdungsstatus</h4>
+                                <p class="text-sm opacity-75 mb-4">Lege den Status für jede Region fest</p>
+
+                                <!-- Status Assignment (Dropdowns per Region) -->
+                                <div class="space-y-3">
+                                    @foreach($form['selected_region_ids'] as $regionId)
+                                        @php $region = $allRegions->find($regionId); @endphp
+                                        <div class="flex items-center gap-4">
+                                            <span class="font-semibold min-w-20">{{ $region->code }}</span>
+                                            <select
+                                                wire:change="updateConservationStatus({{ $regionId }}, $event.target.value)"
+                                                class="select select-bordered select-sm flex-1"
+                                            >
+                                                <option value="nicht_gefährdet" @selected(($form['conservation_status'][$regionId] ?? 'nicht_gefährdet') === 'nicht_gefährdet')>
+                                                    Nicht gefährdet
+                                                </option>
+                                                <option value="gefährdet" @selected(($form['conservation_status'][$regionId] ?? 'nicht_gefährdet') === 'gefährdet')>
+                                                    Gefährdet
+                                                </option>
+                                            </select>
+                                            <button
+                                                type="button"
+                                                wire:click="removeRegion({{ $regionId }})"
+                                                class="btn btn-sm btn-ghost"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                @error('form.conservation_status.*')
+                                    <p class="text-error text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Buttons -->
                     <div class="flex gap-4 justify-end mt-8">
