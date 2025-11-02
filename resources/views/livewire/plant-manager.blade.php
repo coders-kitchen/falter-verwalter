@@ -123,6 +123,20 @@
 
                         <div class="form-control">
                             <label class="label">
+                                <span class="label-text font-semibold">Familie</span>
+                            </label>
+                            <select wire:model="form.family_id" class="select select-bordered">
+                                <option value="">— Keine Familie —</option>
+                                @foreach($families as $family)
+                                    <option value="{{ $family->id }}">{{ $family->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
                                 <span class="label-text font-semibold">Lifespan *</span>
                             </label>
                             <select wire:model="form.lifespan" class="select select-bordered">
@@ -313,26 +327,23 @@
                         </div>
                     </div>
 
-                    <!-- Habitats -->
+                    <!-- Habitats Multi-Select -->
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold">Lebensräume</span>
                         </label>
-                        <div class="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded p-3">
+                        <select
+                            wire:model="form.habitat_ids"
+                            multiple
+                            class="select select-bordered w-full"
+                            size="8"
+                        >
                             @foreach($habitats as $habitat)
-                                <div class="form-control">
-                                    <label class="label cursor-pointer">
-                                        <input
-                                            wire:model="form.habitat_ids"
-                                            type="checkbox"
-                                            value="{{ $habitat->id }}"
-                                            class="checkbox checkbox-sm"
-                                        />
-                                        <span class="label-text ml-2">{{ $habitat->name }}</span>
-                                    </label>
-                                </div>
+                                <option value="{{ $habitat->id }}" style="padding-left: {{ ($habitat->level ?? 0) * 1.5 }}rem;">
+                                    {{ str_repeat('— ', $habitat->level ?? 0) }}{{ $habitat->name }}
+                                </option>
                             @endforeach
-                        </div>
+                        </select>
                     </div>
 
                     <div class="flex gap-4 justify-end mt-8">

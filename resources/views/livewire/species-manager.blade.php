@@ -39,6 +39,12 @@
                         </td>
                         <td>{{ $item->generations_per_year ?? '—' }}</td>
                         <td class="space-x-2">
+                            <a
+                                href="{{ route('admin.generations.index', $item->id) }}"
+                                class="btn btn-xs btn-success"
+                            >
+                                Generationen
+                            </a>
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
                                 class="btn btn-xs btn-info"
@@ -169,6 +175,24 @@
                             <option value="pupa">Puppe</option>
                             <option value="adult">Imago (Schmetterling)</option>
                         </select>
+                    </div>
+
+                    <!-- Endangered Regions -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">⚠️ Gefährdete Regionen/Gebiete</span>
+                        </label>
+                        <select
+                            wire:model="form.endangered_region_ids"
+                            multiple
+                            class="select select-bordered w-full"
+                            size="6"
+                        >
+                            @foreach($endangeredRegions as $region)
+                                <option value="{{ $region->id }}">{{ $region->code }} - {{ $region->name }}</option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-base-content/60 mt-2">Wählen Sie alle Regionen aus, in denen diese Art gefährdet ist</p>
                     </div>
 
                     <!-- Buttons -->

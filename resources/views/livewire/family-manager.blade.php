@@ -6,31 +6,78 @@
         </button>
     </div>
 
+    <!-- Type Filter Tabs -->
+    <div class="tabs tabs-bordered">
+        <button
+            wire:click="switchType('butterfly')"
+            @class([
+                'tab',
+                'tab-active' => $filterType === 'butterfly',
+            ])
+        >
+            🦋 Schmetterlinge
+        </button>
+        <button
+            wire:click="switchType('plant')"
+            @class([
+                'tab',
+                'tab-active' => $filterType === 'plant',
+            ])
+        >
+            🌿 Pflanzen
+        </button>
+    </div>
+
+    <!-- Search -->
     <div class="form-control">
         <input
             wire:model.live="search"
             type="text"
-            placeholder="Suche nach Familienniame..."
+            placeholder="Suche nach Familie, Unterfamilie, Gattung oder Tribus..."
             class="input input-bordered w-full"
         />
     </div>
 
+    <!-- Table -->
     <div class="overflow-x-auto">
         <table class="table w-full">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Familie{{ $filterType === 'butterfly' ? ' › Unterfamilie › Gattung › Tribus' : '' }}</th>
+                    <th>@if($filterType === 'butterfly')Arten@else Pflanzen @endif</th>
                     <th>Beschreibung</th>
-                    <th>Arten</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($items as $item)
                     <tr class="hover">
-                        <td class="font-semibold">{{ $item->name }}</td>
-                        <td>{{ $item->description ?? '—' }}</td>
-                        <td>{{ $item->species_count }}</td>
+                        <td>
+                            <div class="font-semibold">{{ $item->name }}</div>
+                            @if($item->subfamily || $item->genus || $item->tribe)
+                                <div class="text-sm text-base-content/60">
+                                    @if($item->subfamily)
+                                        <span>{{ $item->subfamily }}</span>
+                                        @if($item->genus || $item->tribe) › @endif
+                                    @endif
+                                    @if($item->genus)
+                                        <span>{{ $item->genus }}</span>
+                                        @if($item->tribe) › @endif
+                                    @endif
+                                    @if($item->tribe)
+                                        <span>{{ $item->tribe }}</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </td>
+                        <td>
+                            @if($filterType === 'butterfly')
+                                <span class="badge badge-primary">{{ $item->species_count }}</span>
+                            @else
+                                <span class="badge badge-success">{{ $item->plants_count }}</span>
+                            @endif
+                        </td>
+                        <td class="text-sm">{{ $item->description ? substr($item->description, 0, 50) . '...' : '—' }}</td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -64,17 +111,46 @@
         </div>
     @endif
 
+    <!-- Modal -->
     @if($showModal)
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8 max-w-md w-full">
+            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
                 <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
                     {{ $family ? 'Familie bearbeiten' : 'Neue Familie' }}
                 </h3>
 
                 <form wire:submit="save" class="space-y-4">
+                    <!-- Type Selection -->
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">Name *</span>
+                            <span class="label-text font-semibold">Typ *</span>
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="label cursor-pointer gap-2">
+                                <input
+                                    type="radio"
+                                    wire:model="form.type"
+                                    value="butterfly"
+                                    class="radio radio-sm"
+                                />
+                                <span class="label-text">🦋 Schmetterling</span>
+                            </label>
+                            <label class="label cursor-pointer gap-2">
+                                <input
+                                    type="radio"
+                                    wire:model="form.type"
+                                    value="plant"
+                                    class="radio radio-sm"
+                                />
+                                <span class="label-text">🌿 Pflanze</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Familie (Name) -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Familie *</span>
                         </label>
                         <input
                             wire:model="form.name"
@@ -87,9 +163,49 @@
                         @enderror
                     </div>
 
+                    <!-- Unterfamilie -->
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">Beschreibung</span>
+                            <span class="label-text font-semibold">Unterfamilie (optional)</span>
+                        </label>
+                        <input
+                            wire:model="form.subfamily"
+                            type="text"
+                            placeholder="z.B. Papilioninae"
+                            class="input input-bordered"
+                        />
+                    </div>
+
+                    <!-- Gattung -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Gattung (optional)</span>
+                        </label>
+                        <input
+                            wire:model="form.genus"
+                            type="text"
+                            placeholder="z.B. Papilio"
+                            class="input input-bordered"
+                        />
+                    </div>
+
+                    <!-- Tribus -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Tribus (optional)</span>
+                        </label>
+                        <input
+                            wire:model="form.tribe"
+                            type="text"
+                            placeholder="z.B. Papilionini"
+                            class="input input-bordered"
+                        />
+                    </div>
+
+                    <!-- Beschreibung -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Beschreibung (optional)</span>
                         </label>
                         <textarea
                             wire:model="form.description"

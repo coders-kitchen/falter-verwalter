@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Species;
 use App\Models\Family;
+use App\Models\EndangeredRegion;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,6 +22,7 @@ class SpeciesManager extends Component
         'size_category' => '',
         'generations_per_year' => '',
         'hibernation_stage' => '',
+        'endangered_region_ids' => [],
     ];
 
     protected $rules = [
@@ -44,6 +46,7 @@ class SpeciesManager extends Component
         return view('livewire.species-manager', [
             'items' => $query->paginate(50),
             'families' => Family::orderBy('name')->get(),
+            'endangeredRegions' => EndangeredRegion::orderBy('code')->get(),
         ]);
     }
 
@@ -57,6 +60,7 @@ class SpeciesManager extends Component
     {
         $this->species = $species;
         $this->form = $species->only('name', 'scientific_name', 'family_id', 'size_category', 'generations_per_year', 'hibernation_stage');
+        $this->form['endangered_region_ids'] = $species->endangeredRegions()->pluck('endangered_regions.id')->toArray();
         $this->showModal = true;
     }
 
@@ -70,11 +74,17 @@ class SpeciesManager extends Component
     {
         $this->validate();
 
+        $endangeredRegionIds = $this->form['endangered_region_ids'];
+        $formData = $this->form;
+        unset($formData['endangered_region_ids']);
+
         if ($this->species) {
-            $this->species->update($this->form);
+            $this->species->update($formData);
+            $this->species->endangeredRegions()->sync($endangeredRegionIds);
             $this->dispatch('notify', message: 'Art aktualisiert');
         } else {
-            Species::create(array_merge($this->form, ['user_id' => auth()->id()]));
+            $species = Species::create(array_merge($formData, ['user_id' => auth()->id()]));
+            $species->endangeredRegions()->sync($endangeredRegionIds);
             $this->dispatch('notify', message: 'Art erstellt');
         }
 
@@ -98,6 +108,7 @@ class SpeciesManager extends Component
             'size_category' => '',
             'generations_per_year' => '',
             'hibernation_stage' => '',
+            'endangered_region_ids' => [],
         ];
         $this->species = null;
     }
