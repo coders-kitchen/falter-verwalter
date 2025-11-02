@@ -8,12 +8,12 @@
                 <h4 class="font-semibold mb-3">Legende:</h4>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 bg-green-500 rounded"></div>
-                        <span class="text-sm">Flugmonate</span>
+                        <div class="w-6 h-6 bg-blue-500 rounded"></div>
+                        <span class="text-sm">Raupe</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 bg-orange-500 rounded"></div>
-                        <span class="text-sm">Verpuppung</span>
+                        <div class="w-6 h-6 bg-green-500 rounded"></div>
+                        <span class="text-sm">Flugmonate</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <div class="w-6 h-6 bg-gray-300 rounded"></div>
@@ -47,14 +47,14 @@
                                         @foreach ($generation['months'] as $monthData)
                                             <td class="p-1 md:p-2 border border-base-300 text-center h-16 md:h-20">
                                                 <div class="h-full flex flex-col items-center justify-center gap-1">
+                                                    @if (in_array('larva', $monthData['types']))
+                                                        <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-500 rounded flex items-center justify-center text-white text-sm" title="Raupe">
+                                                            🐛
+                                                        </div>
+                                                    @endif
                                                     @if (in_array('flight', $monthData['types']))
                                                         <div class="w-8 h-8 md:w-10 md:h-10 bg-green-500 rounded flex items-center justify-center text-white text-sm" title="Flugmonate">
                                                             🦋
-                                                        </div>
-                                                    @endif
-                                                    @if (in_array('pupation', $monthData['types']))
-                                                        <div class="w-8 h-8 md:w-10 md:h-10 bg-orange-500 rounded flex items-center justify-center text-white text-sm" title="Verpuppung">
-                                                            🔄
                                                         </div>
                                                     @endif
                                                     @if (empty($monthData['types']))
@@ -77,8 +77,10 @@
                 <div>
                     <h3 class="font-bold">Hinweis</h3>
                     <div class="text-sm">
-                        Die Flugmonate zeigen an, wann die erwachsenen Schmetterlinge aktiv sind.
-                        Die Verpuppungsphasen zeigen an, wann sich die Raupen zu Schmetterlingen entwickeln.
+                        <ul class="list-disc pl-4 mt-2">
+                            <li>🐛 <strong>Raupe:</strong> Zeitraum, in dem die Raupen aktiv sind und fressen</li>
+                            <li>🦋 <strong>Flugmonate:</strong> Zeitraum, in dem die erwachsenen Schmetterlinge aktiv und flugfähig sind</li>
+                        </ul>
                     </div>
                 </div>
             </div>

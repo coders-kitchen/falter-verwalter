@@ -34,6 +34,21 @@ class LifeCycleCalendar extends Component
                         'types' => []
                     ];
 
+                    // Check larva/caterpillar months
+                    if ($generation->larva_start_month && $generation->larva_end_month) {
+                        if ($generation->larva_start_month <= $generation->larva_end_month) {
+                            // Normal range (e.g., April to July)
+                            if ($month >= $generation->larva_start_month && $month <= $generation->larva_end_month) {
+                                $monthData['types'][] = 'larva';
+                            }
+                        } else {
+                            // Wrapping range (e.g., November to March)
+                            if ($month >= $generation->larva_start_month || $month <= $generation->larva_end_month) {
+                                $monthData['types'][] = 'larva';
+                            }
+                        }
+                    }
+
                     // Check flight months
                     if ($generation->flight_start_month && $generation->flight_end_month) {
                         if ($generation->flight_start_month <= $generation->flight_end_month) {
@@ -45,21 +60,6 @@ class LifeCycleCalendar extends Component
                             // Wrapping range (e.g., November to March)
                             if ($month >= $generation->flight_start_month || $month <= $generation->flight_end_month) {
                                 $monthData['types'][] = 'flight';
-                            }
-                        }
-                    }
-
-                    // Check pupation months
-                    if ($generation->pupation_start_month && $generation->pupation_end_month) {
-                        if ($generation->pupation_start_month <= $generation->pupation_end_month) {
-                            // Normal range
-                            if ($month >= $generation->pupation_start_month && $month <= $generation->pupation_end_month) {
-                                $monthData['types'][] = 'pupation';
-                            }
-                        } else {
-                            // Wrapping range
-                            if ($month >= $generation->pupation_start_month || $month <= $generation->pupation_end_month) {
-                                $monthData['types'][] = 'pupation';
                             }
                         }
                     }
