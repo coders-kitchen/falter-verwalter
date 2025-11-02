@@ -65,13 +65,6 @@
                         Anmelden
                     </button>
                 </form>
-
-                <!-- Test Credentials Info -->
-                <div class="divider">Test-Zugänge</div>
-                <div class="text-xs space-y-2">
-                    <p><strong>Admin:</strong> admin@test.de / password</p>
-                    <p><strong>Viewer:</strong> viewer@test.de / password</p>
-                </div>
             </div>
         </div>
     </div>
