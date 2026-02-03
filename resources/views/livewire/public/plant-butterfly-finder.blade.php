@@ -41,7 +41,7 @@
                             <div class="badge badge-lg badge-primary gap-2">
                                 {{ $plant->name }}
                                 <button
-                                    wire:click="$toggle('selectedPlantIds', {{ $plantId }})"
+                                    wire:click="clearSelection({{ $plantId }})"
                                     class="text-lg hover:opacity-75"
                                     title="Entfernen"
                                 >

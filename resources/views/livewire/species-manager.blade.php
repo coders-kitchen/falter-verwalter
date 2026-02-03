@@ -177,24 +177,6 @@
                         </select>
                     </div>
 
-                    <!-- Endangered Regions (Legacy) -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">⚠️ Gefährdete Regionen/Gebiete (Veraltet)</span>
-                        </label>
-                        <select
-                            wire:model="form.endangered_region_ids"
-                            multiple
-                            class="select select-bordered w-full"
-                            size="6"
-                        >
-                            @foreach($endangeredRegions as $region)
-                                <option value="{{ $region->id }}">{{ $region->code }} - {{ $region->name }}</option>
-                            @endforeach
-                        </select>
-                        <p class="text-xs text-base-content/60 mt-2">Wählen Sie alle Regionen aus, in denen diese Art gefährdet ist</p>
-                    </div>
-
                     <!-- NEW: Geographic Distribution Section -->
                     <div class="divider">Neue Regionsmodellierung</div>
 
@@ -266,6 +248,26 @@
                             </div>
                         </div>
                     @endif
+
+                    
+                    <!-- Habitats Multi-Select -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Lebensräume</span>
+                        </label>
+                        <select
+                            wire:model="form.habitat_ids"
+                            multiple
+                            class="select select-bordered w-full"
+                            size="8"
+                        >
+                            @foreach($habitats as $habitat)
+                                <option value="{{ $habitat->id }}" style="padding-left: {{ ($habitat->level ?? 0) * 1.5 }}rem;">
+                                    {{ str_repeat('— ', $habitat->level ?? 0) }}{{ $habitat->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <!-- Buttons -->
                     <div class="flex gap-4 justify-end mt-8">

@@ -64,6 +64,11 @@ class PlantButterflyFinder extends Component
         $this->resetPage();
     }
 
+    public function removeSelectedPlant($plantId) {
+        $position = array_search($plantId, $this->selectedPlantIds);
+        array_splice($this->selectedPlantIds, $position, 1);
+    }
+
     public function getPlantUseForSpecies($species)
     {
         $uses = [];
