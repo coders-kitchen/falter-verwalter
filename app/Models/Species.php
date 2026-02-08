@@ -43,6 +43,8 @@ class Species extends Model
     public function distributionAreas(): BelongsToMany
     {
         return $this->belongsToMany(DistributionArea::class, 'species_distribution')
+        ->using(SpeciesDistributionArea::class)
+        ->withPivot('status')
             ->withTimestamps();
     }
 
@@ -59,19 +61,6 @@ class Species extends Model
             ->withTimestamps();
     }
 
-    public function endangeredRegions(): BelongsToMany
-    {
-        return $this->belongsToMany(EndangeredRegion::class, 'species_endangered_region')
-            ->withTimestamps();
-    }
-
-    /**
-     * Get all regions where this species occurs.
-     * This relationship replaces the old endangeredRegions() which only showed
-     * species marked as endangered. Now regions are separate from conservation status.
-     *
-     * @return BelongsToMany
-     */
     public function regions(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -83,17 +72,5 @@ class Species extends Model
             ->using(SpeciesRegion::class)
             ->withPivot('conservation_status')
             ->withTimestamps();
-    }
-
-    /**
-     * Get only the regions where this species is marked as endangered.
-     * Filters the regions() relationship by conservation_status = 'gefährdet'.
-     *
-     * @return BelongsToMany
-     */
-    public function endangeredRegionsList(): BelongsToMany
-    {
-        return $this->regions()
-            ->wherePivot('conservation_status', 'gefährdet');
     }
 }

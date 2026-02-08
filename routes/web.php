@@ -57,9 +57,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         return view('admin.families');
     })->name('families.index');
 
-    Route::get('endangered-regions', function () {
-        return view('admin.endangered-regions');
-    })->name('endangered-regions.index');
+    Route::get('regions', function () {
+        return view('admin.regions');
+    })->name('regions.index');
 
     Route::get('habitats', function () {
         return view('admin.habitats');
@@ -72,6 +72,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('life-forms', function () {
         return view('admin.life-forms');
     })->name('life-forms.index');
+
+    Route::get('threat-categories', function () {
+        return view('admin.threat-categories');
+    })->name('threat-categories.index');
 
     Route::get('distribution-areas', function () {
         return view('admin.distribution-areas');

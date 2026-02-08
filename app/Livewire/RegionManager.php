@@ -2,17 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Models\EndangeredRegion;
+use App\Models\Region;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class EndangeredRegionManager extends Component
+class RegionManager extends Component
 {
     use WithPagination;
 
     public $search = '';
     public $showModal = false;
-    public $endangeredRegion = null;
+    public $region = null;
 
     public $form = [
         'code' => '',
@@ -21,21 +21,21 @@ class EndangeredRegionManager extends Component
     ];
 
     protected $rules = [
-        'form.code' => 'required|string|max:20|unique:endangered_regions,code',
-        'form.name' => 'required|string|max:255|unique:endangered_regions,name',
+        'form.code' => 'required|string|max:20|unique:regions,code',
+        'form.name' => 'required|string|max:255|unique:regions,name',
         'form.description' => 'nullable|string',
     ];
 
     public function render()
     {
-        $query = EndangeredRegion::where('user_id', auth()->id())->orderBy('code');
+        $query = Region::orderBy('code');
 
         if ($this->search) {
             $query->where('code', 'like', '%' . $this->search . '%')
                   ->orWhere('name', 'like', '%' . $this->search . '%');
         }
 
-        return view('livewire.endangered-region-manager', [
+        return view('livewire.region-manager', [
             'items' => $query->paginate(50),
         ]);
     }
@@ -46,10 +46,10 @@ class EndangeredRegionManager extends Component
         $this->showModal = true;
     }
 
-    public function openEditModal(EndangeredRegion $endangeredRegion)
+    public function openEditModal(Region $region)
     {
-        $this->endangeredRegion = $endangeredRegion;
-        $this->form = $endangeredRegion->only('code', 'name', 'description');
+        $this->region = $region;
+        $this->form = $region->only('code', 'name', 'description');
         $this->showModal = true;
     }
 
@@ -62,18 +62,18 @@ class EndangeredRegionManager extends Component
     public function save()
     {
         // Update validation to exclude current record from uniqueness check
-        if ($this->endangeredRegion) {
-            $this->rules['form.code'] = 'required|string|max:20|unique:endangered_regions,code,' . $this->endangeredRegion->id;
-            $this->rules['form.name'] = 'required|string|max:255|unique:endangered_regions,name,' . $this->endangeredRegion->id;
+        if ($this->region) {
+            $this->rules['form.code'] = 'required|string|max:20|unique:regions,code,' . $this->region->id;
+            $this->rules['form.name'] = 'required|string|max:255|unique:regions,name,' . $this->region->id;
         }
 
         $this->validate();
 
-        if ($this->endangeredRegion) {
-            $this->endangeredRegion->update($this->form);
+        if ($this->region) {
+            $this->region->update($this->form);
             $this->dispatch('notify', message: 'Gefährdete Region aktualisiert');
         } else {
-            EndangeredRegion::create(array_merge($this->form, ['user_id' => auth()->id()]));
+            Region::create(array_merge($this->form, ['user_id' => auth()->id()]));
             $this->dispatch('notify', message: 'Gefährdete Region erstellt');
         }
 
@@ -81,10 +81,10 @@ class EndangeredRegionManager extends Component
         $this->resetPage();
     }
 
-    public function delete(EndangeredRegion $endangeredRegion)
+    public function delete(Region $region)
     {
-        $endangeredRegion->delete();
-        $this->dispatch('notify', message: 'Gefährdete Region gelöscht');
+        $region->delete();
+        $this->dispatch('notify', message: 'Region gelöscht');
         $this->resetPage();
     }
 
@@ -95,7 +95,7 @@ class EndangeredRegionManager extends Component
             'name' => '',
             'description' => '',
         ];
-        $this->endangeredRegion = null;
+        $this->region = null;
         $this->resetErrorBag();
     }
 }

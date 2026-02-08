@@ -199,13 +199,13 @@
                 @if ($species->regions->count() > 0)
                     <!-- Endangered Regions -->
                     @php
-                        $endangeredRegions = $species->regions->where('pivot.conservation_status', 'gefährdet');
+                        $regions = $species->regions->where('pivot.conservation_status', 'gefährdet');
                     @endphp
-                    @if ($endangeredRegions->count() > 0)
+                    @if ($regions->count() > 0)
                         <div>
                             <h4 class="text-lg font-bold mb-3">⚠️ Gefährdete Regionen</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                @foreach ($endangeredRegions as $region)
+                                @foreach ($regions as $region)
                                     <div class="card bg-error text-error-content">
                                         <div class="card-body py-3">
                                             <p class="font-semibold">{{ $region->code }}</p>

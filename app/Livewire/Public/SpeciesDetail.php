@@ -17,7 +17,6 @@ class SpeciesDetail extends Component
             'regions' => function ($query) {
                 $query->orderBy('code');
             },
-            'endangeredRegionsList',
             'generations' => function ($query) {
                 $query->orderBy('generation_number');
             }

@@ -1,9 +1,9 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center flex-wrap gap-4">
-        <h2 class="text-3xl font-bold">⚠️ Gefährdete Regionen/Gebiete</h2>
+        <h2 class="text-3xl font-bold">Gefährdungskategorien</h2>
         <button wire:click="openCreateModal" class="btn btn-primary">
-            + Neue Region
+            + Neue Kategorie
         </button>
     </div>
 
@@ -12,7 +12,7 @@
         <input
             wire:model.live="search"
             type="text"
-            placeholder="Suche nach Code oder Name..."
+            placeholder="Suche nach Code oder Label..."
             class="input input-bordered w-full"
         />
     </div>
@@ -23,9 +23,8 @@
             <thead>
                 <tr>
                     <th>Code</th>
-                    <th>Name</th>
+                    <th>Label</th>
                     <th>Beschreibung</th>
-                    <th>Arten</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -33,11 +32,8 @@
                 @forelse($items as $item)
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->code }}</td>
-                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->label }}</td>
                         <td class="text-sm">{{ $item->description ? substr($item->description, 0, 50) . '...' : '—' }}</td>
-                        <td>
-                            <span class="badge badge-primary">{{ $item->species()->count() }}</span>
-                        </td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -57,7 +53,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="text-center py-8 text-gray-500">
-                            Keine Regionen gefunden
+                            Keine Gefährdungskategorien gefunden
                         </td>
                     </tr>
                 @endforelse
@@ -77,7 +73,7 @@
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
             <div class="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto shadow-lg">
                 <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
-                    {{ $endangeredRegion ? 'Region bearbeiten' : 'Neue Region erstellen' }}
+                    {{ $threatCategory ? 'Kategorie bearbeiten' : 'Neue Kategorie erstellen' }}
                 </h3>
 
                 <form wire:submit="save" class="space-y-4">
@@ -89,7 +85,7 @@
                         <input
                             wire:model="form.code"
                             type="text"
-                            placeholder="z.B. NRW, WB, BGL"
+                            placeholder="z.B. NT"
                             class="input input-bordered @error('form.code') input-error @enderror"
                         />
                         @error('form.code')
@@ -100,15 +96,15 @@
                     <!-- Name -->
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">Name *</span>
+                            <span class="label-text font-semibold">Label *</span>
                         </label>
                         <input
-                            wire:model="form.name"
+                            wire:model="form.label"
                             type="text"
-                            placeholder="z.B. Nordrhein-Westfalen"
+                            placeholder="z.B. Nicht gefährdet"
                             class="input input-bordered @error('form.name') input-error @enderror"
                         />
-                        @error('form.name')
+                        @error('form.label')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>
                         @enderror
                     </div>
@@ -121,9 +117,28 @@
                         <textarea
                             wire:model="form.description"
                             class="textarea textarea-bordered"
-                            placeholder="Kurze Beschreibung dieser Region..."
+                            placeholder="Kurze Beschreibung dieser Kategorie..."
                             rows="3"
                         ></textarea>
+                    </div>
+
+
+                    <!-- Rank -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Rang</span>
+                        </label>
+                        <input
+                            type="number"
+                            min="1"
+                            wire:model="form.rank"
+                            class="input input-bordered"
+                            placeholder="z.B. 1, 2, 3">
+                        @error('form.rank')
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ $message }}</span>
+                            </label>
+                        @enderror
                     </div>
 
                     <!-- Buttons -->

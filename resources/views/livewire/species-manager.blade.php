@@ -176,6 +176,33 @@
                             <option value="adult">Imago (Schmetterling)</option>
                         </select>
                     </div>
+                    
+                    <div class="divider">Verbreitungsräume</div>
+                    <div class="card bg-base-200">
+                        <div class="card-body">
+                            <h4 class="card-title text-lg">📍 Geografische Verbreitung</h4>
+                            <p class="text-sm opacity-75 mb-4">Wähle Regionen, in denen die Art vorkommt</p>
+
+                            <!-- Region Selector (Checkboxes) -->
+                            <div class="space-y-2">
+                                @foreach($allDistributionAreas as $area)
+                                    <label class="label cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            wire:model="form.selected_distribution_area_ids"
+                                            value="{{ $area->id }}"
+                                            class="checkbox"
+                                        />
+                                        <span class="label-text">{{ $area->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            @error('form.selected_distribution_area_ids')
+                                <p class="text-error text-sm mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
 
                     <!-- NEW: Geographic Distribution Section -->
                     <div class="divider">Neue Regionsmodellierung</div>

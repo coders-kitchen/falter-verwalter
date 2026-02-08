@@ -5,8 +5,8 @@ namespace App\Livewire;
 use App\Models\Species;
 use App\Models\Family;
 use App\Models\Habitat;
-use App\Models\EndangeredRegion;
 use App\Models\Region;
+use App\Models\DistributionArea;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,9 +24,9 @@ class SpeciesManager extends Component
         'size_category' => '',
         'generations_per_year' => '',
         'hibernation_stage' => '',
-        'endangered_region_ids' => [],
         // New fields for regions refactoring
         'selected_region_ids' => [],
+        'selected_distribution_area_ids' => [],
         'conservation_status' => [],
         'habitat_ids' => []
     ];
@@ -39,6 +39,8 @@ class SpeciesManager extends Component
         'form.generations_per_year' => 'nullable|integer|min:1',
         'form.hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
         // Validation for new regions feature - optional for creation, can be added later
+        'form.selected_distribution_area_ids' => 'nullable|array',
+        'form.selected_distribution_area_ids.*' => 'integer|exists:distribution_areas,id',
         'form.selected_region_ids' => 'nullable|array',
         'form.selected_region_ids.*' => 'integer|exists:regions,id',
         'form.conservation_status.*' => 'in:nicht_gefährdet,gefährdet',
@@ -59,8 +61,8 @@ class SpeciesManager extends Component
         return view('livewire.species-manager', [
             'items' => $query->paginate(50),
             'families' => Family::orderBy('name')->get(),
-            'endangeredRegions' => EndangeredRegion::orderBy('code')->get(),
             'allRegions' => Region::orderBy('code')->get(),
+            'allDistributionAreas' => DistributionArea::orderBy('name')->get(),
             'habitats' => $habitats,
         ]);
     }
@@ -105,9 +107,9 @@ class SpeciesManager extends Component
     {
         $this->species = $species;
         $this->form = $species->only('name', 'scientific_name', 'family_id', 'size_category', 'generations_per_year', 'hibernation_stage');
-        $this->form['endangered_region_ids'] = $species->endangeredRegions()->pluck('endangered_regions.id')->toArray();
 
         // Load new regions data
+        $this->form['selected_distribution_area_ids'] = $species->distributionAreas()->pluck('distribution_areas.id')->toArray();
         $this->form['selected_region_ids'] = $species->regions()->pluck('regions.id')->toArray();
         $this->form['conservation_status'] = $species->regions()
             ->pluck('conservation_status', 'regions.id')
@@ -160,12 +162,13 @@ class SpeciesManager extends Component
     {
         $this->validate();
 
-        $endangeredRegionIds = $this->form['endangered_region_ids'];
         $habitatIds = $this->form['habitat_ids'];
+        $distributionAreas = $this->form['selected_distribution_area_ids'];
         $formData = $this->form;
 
         unset($formData['endangered_region_ids']);
         unset($formData['habitat_ids']);
+        unset($formData['selected_distribution_area_ids']);
 
         // Prepare region data with pivot data (T018, T028)
         $regionData = [];
@@ -179,17 +182,15 @@ class SpeciesManager extends Component
 
         if ($this->species) {
             $this->species->update($formData);
-            // Sync both old and new region tables for backward compatibility
-            $this->species->endangeredRegions()->sync($endangeredRegionIds);
             $this->species->regions()->sync($regionData);
             $this->species->habitats()->sync($habitatIds);
+            $this->species->distributionAreas()->sync($distributionAreas);
             $this->dispatch('notify', message: 'Art aktualisiert');
         } else {
             $species = Species::create(array_merge($formData, ['user_id' => auth()->id()]));
-            // Sync both old and new region tables
-            $species->endangeredRegions()->sync($endangeredRegionIds);
             $species->regions()->sync($regionData);
             $species->habitats()->sync($habitatIds);
+            $species->distributionAreas()->sync($distributionAreas);
             $this->dispatch('notify', message: 'Art erstellt');
         }
         
@@ -215,6 +216,7 @@ class SpeciesManager extends Component
             'hibernation_stage' => '',
             'endangered_region_ids' => [],
             'selected_region_ids' => [],
+            'selected_distribution_area_ids' => [],
             'conservation_status' => [],
         ];
         $this->species = null;

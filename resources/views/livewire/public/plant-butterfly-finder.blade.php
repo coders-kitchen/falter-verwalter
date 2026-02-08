@@ -111,9 +111,9 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        @if ($species->endangeredRegions->count() > 0)
+                                        @if ($species->regions->count() > 0)
                                             <span class="badge badge-error badge-sm">
-                                                {{ $species->endangeredRegions->count() }}
+                                                {{ $species->regions->count() }}
                                             </span>
                                         @else
                                             <span class="text-gray-400">—</span>

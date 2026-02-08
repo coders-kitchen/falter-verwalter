@@ -85,8 +85,13 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.endangered-regions.index') }}" @class(['active' => request()->routeIs('admin.endangered-regions.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Gefährdete Regionen verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Gefährdete Regionen</span>
+                                    <a href="{{ route('admin.distribution-areas.index') }}" @class(['active' => request()->routeIs('admin.distribution-areas.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Verbreitungsgebiete verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Verbreitungsgebiete verwalten</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.regions.index') }}" @class(['active' => request()->routeIs('admin.regions.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Regionen verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Regionen</span>
                                     </a>
                                 </li>
                             </ul>
@@ -112,6 +117,11 @@
                                         <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Pflanzen verwalten</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Lebensarten verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Lebensarten verwalten</span>
+                                    </a>
+                                </li>
                             </ul>
                         </details>
                     </li>
@@ -121,18 +131,13 @@
                         <details class="group">
                             <summary class="cursor-pointer font-semibold flex items-center gap-2 py-2 px-3 rounded hover:bg-base-300 transition-colors">
                                 <span class="text-lg">📚</span>
-                                <span class="sidebar-text transition-opacity duration-300" style="opacity: 1;">Klassifikation</span>
+                                <span class="sidebar-text transition-opacity duration-300" style="opacity: 1;">Klassifikationen</span>
                                 <span class="ml-auto sidebar-chevron transition-transform duration-300 group-open:rotate-180">▼</span>
                             </summary>
                             <ul class="sidebar-submenu pl-8 space-y-1 mt-2 transition-all duration-300" style="max-height: 500px; opacity: 1;">
-                                <li>
-                                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Lebensarten verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Lebensarten verwalten</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.distribution-areas.index') }}" @class(['active' => request()->routeIs('admin.distribution-areas.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Verbreitungsgebiete verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Verbreitungsgebiete verwalten</span>
+                                                                <li>
+                                    <a href="{{ route('admin.threat-categories.index') }}" @class(['active' => request()->routeIs('admin.threat-categories.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Gefährdungsstatus verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Gefährdungsstatus verwalten</span>
                                     </a>
                                 </li>
                             </ul>
