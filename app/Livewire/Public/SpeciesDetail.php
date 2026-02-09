@@ -19,6 +19,9 @@ class SpeciesDetail extends Component
             },
             'generations' => function ($query) {
                 $query->orderBy('generation_number');
+            },
+            'distributionAreas' => function ($query) {
+                $query->orderBy('threat_category_id');
             }
         ]);
     }

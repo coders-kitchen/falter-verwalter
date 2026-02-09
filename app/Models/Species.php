@@ -42,9 +42,9 @@ class Species extends Model
 
     public function distributionAreas(): BelongsToMany
     {
-        return $this->belongsToMany(DistributionArea::class, 'species_distribution')
+        return $this->belongsToMany(DistributionArea::class, 'species_distribution_areas')
         ->using(SpeciesDistributionArea::class)
-        ->withPivot('status')
+        ->withPivot('threat_category_id')
             ->withTimestamps();
     }
 

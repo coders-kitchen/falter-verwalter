@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Public;
 
+use App\Models\DistributionArea;
 use App\Models\Species;
 use App\Models\Family;
 use App\Models\Habitat;
 use App\Models\Region;
+use App\Models\ThreatCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -17,8 +19,8 @@ class SpeciesBrowser extends Component
     public $familyId = null;
     public $genusId = null;
     public $habitatIds = [];
-    public $endangeredStatus = null;
-    public $regionIds = [];
+    public $threatCategoryId = null;
+    public $distributionAreaIds = [];
 
     protected $queryString = ['search', 'familyId', 'genusId', 'endangeredStatus', 'page'];
 
@@ -45,21 +47,16 @@ class SpeciesBrowser extends Component
             });
         }
 
-        // Endangered status filter - now based on pivot conservation_status
-        if ($this->endangeredStatus === 'endangered') {
-            $query->whereHas('regions', function ($q) {
-                $q->wherePivot('conservation_status', 'gefährdet');
-            });
-        } elseif ($this->endangeredStatus === 'not_endangered') {
-            $query->whereDoesntHave('regions', function ($q) {
-                $q->wherePivot('conservation_status', 'gefährdet');
+        if ($this->threatCategoryId) {
+            $query->whereHas('distributionAreas', function($q) {
+                $q->where('species_distribution_areas.threat_category_id', $this->threatCategoryId);
             });
         }
 
         // Region filter - filter by specific regions
-        if (!empty($this->regionIds)) {
-            $query->whereHas('regions', function ($q) {
-                $q->whereIn('regions.id', $this->regionIds);
+        if (!empty($this->distributionAreaIds)) {
+            $query->whereHas('distributionAreas', function ($q) {
+                $q->whereIn('species_distribution_areas.distribution_area_id', $this->distributionAreaIds);
             });
         }
 
@@ -67,13 +64,14 @@ class SpeciesBrowser extends Component
             'species' => $query->paginate(50),
             'families' => Family::where('type', 'butterfly')->orderBy('name')->get(),
             'habitats' => Habitat::orderBy('name')->get(),
-            'regions' => Region::orderBy('code')->get(),
+            'distributionAreas' => DistributionArea::orderBy('name')->get(),
+            'threatCategories' => ThreatCategory::orderBy('rank')->get()
         ]);
     }
 
     public function resetFilters()
     {
-        $this->reset(['search', 'familyId', 'genusId', 'habitatIds', 'endangeredStatus', 'regionIds']);
+        $this->reset(['search', 'familyId', 'genusId', 'habitatIds', 'threatCategoryId', 'distributionAreaIds']);
         $this->resetPage();
     }
 }

@@ -45,6 +45,12 @@
                             >
                                 Generationen
                             </a>
+                            <a
+                                href="{{ route('admin.speciesDistributionAreas.index', $item->id) }}"
+                                class="btn btn-xs btn-success"
+                            >
+                                Verbreitungsgebiete
+                            </a>
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
                                 class="btn btn-xs btn-info"

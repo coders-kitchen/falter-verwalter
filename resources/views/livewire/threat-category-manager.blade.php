@@ -25,6 +25,7 @@
                     <th>Code</th>
                     <th>Label</th>
                     <th>Beschreibung</th>
+                    <th>Farbcode</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -34,6 +35,7 @@
                         <td class="font-semibold">{{ $item->code }}</td>
                         <td>{{ $item->label }}</td>
                         <td class="text-sm">{{ $item->description ? substr($item->description, 0, 50) . '...' : '—' }}</td>
+                        <td class="text-sm"><span class="badge badge-info badge-lg" style="background: {{ $item->color_code }};">{{ $item->color_code }}</span></td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -130,7 +132,7 @@
                         </label>
                         <input
                             type="number"
-                            min="1"
+                            min="0"
                             wire:model="form.rank"
                             class="input input-bordered"
                             placeholder="z.B. 1, 2, 3">
@@ -139,6 +141,13 @@
                                 <span class="label-text-alt text-error">{{ $message }}</span>
                             </label>
                         @enderror
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Farbcode</span>
+                        </label>
+                        <input type="color" value="#cfcfcf" class="input input-bordered" wire:model="form.color_code">
                     </div>
 
                     <!-- Buttons -->

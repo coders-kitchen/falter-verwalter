@@ -19,15 +19,15 @@ class ThreatCategoryManager extends Component
     public $form = [
         'code' => '',
         'label' => '',
-        'label' => '',
-        'rank' => 0
+        'rank' => 0,
+        'color_code' => '#cfcfcf'
     ];
 
     protected $rules = [
         'form.code' => 'required|string|max:20',
-        'form.label' => 'nullable|string|max:20',
-        'form.label' => 'required|string',
-        'form.rank' => 'required|integer|min:0'
+        'form.label' => 'nullable|string|max:40',
+        'form.rank' => 'required|integer|min:0',
+        'form.color_code' => 'required|string|min:7|max:7'
     ];
 
     public function render()
@@ -48,7 +48,7 @@ class ThreatCategoryManager extends Component
     public function openEditModal(ThreatCategory $threatCategory)
     {
         $this->threatCategory = $threatCategory;
-        $this->form = $threatCategory->only('code', 'label', 'description', 'rank');
+        $this->form = $threatCategory->only('code', 'label', 'description', 'rank', 'color_code');
 
         $this->showModal = true;
     }
@@ -90,7 +90,8 @@ class ThreatCategoryManager extends Component
         'code' => '',
         'label' => '',
         'label' => '',
-        'rank' => 0
+        'rank' => 0,
+        'color_code' => '#cfcfcf'
         ];
         $this->threatCategory = null;
     }

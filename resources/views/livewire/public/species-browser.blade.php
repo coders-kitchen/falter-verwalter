@@ -65,17 +65,20 @@
             </label>
         </div>
 
-        <!-- Endangered Status -->
+        <!-- new modelling with threat status and distribution areas -->
+                <!-- Endangered Status -->
         <div class="form-control">
             <label class="label cursor-pointer gap-4">
                 <span class="label-text font-semibold">⚠️ Gefährdungsstatus</span>
                 <select
-                    wire:model.live="endangeredStatus"
+                    wire:model.live="threatCategoryId"
                     class="select select-sm select-bordered"
                 >
                     <option value="">Alle</option>
-                    <option value="endangered">Nur gefährdet</option>
-                    <option value="not_endangered">Nur nicht gefährdet</option>
+                    @foreach ($threatCategories as $category)
+                        <option value="{{ $category->id }}}">{{$category->code}} {{$category->label}}</option>
+                    @endforeach
+                    
                 </select>
             </label>
         </div>
@@ -86,14 +89,14 @@
                 <span class="label-text font-semibold">📍 Regionen</span>
             </label>
             <select
-                wire:model.live="regionIds"
+                wire:model.live="distributionAreaIds"
                 multiple
                 size="4"
                 class="select select-bordered w-full"
             >
-                @foreach ($regions as $region)
-                    <option value="{{ $region->id }}">
-                        {{ $region->code }} - {{ $region->name }}
+                @foreach ($distributionAreas as $area)
+                    <option value="{{ $area->id }}">
+                        {{ $area->name }}
                     </option>
                 @endforeach
             </select>
@@ -118,7 +121,6 @@
                         <th>Name</th>
                         <th>Familie</th>
                         <th>Beschreibung</th>
-                        <th>Gefährdet</th>
                         <th>Aktionen</th>
                     </tr>
                 </thead>
@@ -137,20 +139,6 @@
                             <td class="text-sm opacity-75 max-w-xs">
                                 @if ($item->description)
                                     {{ substr($item->description, 0, 40) }}...
-                                @else
-                                    <span class="text-gray-400">—</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @php
-                                    $endangeredCount = $item->regions
-                                        ->where('pivot.conservation_status', 'gefährdet')
-                                        ->count();
-                                @endphp
-                                @if ($endangeredCount > 0)
-                                    <span class="badge badge-error badge-sm">
-                                        {{ $endangeredCount }}
-                                    </span>
                                 @else
                                     <span class="text-gray-400">—</span>
                                 @endif

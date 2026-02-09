@@ -7,18 +7,18 @@
         @if ($species->description)
             <p class="text-base leading-relaxed max-w-3xl">{{ $species->description }}</p>
         @endif
-
         <!-- All Regions Badges -->
-        @if ($species->regions->count() > 0)
+        @if ($species->distributionAreas->count() > 0)
             <div class="flex flex-wrap gap-2 mt-4">
-                @foreach ($species->regions as $region)
+                @foreach ($species->distributionAreas as $distArea)
                     @php
-                        $status = $region->pivot->conservation_status;
-                        $badgeClass = $status === 'gefährdet' ? 'badge-error' : 'badge-success';
-                        $icon = $status === 'gefährdet' ? '⚠️' : '✓';
+                        $status = $distArea->pivot->threatCategory;
+                        $badgeClass = $status->code === 'VU' ? 'badge-error' : 'badge-success';
+                        $icon = $status->code === 'VU' ? '⚠️' : '✓';
                     @endphp
-                    <span class="badge {{ $badgeClass }} badge-lg">
-                        {{ $icon }} {{ $region->code }} - {{ $region->name }}
+                    
+                    <span class="badge badge-info badge-lg" style="background: {{ $status->color_code }};">
+                        {{ $distArea->name }} - {{ $status->code }} ({{ $status->label }})
                     </span>
                 @endforeach
             </div>
@@ -196,22 +196,21 @@
             <div class="space-y-6">
                 <h3 class="text-2xl font-bold mb-4">Geografische Verbreitung</h3>
 
-                @if ($species->regions->count() > 0)
-                    <!-- Endangered Regions -->
+                @if ($species->distributionAreas->count() > 0)
+                    <!-- Endangered Areas -->
                     @php
-                        $regions = $species->regions->where('pivot.conservation_status', 'gefährdet');
+                        $areas = $species->distributionAreas->where('pivot.threatCategory.code', 'VU');
                     @endphp
-                    @if ($regions->count() > 0)
+                    @if ($areas->count() > 0)
                         <div>
                             <h4 class="text-lg font-bold mb-3">⚠️ Gefährdete Regionen</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                @foreach ($regions as $region)
-                                    <div class="card bg-error text-error-content">
+                                @foreach ($areas as $area)
+                                    <div class="card text-error-content" style="background: {{ $area->pivot->threatCategory->color_code }};">
                                         <div class="card-body py-3">
-                                            <p class="font-semibold">{{ $region->code }}</p>
-                                            <p class="text-sm">{{ $region->name }}</p>
-                                            @if ($region->description)
-                                                <p class="text-xs opacity-75 mt-2">{{ $region->description }}</p>
+                                            <p class="text-semibold">{{ $area->name }}</p>
+                                            @if ($area->description)
+                                                <p class="text-xs opacity-75 mt-2">{{ $area->description }}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -224,20 +223,20 @@
                     <div>
                         <h4 class="text-lg font-bold mb-3">📍 Gesamte Verbreitung</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            @foreach ($species->regions as $region)
+                            @foreach ($species->distributionAreas as $region)
                                 @php
-                                    $status = $region->pivot->conservation_status;
-                                    $bgClass = $status === 'gefährdet' ? 'bg-error text-error-content' : 'bg-success text-success-content';
+                                    $status = $region->pivot->threatCategory;
+                                    $bgColor = $status->color_code ? $status->color_code : '#cfcfcf';
                                 @endphp
-                                <div class="card {{ $bgClass }}">
+                                <div class="card text-primary-content" style="background: {{ $bgColor }}; " >
                                     <div class="card-body py-3">
                                         <p class="font-semibold">{{ $region->code }}</p>
                                         <p class="text-sm">{{ $region->name }}</p>
-                                        <p class="text-xs opacity-75 mt-1">
-                                            Status: {{ $status === 'gefährdet' ? 'Gefährdet' : 'Nicht gefährdet' }}
+                                        <p class="text-xs mt-1">
+                                            Status: {{ $status->label }}
                                         </p>
                                         @if ($region->description)
-                                            <p class="text-xs opacity-75 mt-2">{{ $region->description }}</p>
+                                            <p class="text-xs mt-2">{{ $region->description }}</p>
                                         @endif
                                     </div>
                                 </div>

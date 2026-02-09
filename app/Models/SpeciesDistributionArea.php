@@ -19,7 +19,7 @@ class SpeciesDistributionArea extends Pivot
      *
      * @var string
      */
-    protected $table = 'species_distribution_area';
+    protected $table = 'species_distribution_areas';
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +30,17 @@ class SpeciesDistributionArea extends Pivot
         'species_id',
         'distribution_area_id',
         'status',
+        'threat_category_id',
+        'user_id'
+    ];
+
+    /**
+     * status constants and labels.
+     */
+    const STATUS = [
+        'heimisch' => 'heimisch',
+        'ausgestorben' => 'ausgestorben',
+        'neobiotisch' => 'neobiotisch'
     ];
 
     /**
@@ -39,7 +50,7 @@ class SpeciesDistributionArea extends Pivot
      */
     public function species(): BelongsTo
     {
-        return $this->belongsTo(Species::class);
+        return $this->belongsTo(Species::class, 'species_distribution');
     }
 
     /**
@@ -50,5 +61,15 @@ class SpeciesDistributionArea extends Pivot
     public function distributionArea(): BelongsTo
     {
         return $this->belongsTo(distributionArea::class);
+    }
+
+    /**
+     * Get the region associated with this species mapping.
+     *
+     * @return BelongsTo
+     */
+    public function threatCategory(): BelongsTo
+    {
+        return $this->belongsTo(ThreatCategory::class);
     }
 }

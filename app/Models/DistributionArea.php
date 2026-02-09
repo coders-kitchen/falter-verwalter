@@ -18,7 +18,7 @@ class DistributionArea extends Model
 
     public function species(): BelongsToMany
     {
-        return $this->belongsToMany(Species::class, 'species_distribution')
+        return $this->belongsToMany(Species::class, 'species_distribution_area')
             ->withTimestamps();
     }
 }

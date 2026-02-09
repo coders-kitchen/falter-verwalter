@@ -119,11 +119,13 @@ class GenerationManager extends Component
 
         if ($this->generation) {
             $this->generation->update($formData);
+            $this->dispatch('notify', message: 'Gebiet aktualisiert');
         } else {
             Generation::create(array_merge($formData, [
                 'user_id' => auth()->id(),
                 'species_id' => $this->species_id,
             ]));
+            $this->dispatch('notify', message: 'Gebiet zugewiesen');
         }
 
         $this->closeModal();

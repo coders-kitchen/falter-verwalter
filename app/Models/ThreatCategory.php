@@ -15,6 +15,7 @@ class ThreatCategory extends Model
         'label',
         'description',
         'rank',
+        'color_code',
         'user_id'
     ];
 
@@ -26,9 +27,9 @@ class ThreatCategory extends Model
     protected $table = 'threat_categories';
 
 
-    public function speciesEndageredStatus(): BelongsToMany
+    public function speciesDistributionArea(): BelongsToMany
     {
-        return $this->belongsToMany(SpeciesEndageredStatus::class, 'species_endagered_status')
+        return $this->belongsToMany(SpeciesDistributionArea::class)
             ->withTimestamps();
     }
 }

@@ -84,6 +84,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('species/{species}/generations', function ($speciesId) {
         return view('admin.generations', ['speciesId' => $speciesId]);
     })->name('generations.index');
+    Route::get('species/{species}/speciesDistributionAreas', function ($speciesId) {
+        return view('admin.species-distribution-areas', ['speciesId' => $speciesId]);
+    })->name('speciesDistributionAreas.index');
 });
 
 Route::get('/login', function () {
