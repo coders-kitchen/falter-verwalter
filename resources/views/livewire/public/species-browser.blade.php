@@ -68,19 +68,19 @@
         <!-- new modelling with threat status and distribution areas -->
                 <!-- Endangered Status -->
         <div class="form-control">
-            <label class="label cursor-pointer gap-4">
+            <label class="label">
                 <span class="label-text font-semibold">⚠️ Gefährdungsstatus</span>
+            </label>
                 <select
                     wire:model.live="threatCategoryId"
-                    class="select select-sm select-bordered"
-                >
+                    class="select select-sm select-bordered">
                     <option value="">Alle</option>
                     @foreach ($threatCategories as $category)
                         <option value="{{ $category->id }}}">{{$category->code}} {{$category->label}}</option>
                     @endforeach
                     
                 </select>
-            </label>
+
         </div>
 
         <!-- Regions Multi-Select -->

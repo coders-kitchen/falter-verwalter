@@ -1,6 +1,4 @@
 <div class="space-y-6">
-    <h3 class="text-2xl font-bold">📍 Regionale Verbreitung</h3>
-
     <!-- Control Panel -->
     <div class="bg-base-200 p-4 rounded-lg space-y-4">
         <label class="label">

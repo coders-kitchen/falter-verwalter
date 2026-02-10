@@ -31,8 +31,8 @@ class SpeciesBrowser extends Component
 
         // Search filter
         if ($this->search) {
-            $query->where('name', 'like', "%{$this->search}%")
-                  ->orWhere('code', 'like', "%{$this->search}%");
+            $query->where('name', 'like', "%{$this->search}%");
+                  //->orWhere('code', 'like', "%{$this->search}%");
         }
 
         // Family filter

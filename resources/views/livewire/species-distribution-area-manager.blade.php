@@ -25,24 +25,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($speciesDistributionAreas as $speciesArea)
+                    @foreach($speciesDistributionAreas as $speciesAreaIterator)
                         <tr>
-                            <td class="font-semibold">{{ $speciesArea->distributionArea->name }}</td>
-                            <td class="font-semibold">{{ $speciesArea->status }}</td>
-                            @if($speciesArea->threatCategory)
-                            <td class="font-semibold">{{ $speciesArea->threatCategory->label }} ({{ $speciesArea->threatCategory->code }})</td>                    
+                            <td class="font-semibold">{{ $speciesAreaIterator->distributionArea->name }}</td>
+                            <td class="font-semibold">{{ $speciesAreaIterator->status }}</td>
+                            @if($speciesAreaIterator->threatCategory)
+                            <td class="font-semibold">{{ $speciesAreaIterator->threatCategory->label }} ({{ $speciesAreaIterator->threatCategory->code }})</td>                    
                             @else
                             <td class="font-semibold">Kein Gefährundsstatus ausgewählt</td>                    
                             @endif
                             <td>
                                 <div class="flex gap-2">
                                     <button
-                                        wire:click="openEditModal({{ $speciesArea->id }})"
+                                        wire:click="openEditModal({{ $speciesAreaIterator->id }})"
                                         class="btn btn-ghost btn-xs">
                                         Bearbeiten
                                     </button>
                                     <button
-                                        wire:click="delete({{ $speciesArea->id }})"
+                                        wire:click="delete({{ $speciesAreaIterator->id }})"
                                         wire:confirm="Soll dieses Verbreitungsgebiet wirklich gelöscht werden?"
                                         class="btn btn-error btn-xs">
                                         Löschen
@@ -81,6 +81,7 @@
                         </label>
                         <select wire:model="form.distribution_area_id" class="select select-bordered @error('form.distribution_area_id') select-error @enderror">
                             <option value="">— Wählen Sie Gebiet —</option>
+                            <option value="{{ $speciesArea->distributionArea->id }}">{{ $speciesArea->distributionArea->name }}</option>
                             @foreach($distribution_areas as $distribution_area)
                                 <option value="{{ $distribution_area->id }}">{{ $distribution_area->name }}</option>
                             @endforeach
