@@ -143,6 +143,22 @@
                             </ul>
                         </details>
                     </li>
+                    <li>
+                                                <details class="group">
+                            <summary class="cursor-pointer font-semibold flex items-center gap-2 py-2 px-3 rounded hover:bg-base-300 transition-colors">
+                                <span class="text-lg">📚</span>
+                                <span class="sidebar-text transition-opacity duration-300" style="opacity: 1;">Nutzerverwaltung</span>
+                                <span class="ml-auto sidebar-chevron transition-transform duration-300 group-open:rotate-180">▼</span>
+                            </summary>
+                            <ul class="sidebar-submenu pl-8 space-y-1 mt-2 transition-all duration-300" style="max-height: 500px; opacity: 1;">
+                                                                <li>
+                                    <a href="{{ route('admin.user.index') }}" @class(['active' => request()->routeIs('admin.users.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Admins verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Admins verwalten</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
                 </ul>
 
                 <!-- Footer Info -->
