@@ -20,6 +20,7 @@ class ThreatCategoryManager extends Component
         'code' => '',
         'label' => '',
         'rank' => 0,
+        'description' => null,
         'color_code' => '#cfcfcf'
     ];
 
@@ -27,6 +28,7 @@ class ThreatCategoryManager extends Component
         'form.code' => 'required|string|max:20',
         'form.label' => 'nullable|string|max:40',
         'form.rank' => 'required|integer|min:0',
+        'form.description' => 'nullable|string|max:256',
         'form.color_code' => 'required|string|min:7|max:7'
     ];
 
@@ -91,6 +93,7 @@ class ThreatCategoryManager extends Component
         'label' => '',
         'label' => '',
         'rank' => 0,
+        'description' => null,
         'color_code' => '#cfcfcf'
         ];
         $this->threatCategory = null;
