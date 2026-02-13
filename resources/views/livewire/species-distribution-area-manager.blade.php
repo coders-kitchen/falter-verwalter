@@ -81,7 +81,9 @@
                         </label>
                         <select wire:model="form.distribution_area_id" class="select select-bordered @error('form.distribution_area_id') select-error @enderror">
                             <option value="">— Wählen Sie Gebiet —</option>
-                            <option value="{{ $speciesArea->distributionArea->id }}">{{ $speciesArea->distributionArea->name }}</option>
+                            @if ($speciesArea)
+                                <option value="{{ $speciesArea->distributionArea->id }}">{{ $speciesArea->distributionArea->name }}</option>
+                            @endif
                             @foreach($distribution_areas as $distribution_area)
                                 <option value="{{ $distribution_area->id }}">{{ $distribution_area->name }}</option>
                             @endforeach
