@@ -114,8 +114,8 @@
     <!-- Modal -->
     @if($showModal)
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
-                <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
+            <div class="modal-box w-11/12 max-w-2xl max-h-96 overflow-y-auto">
+                <h3 class="text-lg font-bold mb-4">
                     {{ $family ? 'Familie bearbeiten' : 'Neue Familie' }}
                 </h3>
 

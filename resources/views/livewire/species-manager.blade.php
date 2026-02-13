@@ -87,8 +87,9 @@
     <!-- Modal -->
     @if($showModal)
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto shadow-lg">
-                <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
+            <!--<div class="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto shadow-lg">-->
+             <div class="modal-box w-11/12 max-w-2xl max-h-96 overflow-y-auto">
+                <h3 class="text-lg font-bold mb-4">
                     {{ $species ? 'Art bearbeiten' : 'Neue Art erstellen' }}
                 </h3>
 
@@ -182,106 +183,6 @@
                             <option value="adult">Imago (Schmetterling)</option>
                         </select>
                     </div>
-                    
-                    <div class="divider">Verbreitungsräume</div>
-                    <div class="card bg-base-200">
-                        <div class="card-body">
-                            <h4 class="card-title text-lg">📍 Geografische Verbreitung</h4>
-                            <p class="text-sm opacity-75 mb-4">Wähle Regionen, in denen die Art vorkommt</p>
-
-                            <!-- Region Selector (Checkboxes) -->
-                            <div class="space-y-2">
-                                @foreach($allDistributionAreas as $area)
-                                    <label class="label cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            wire:model="form.selected_distribution_area_ids"
-                                            value="{{ $area->id }}"
-                                            class="checkbox"
-                                        />
-                                        <span class="label-text">{{ $area->name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-
-                            @error('form.selected_distribution_area_ids')
-                                <p class="text-error text-sm mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- NEW: Geographic Distribution Section -->
-                    <div class="divider">Neue Regionsmodellierung</div>
-
-                    <!-- Geographic Distribution -->
-                    <div class="card bg-base-200">
-                        <div class="card-body">
-                            <h4 class="card-title text-lg">📍 Geografische Verbreitung</h4>
-                            <p class="text-sm opacity-75 mb-4">Wähle Regionen, in denen die Art vorkommt</p>
-
-                            <!-- Region Selector (Checkboxes) -->
-                            <div class="space-y-2">
-                                @foreach($allRegions as $region)
-                                    <label class="label cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            wire:model="form.selected_region_ids"
-                                            value="{{ $region->id }}"
-                                            class="checkbox"
-                                        />
-                                        <span class="label-text">{{ $region->code }} - {{ $region->name }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-
-                            @error('form.selected_region_ids')
-                                <p class="text-error text-sm mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Conservation Status Section -->
-                    @if(!empty($form['selected_region_ids']))
-                        <div class="card bg-base-200">
-                            <div class="card-body">
-                                <h4 class="card-title text-lg">⚠️ Gefährdungsstatus</h4>
-                                <p class="text-sm opacity-75 mb-4">Lege den Status für jede Region fest</p>
-
-                                <!-- Status Assignment (Dropdowns per Region) -->
-                                <div class="space-y-3">
-                                    @foreach($form['selected_region_ids'] as $regionId)
-                                        @php $region = $allRegions->find($regionId); @endphp
-                                        <div class="flex items-center gap-4">
-                                            <span class="font-semibold min-w-20">{{ $region->code }}</span>
-                                            <select
-                                                wire:change="updateConservationStatus({{ $regionId }}, $event.target.value)"
-                                                class="select select-bordered select-sm flex-1"
-                                            >
-                                                <option value="nicht_gefährdet" @selected(($form['conservation_status'][$regionId] ?? 'nicht_gefährdet') === 'nicht_gefährdet')>
-                                                    Nicht gefährdet
-                                                </option>
-                                                <option value="gefährdet" @selected(($form['conservation_status'][$regionId] ?? 'nicht_gefährdet') === 'gefährdet')>
-                                                    Gefährdet
-                                                </option>
-                                            </select>
-                                            <button
-                                                type="button"
-                                                wire:click="removeRegion({{ $regionId }})"
-                                                class="btn btn-sm btn-ghost"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                @error('form.conservation_status.*')
-                                    <p class="text-error text-sm mt-2">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-                    @endif
-
                     
                     <!-- Habitats Multi-Select -->
                     <div class="form-control">

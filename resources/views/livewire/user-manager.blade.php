@@ -69,8 +69,8 @@
     <!-- Modal -->
     @if($showModal)
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-2xl w-full max-h-96 overflow-y-auto shadow-lg">
-                <h3 class="text-2xl font-bold text-black dark:text-white mb-6">
+            <div class="modal-box w-11/12 max-w-2xl max-h-96 overflow-y-auto">
+                <h3 class="text-lg font-bold mb-4">
                     {{ $user ? 'Admin bearbeiten' : 'Neuen Admin erstellen' }}
                 </h3>
 
@@ -114,7 +114,8 @@
                         </label>
                         <input
                             wire:model="form.password"
-                            type="text"
+                            type="password"
+                            placeholder="••••••••"
                             class="input input-bordered @error('form.password') input-error @enderror"
                         />
                         @error('form.password')
