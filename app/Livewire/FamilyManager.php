@@ -17,18 +17,12 @@ class FamilyManager extends Component
 
     public $form = [
         'name' => '',
-        'subfamily' => '',
-        'genus' => '',
-        'tribe' => '',
         'type' => 'butterfly',
         'description' => '',
     ];
 
     protected $rules = [
         'form.name' => 'required|string|max:255',
-        'form.subfamily' => 'nullable|string|max:255',
-        'form.genus' => 'nullable|string|max:255',
-        'form.tribe' => 'nullable|string|max:255',
         'form.type' => 'required|in:butterfly,plant',
         'form.description' => 'nullable|string',
     ];
@@ -36,14 +30,14 @@ class FamilyManager extends Component
     public function render()
     {
         $query = Family::withCount(['species', 'plants'])
-            ->where('type', $this->filterType);
+            ->where('type', $this->filterType)
+            ->whereNull('subfamily')
+            ->whereNull('genus')
+            ->whereNull('tribe');
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('subfamily', 'like', '%' . $this->search . '%')
-                  ->orWhere('genus', 'like', '%' . $this->search . '%')
-                  ->orWhere('tribe', 'like', '%' . $this->search . '%');
+                $q->where('name', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -68,7 +62,7 @@ class FamilyManager extends Component
     public function openEditModal(Family $family)
     {
         $this->family = $family;
-        $this->form = $family->only('name', 'subfamily', 'genus', 'tribe', 'type', 'description');
+        $this->form = $family->only('name', 'type', 'description');
         $this->showModal = true;
     }
 
@@ -80,17 +74,34 @@ class FamilyManager extends Component
 
     public function save()
     {
-        // Build custom validation rules for hierarchical uniqueness
-        $uniqueRule = 'unique:families,name,' . ($this->family?->id ?? 'NULL') . ',id,subfamily,' . ($this->form['subfamily'] ?? '') . ',genus,' . ($this->form['genus'] ?? '') . ',tribe,' . ($this->form['tribe'] ?? '') . ',type,' . $this->form['type'];
-
-        $this->rules['form.name'] = 'required|string|max:255|' . $uniqueRule;
-
         $this->validate();
 
+        $existsQuery = Family::where('type', $this->form['type'])
+            ->where('name', $this->form['name'])
+            ->whereNull('subfamily')
+            ->whereNull('genus')
+            ->whereNull('tribe');
         if ($this->family) {
-            $this->family->update($this->form);
+            $existsQuery->where('id', '!=', $this->family->id);
+        }
+        if ($existsQuery->exists()) {
+            $this->addError('form.name', 'Diese Familie existiert bereits.');
+            return;
+        }
+
+        if ($this->family) {
+            $this->family->update(array_merge($this->form, [
+                'subfamily' => null,
+                'genus' => null,
+                'tribe' => null,
+            ]));
         } else {
-            Family::create(array_merge($this->form, ['user_id' => auth()->id()]));
+            Family::create(array_merge($this->form, [
+                'user_id' => auth()->id(),
+                'subfamily' => null,
+                'genus' => null,
+                'tribe' => null,
+            ]));
         }
 
         $this->closeModal();
@@ -115,9 +126,6 @@ class FamilyManager extends Component
     {
         $this->form = [
             'name' => '',
-            'subfamily' => '',
-            'genus' => '',
-            'tribe' => '',
             'type' => 'butterfly',
             'description' => '',
         ];

@@ -90,6 +90,18 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('species/{species}/speciesPlants', function ($speciesId) {
         return view('admin.species-plants', ['speciesId' => $speciesId]);
     })->name('speciesPlants.index');
+
+    Route::get('families/{family}/subfamilies', function ($familyId) {
+        return view('admin.subfamilies', ['familyId' => $familyId]);
+    })->name('subfamilies.index');
+
+    Route::get('subfamilies/{subfamily}/tribes', function ($subfamilyId) {
+        return view('admin.tribes', ['subfamilyId' => $subfamilyId]);
+    })->name('tribes.index');
+
+    Route::get('subfamilies/{subfamily}/genera', function ($subfamilyId) {
+        return view('admin.genera', ['subfamilyId' => $subfamilyId]);
+    })->name('genera.index');
 });
 
 Route::middleware(['auth'])->get('/dashboard', function () {

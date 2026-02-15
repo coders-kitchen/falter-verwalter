@@ -33,7 +33,7 @@
         <input
             wire:model.live="search"
             type="text"
-            placeholder="Suche nach Familie, Unterfamilie, Gattung oder Tribus..."
+            placeholder="Suche nach Familie..."
             class="input input-bordered w-full"
         />
     </div>
@@ -43,7 +43,7 @@
         <table class="table w-full">
             <thead>
                 <tr>
-                    <th>Familie{{ $filterType === 'butterfly' ? ' › Unterfamilie › Gattung › Tribus' : '' }}</th>
+                    <th>Familie</th>
                     <th>@if($filterType === 'butterfly')Arten@else Pflanzen @endif</th>
                     <th>Beschreibung</th>
                     <th>Aktionen</th>
@@ -54,21 +54,6 @@
                     <tr class="hover">
                         <td>
                             <div class="font-semibold">{{ $item->name }}</div>
-                            @if($item->subfamily || $item->genus || $item->tribe)
-                                <div class="text-sm text-base-content/60">
-                                    @if($item->subfamily)
-                                        <span>{{ $item->subfamily }}</span>
-                                        @if($item->genus || $item->tribe) › @endif
-                                    @endif
-                                    @if($item->genus)
-                                        <span>{{ $item->genus }}</span>
-                                        @if($item->tribe) › @endif
-                                    @endif
-                                    @if($item->tribe)
-                                        <span>{{ $item->tribe }}</span>
-                                    @endif
-                                </div>
-                            @endif
                         </td>
                         <td>
                             @if($filterType === 'butterfly')
@@ -79,6 +64,12 @@
                         </td>
                         <td class="text-sm">{{ $item->description ? substr($item->description, 0, 50) . '...' : '—' }}</td>
                         <td class="space-x-2">
+                            <a
+                                href="{{ route('admin.subfamilies.index', $item->id) }}"
+                                class="btn btn-xs btn-success"
+                            >
+                                Unterfamilien
+                            </a>
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
                                 class="btn btn-xs btn-info"
@@ -161,45 +152,6 @@
                         @error('form.name')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>
                         @enderror
-                    </div>
-
-                    <!-- Unterfamilie -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Unterfamilie (optional)</span>
-                        </label>
-                        <input
-                            wire:model="form.subfamily"
-                            type="text"
-                            placeholder="z.B. Papilioninae"
-                            class="input input-bordered"
-                        />
-                    </div>
-
-                    <!-- Gattung -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Gattung (optional)</span>
-                        </label>
-                        <input
-                            wire:model="form.genus"
-                            type="text"
-                            placeholder="z.B. Papilio"
-                            class="input input-bordered"
-                        />
-                    </div>
-
-                    <!-- Tribus -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Tribus (optional)</span>
-                        </label>
-                        <input
-                            wire:model="form.tribe"
-                            type="text"
-                            placeholder="z.B. Papilionini"
-                            class="input input-bordered"
-                        />
                     </div>
 
                     <!-- Beschreibung -->
