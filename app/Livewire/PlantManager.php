@@ -29,9 +29,11 @@ class PlantManager extends Component
         'moisture_number' => 5,
         'moisture_variation' => 5,
         'nitrogen_number' => 5,
-        'bloom_months' => '[]',
+        'bloom_start_month' => null,
+        'bloom_end_month' => null,
         'bloom_color' => '',
-        'plant_height_cm' => null,
+        'plant_height_cm_from' => null,
+        'plant_height_cm_until' => null,
         'lifespan' => 'perennial',
         'location' => '',
         'is_native' => false,
@@ -49,12 +51,14 @@ class PlantManager extends Component
         'form.temperature_number' => 'required|integer|between:1,9',
         'form.continentality_number' => 'required|integer|between:1,9',
         'form.reaction_number' => 'required|integer|between:1,9',
-        'form.moisture_number' => 'required|integer|between:1,9',
+        'form.moisture_number' => 'required|integer|between:1,12',
         'form.moisture_variation' => 'required|integer|between:1,9',
         'form.nitrogen_number' => 'required|integer|between:1,9',
-        'form.bloom_months' => 'nullable|json',
+        'form.bloom_start_month' => 'required|integer|between:1,12',
+        'form.bloom_end_month' => 'required|integer|between:1,12',
         'form.bloom_color' => 'nullable|string|max:255',
-        'form.plant_height_cm' => 'nullable|integer|min:0',
+        'form.plant_height_cm_from' => 'required|integer|min:0',
+        'form.plant_height_cm_until' => 'required|integer|min:0',
         'form.lifespan' => 'required|in:annual,biennial,perennial',
         'form.location' => 'nullable|string|max:255',
         'form.is_native' => 'boolean',
@@ -141,9 +145,11 @@ class PlantManager extends Component
             'moisture_number' => $plant->moisture_number,
             'moisture_variation' => $plant->moisture_variation,
             'nitrogen_number' => $plant->nitrogen_number,
-            'bloom_months' => json_encode($bloomMonths),
+            'bloom_start_month' => $plant->bloom_start_month,
+            'bloom_end_month' => $plant->bloom_end_month,
             'bloom_color' => $plant->bloom_color,
-            'plant_height_cm' => $plant->plant_height_cm,
+            'plant_height_cm_from' => $plant->plant_height_cm_from,
+            'plant_height_cm_until' => $plant->plant_height_cm_until,
             'lifespan' => $plant->lifespan,
             'location' => $plant->location,
             'is_native' => (bool) $plant->is_native,
@@ -161,9 +167,6 @@ class PlantManager extends Component
 
         // Decode bloom_months JSON
         $formData = $this->form;
-        if ($formData['bloom_months']) {
-            $formData['bloom_months'] = json_encode(json_decode($formData['bloom_months']));
-        }
 
         if ($this->plant) {
             $habitatIds = $this->form['habitat_ids'];
@@ -209,9 +212,11 @@ class PlantManager extends Component
             'moisture_number' => 5,
             'moisture_variation' => 5,
             'nitrogen_number' => 5,
-            'bloom_months' => '[]',
+            'bloom_start_month' => null,
+            'bloom_end_month' => null,
             'bloom_color' => '',
-            'plant_height_cm' => null,
+            'plant_height_cm_from' => null,
+            'plant_height_cm_until' => null,
             'lifespan' => 'perennial',
             'location' => '',
             'is_native' => false,

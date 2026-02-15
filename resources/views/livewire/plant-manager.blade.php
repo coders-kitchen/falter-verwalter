@@ -22,7 +22,8 @@
                     <th>Name</th>
                     <th>Wissenschaftlicher Name</th>
                     <th>Lebensart</th>
-                    <th>Höhe (cm)</th>
+                    <th>Höhe von (cm)</th>
+                    <th>Höhe bis (cm)</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -32,7 +33,8 @@
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td class="italic text-sm">{{ $item->scientific_name ?? '—' }}</td>
                         <td>{{ $item->lifeForm->name ?? '—' }}</td>
-                        <td>{{ $item->plant_height_cm ?? '—' }}</td>
+                        <td>{{ $item->plant_height_cm_from ?? '—' }}</td>
+                        <td>{{ $item->plant_height_cm_until ?? '—' }}</td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -149,11 +151,11 @@
                     </div>
 
                     <!-- Ecological Scales (1-9) -->
-                    <div class="divider my-4">Ökologische Zeigerwerte (1-9)</div>
+                    <div class="divider my-4">Ökologische Zeigerwerte</div>
                     <div class="grid grid-cols-3 gap-4">
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Lichtzahl</span>
+                                <span class="label-text font-semibold">Lichtzahl (1-9)</span>
                             </label>
                             <input
                                 wire:model="form.light_number"
@@ -167,7 +169,7 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Temperaturzahl</span>
+                                <span class="label-text font-semibold">Temperaturzahl (1-9)</span>
                             </label>
                             <input
                                 wire:model="form.temperature_number"
@@ -181,7 +183,7 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Kontinentalitätszahl</span>
+                                <span class="label-text font-semibold">Kontinentalitätszahl (1-9)</span>
                             </label>
                             <input
                                 wire:model="form.continentality_number"
@@ -195,7 +197,7 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Reaktionszahl</span>
+                                <span class="label-text font-semibold">Reaktionszahl (1-9)</span>
                             </label>
                             <input
                                 wire:model="form.reaction_number"
@@ -209,13 +211,13 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Feuchtezahl</span>
+                                <span class="label-text font-semibold">Feuchtezahl  (1-12)</span>
                             </label>
                             <input
                                 wire:model="form.moisture_number"
                                 type="range"
                                 min="1"
-                                max="9"
+                                max="12"
                                 class="range"
                             />
                             <div class="text-xs text-center mt-1">{{ $form['moisture_number'] }}</div>
@@ -235,7 +237,7 @@
                             <div class="text-xs text-center mt-1">{{ $form['moisture_variation'] }}</div>
                         </div>
 
-                        <div class="form-control col-span-3">
+                        <div class="form-control">
                             <label class="label">
                                 <span class="label-text font-semibold">Stickstoffzahl</span>
                             </label>
@@ -267,19 +269,6 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Pflanzenhöhe (cm)</span>
-                            </label>
-                            <input
-                                wire:model="form.plant_height_cm"
-                                type="number"
-                                min="0"
-                                placeholder="z.B. 30"
-                                class="input input-bordered"
-                            />
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
                                 <span class="label-text font-semibold">Standort</span>
                             </label>
                             <input
@@ -288,6 +277,59 @@
                                 placeholder="z.B. Schattig"
                                 class="input input-bordered"
                             />
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Pflanzenhöhe von (cm)* </span>
+                            </label>
+                            <input
+                                wire:model="form.plant_height_cm_from"
+                                type="number"
+                                min="0"
+                                placeholder="z.B. 30"
+                                class="input input-bordered @error('form.plant_height_cm_from') input-error @enderror"
+                            />
+                            @error('form.plant_height_cm_from')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Pflanzenhöhe bis (cm)*</span>
+                            </label>
+                            <input
+                                wire:model="form.plant_height_cm_until"
+                                type="number"
+                                min="0"
+                                placeholder="z.B. 30"
+                                class="input input-bordered @error('form.plant_height_cm_until') input-error @enderror"
+                            />
+                            @error('form.plant_height_cm_until')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Blühmonate Start</span>
+                            </label>
+                            <select wire:model="form.bloom_start_month" class="select select-bordered">
+                                @for($m = 1; $m <= 12; $m++)
+                                    <option value="{{ $m }}">{{ \App\Models\Plant::getMonthName($m) }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Blühmonate Ende</span>
+                            </label>
+                            <select wire:model="form.bloom_end_month" class="select select-bordered">
+                                @for($m = 1; $m <= 12; $m++)
+                                    <option value="{{ $m }}">{{ \App\Models\Plant::getMonthName($m) }}</option>
+                                @endfor
+                            </select>
                         </div>
 
                         <div class="form-control">

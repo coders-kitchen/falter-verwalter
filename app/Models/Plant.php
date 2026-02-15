@@ -19,15 +19,19 @@ class Plant extends Model
         'scientific_name',
         'family_genus',
         'light_number',
+        'salt_number',
         'temperature_number',
         'continentality_number',
         'reaction_number',
         'moisture_number',
         'moisture_variation',
         'nitrogen_number',
-        'bloom_months',
+        'bloom_start_month',
+        'bloom_end_month',
         'bloom_color',
         'plant_height_cm',
+        'plant_height_cm_from',
+        'plant_height_cm_until',
         'lifespan',
         'location',
         'is_native',
@@ -63,5 +67,28 @@ class Plant extends Model
         return $this->belongsToMany(Species::class, 'species_plant', 'plant_id', 'species_id')
             ->withPivot('plant_type')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the month name for display
+     */
+    public static function getMonthName($monthNumber): string
+    {
+        $months = [
+            1 => 'Januar',
+            2 => 'Februar',
+            3 => 'März',
+            4 => 'April',
+            5 => 'Mai',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'August',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Dezember',
+        ];
+
+        return $months[$monthNumber] ?? '';
     }
 }
