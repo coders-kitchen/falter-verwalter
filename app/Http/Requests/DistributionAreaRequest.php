@@ -13,9 +13,13 @@ class DistributionAreaRequest extends FormRequest
 
     public function rules(): array
     {
+        $distributionAreaId = $this->distribution_area?->id ?? 'NULL';
+
         return [
-            'name' => 'required|string|max:255|unique:distribution_areas,name,' . ($this->distribution_area?->id ?? 'NULL'),
+            'name' => 'required|string|max:255|unique:distribution_areas,name,' . $distributionAreaId,
+            'code' => 'required|string|max:120|alpha_dash|unique:distribution_areas,code,' . $distributionAreaId,
             'description' => 'nullable|string',
+            'geometry_geojson' => 'nullable|json',
         ];
     }
 
@@ -24,6 +28,10 @@ class DistributionAreaRequest extends FormRequest
         return [
             'name.required' => 'Der Name ist erforderlich.',
             'name.unique' => 'Dieses Verbreitungsgebiet existiert bereits.',
+            'code.required' => 'Der Code ist erforderlich.',
+            'code.alpha_dash' => 'Der Code darf nur Buchstaben, Zahlen und Bindestriche enthalten.',
+            'code.unique' => 'Dieser Code existiert bereits.',
+            'geometry_geojson.json' => 'Die GeoJSON-Geometrie muss gültiges JSON sein.',
         ];
     }
 }

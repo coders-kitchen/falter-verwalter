@@ -12,22 +12,27 @@ class DistributionAreaSeeder extends Seeder
         $areas = [
             [
                 'name' => 'Mitteleuropa',
+                'code' => 'mitteleuropa',
                 'description' => 'Deutschland, Österreich, Tschechien, Schweiz',
             ],
             [
                 'name' => 'Nordeuropa',
+                'code' => 'nordeuropa',
                 'description' => 'Skandinavien, Baltikum',
             ],
             [
                 'name' => 'Südeuropa',
+                'code' => 'suedeuropa',
                 'description' => 'Mittelmeerraum',
             ],
             [
                 'name' => 'Westeuropa',
+                'code' => 'westeuropa',
                 'description' => 'Frankreich, Großbritannien, Benelux',
             ],
             [
                 'name' => 'Osteuropa',
+                'code' => 'osteuropa',
                 'description' => 'Polen, Ukraine, Russland',
             ],
         ];

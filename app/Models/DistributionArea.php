@@ -13,7 +13,13 @@ class DistributionArea extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'code',
         'description',
+        'geometry_geojson',
+    ];
+
+    protected $casts = [
+        'geometry_geojson' => 'array',
     ];
 
     public function species(): BelongsToMany

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\DistributionArea;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,13 +17,22 @@ class DistributionAreaManager extends Component
 
     public $form = [
         'name' => '',
+        'code' => '',
         'description' => '',
+        'geometry_geojson' => '',
     ];
 
-    protected $rules = [
-        'form.name' => 'required|string|max:255|unique:distribution_areas,name',
-        'form.description' => 'nullable|string',
-    ];
+    protected function rules(): array
+    {
+        $distributionAreaId = $this->distributionArea?->id ?? 'NULL';
+
+        return [
+            'form.name' => 'required|string|max:255|unique:distribution_areas,name,' . $distributionAreaId,
+            'form.code' => 'required|string|max:120|alpha_dash|unique:distribution_areas,code,' . $distributionAreaId,
+            'form.description' => 'nullable|string',
+            'form.geometry_geojson' => 'nullable|json',
+        ];
+    }
 
     public function render()
     {
@@ -30,6 +40,7 @@ class DistributionAreaManager extends Component
 
         if ($this->search) {
             $query->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('code', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%');
         }
 
@@ -52,24 +63,27 @@ class DistributionAreaManager extends Component
         $this->distributionArea = $distributionArea;
         $this->form = [
             'name' => $distributionArea->name,
+            'code' => $distributionArea->code,
             'description' => $distributionArea->description,
+            'geometry_geojson' => $distributionArea->geometry_geojson ? json_encode($distributionArea->geometry_geojson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '',
         ];
         $this->showModal = true;
     }
 
     public function save()
     {
-        // Adjust unique rule for updates
-        if ($this->distributionArea) {
-            $this->rules['form.name'] = 'required|string|max:255|unique:distribution_areas,name,' . $this->distributionArea->id;
+        if (blank($this->form['code'] ?? null) && !blank($this->form['name'] ?? null)) {
+            $this->form['code'] = Str::slug((string) $this->form['name']);
         }
 
-        $this->validate();
+        $validated = $this->validate();
+        $payload = $validated['form'];
+        $payload['geometry_geojson'] = blank($payload['geometry_geojson']) ? null : json_decode($payload['geometry_geojson'], true);
 
         if ($this->distributionArea) {
-            $this->distributionArea->update($this->form);
+            $this->distributionArea->update($payload);
         } else {
-            DistributionArea::create(array_merge($this->form, ['user_id' => auth()->id()]));
+            DistributionArea::create(array_merge($payload, ['user_id' => auth()->id()]));
         }
 
         $this->closeModal();
@@ -93,7 +107,9 @@ class DistributionAreaManager extends Component
         $this->distributionArea = null;
         $this->form = [
             'name' => '',
+            'code' => '',
             'description' => '',
+            'geometry_geojson' => '',
         ];
         $this->resetErrorBag();
     }

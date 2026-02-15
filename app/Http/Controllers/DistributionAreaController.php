@@ -22,10 +22,10 @@ class DistributionAreaController extends Controller
 
     public function store(DistributionAreaRequest $request): JsonResponse
     {
-        $area = DistributionArea::create(array_merge(
-            $request->validated(),
-            ['user_id' => auth()->id()]
-        ));
+        $payload = $request->validated();
+        $payload['geometry_geojson'] = empty($payload['geometry_geojson']) ? null : json_decode($payload['geometry_geojson'], true);
+
+        $area = DistributionArea::create(array_merge($payload, ['user_id' => auth()->id()]));
 
         return response()->json([
             'data' => new DistributionAreaResource($area),
@@ -41,7 +41,10 @@ class DistributionAreaController extends Controller
 
     public function update(DistributionAreaRequest $request, DistributionArea $distributionArea): JsonResponse
     {
-        $distributionArea->update($request->validated());
+        $payload = $request->validated();
+        $payload['geometry_geojson'] = empty($payload['geometry_geojson']) ? null : json_decode($payload['geometry_geojson'], true);
+
+        $distributionArea->update($payload);
 
         return response()->json([
             'data' => new DistributionAreaResource($distributionArea),

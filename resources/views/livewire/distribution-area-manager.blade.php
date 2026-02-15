@@ -20,6 +20,8 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Code</th>
+                    <th>Geometrie</th>
                     <th>Beschreibung</th>
                     <th>Aktionen</th>
                 </tr>
@@ -28,6 +30,14 @@
                 @forelse($items as $item)
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
+                        <td><code>{{ $item->code }}</code></td>
+                        <td>
+                            @if ($item->geometry_geojson)
+                                <span class="badge badge-success badge-sm">vorhanden</span>
+                            @else
+                                <span class="badge badge-ghost badge-sm">fehlt</span>
+                            @endif
+                        </td>
                         <td>{{ $item->description ?? '—' }}</td>
                         <td class="space-x-2">
                             <button
@@ -47,7 +57,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="text-center py-8 text-gray-500">
+                        <td colspan="5" class="text-center py-8 text-gray-500">
                             Keine Verbreitungsgebiete gefunden
                         </td>
                     </tr>
@@ -87,6 +97,24 @@
 
                     <div class="form-control">
                         <label class="label">
+                            <span class="label-text font-semibold">Code *</span>
+                        </label>
+                        <input
+                            wire:model="form.code"
+                            type="text"
+                            placeholder="z.B. bergisches-land"
+                            class="input input-bordered @error('form.code') input-error @enderror"
+                        />
+                        <label class="label">
+                            <span class="label-text-alt opacity-75">Stabile Kennung (nur Buchstaben, Zahlen, Bindestrich)</span>
+                        </label>
+                        @error('form.code')
+                            <span class="text-error text-sm mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
                             <span class="label-text font-semibold">Beschreibung</span>
                         </label>
                         <textarea
@@ -95,6 +123,24 @@
                             placeholder="Kurze Beschreibung des Verbreitungsgebiets"
                             rows="3"
                         ></textarea>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">GeoJSON-Geometrie</span>
+                        </label>
+                        <textarea
+                            wire:model="form.geometry_geojson"
+                            class="textarea textarea-bordered font-mono text-xs @error('form.geometry_geojson') textarea-error @enderror"
+                            placeholder='{"type":"Polygon","coordinates":[...]}'
+                            rows="8"
+                        ></textarea>
+                        <label class="label">
+                            <span class="label-text-alt opacity-75">Erlaubt: GeoJSON Polygon oder MultiPolygon</span>
+                        </label>
+                        @error('form.geometry_geojson')
+                            <span class="text-error text-sm mt-1">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="flex gap-4 justify-end mt-8">
