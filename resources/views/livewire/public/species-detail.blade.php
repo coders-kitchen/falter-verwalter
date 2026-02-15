@@ -245,9 +245,29 @@
                 @endif
             </div>
         </div>
+
+        <!-- Tab 5: Map -->
+        <input
+            type="radio"
+            name="species_tabs"
+            role="tab"
+            class="tab"
+            aria-label="🗺️ Karte"
+        />
+        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-b-box p-6">
+            <div class="space-y-4">
+                <h3 class="text-2xl font-bold">Verbreitung auf Karte</h3>
+                <livewire:public.regional-distribution-map
+                    :species="$species"
+                    color-mode="threat"
+                    display-mode="all"
+                    :key="'species-threat-map-' . $species->id"
+                />
+            </div>
+        </div>
     </div>
 
     <!-- Life Cycle Calendar -->
     <div class="divider my-8"></div>
-    @livewire('Public\\LifeCycleCalendar', ['species' => $species])
+    <livewire:public.life-cycle-calendar :species="$species" />
 </div>

@@ -1,28 +1,39 @@
 <div class="space-y-6">
     <div class="bg-base-200 p-4 rounded-lg space-y-4">
-        <label class="label">
-            <span class="label-text font-semibold">Anzeigemodus:</span>
-        </label>
-        <div class="flex flex-wrap gap-2">
-            <button
-                wire:click="toggleDisplayMode('endangered')"
-                class="btn {{ $displayMode === 'endangered' ? 'btn-primary' : 'btn-outline' }} btn-sm"
-            >
-                ⚠️ Gefährdete Arten
-            </button>
-            <button
-                wire:click="toggleDisplayMode('all')"
-                class="btn {{ $displayMode === 'all' ? 'btn-primary' : 'btn-outline' }} btn-sm"
-            >
-                🦋 Alle Arten
-            </button>
-        </div>
+        @if ($colorMode === 'count')
+            <label class="label">
+                <span class="label-text font-semibold">Anzeigemodus:</span>
+            </label>
+            <div class="flex flex-wrap gap-2">
+                <button
+                    wire:click="toggleDisplayMode('endangered')"
+                    class="btn {{ $displayMode === 'endangered' ? 'btn-primary' : 'btn-outline' }} btn-sm"
+                >
+                    ⚠️ Gefährdete Arten
+                </button>
+                <button
+                    wire:click="toggleDisplayMode('all')"
+                    class="btn {{ $displayMode === 'all' ? 'btn-primary' : 'btn-outline' }} btn-sm"
+                >
+                    🦋 Alle Arten
+                </button>
+            </div>
+        @else
+            <div class="text-sm">
+                <p class="font-semibold">Darstellung:</p>
+                <p class="opacity-75">Flächenfarbe entspricht dem Gefährdungsstatus je Gebiet.</p>
+            </div>
+        @endif
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-4 gap-4 items-start">
         <div class="xl:col-span-3 space-y-3">
             <p class="text-sm text-gray-500">
-                Interaktive GeoJSON-Karte: Klick auf ein Gebiet zeigt Name, Code und Anzahl.
+                @if ($colorMode === 'threat')
+                    Interaktive GeoJSON-Karte: Farbgebung nach Gefährdungscode der aktuellen Art.
+                @else
+                    Interaktive GeoJSON-Karte: Klick auf ein Gebiet zeigt Name, Code und Anzahl.
+                @endif
             </p>
             <div wire:ignore class="rounded-lg overflow-hidden border border-base-300 bg-base-100">
                 <div
@@ -53,6 +64,16 @@
                                 <span class="ml-2 text-warning">kein GeoJSON</span>
                             @endif
                         </div>
+                        @if ($colorMode === 'threat' && $data['threat_code'])
+                            <div class="text-xs mt-2">
+                                <span
+                                    class="badge badge-sm text-base-100"
+                                    style="background-color: {{ $data['threat_color'] ?? '#6b7280' }};"
+                                >
+                                    {{ $data['threat_code'] }}{{ $data['threat_label'] ? ' - ' . $data['threat_label'] : '' }}
+                                </span>
+                            </div>
+                        @endif
                     </button>
                 @endforeach
             </div>
@@ -172,7 +193,13 @@
                         const name = feature?.properties?.name || 'Unbekanntes Gebiet';
                         const code = feature?.properties?.code || '—';
                         const count = feature?.properties?.count ?? 0;
-                        layer.bindPopup('<strong>' + name + '</strong><br>Code: ' + code + '<br>Anzahl: ' + count);
+                        const threatCode = feature?.properties?.threat_code || null;
+                        const threatLabel = feature?.properties?.threat_label || null;
+                        let popup = '<strong>' + name + '</strong><br>Code: ' + code + '<br>Anzahl: ' + count;
+                        if (threatCode) {
+                            popup += '<br>Status: ' + threatCode + (threatLabel ? ' (' + threatLabel + ')' : '');
+                        }
+                        layer.bindPopup(popup);
                     }
                 }).addTo(mapInstance);
 

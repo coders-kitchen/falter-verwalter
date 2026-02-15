@@ -12,6 +12,7 @@ class RegionalDistributionMap extends Component
 {
     public $species = null;
     public $displayMode = 'all'; // 'all' or 'endangered'
+    public $colorMode = 'count'; // 'count' or 'threat'
     public $areaData = [];
     public $selectedArea = null;
     public $maxCount = 0;
@@ -20,9 +21,11 @@ class RegionalDistributionMap extends Component
         'features' => [],
     ];
 
-    public function mount($species = null)
+    public function mount($species = null, string $displayMode = 'all', string $colorMode = 'count')
     {
         $this->species = $species;
+        $this->displayMode = in_array($displayMode, ['all', 'endangered'], true) ? $displayMode : 'all';
+        $this->colorMode = in_array($colorMode, ['count', 'threat'], true) ? $colorMode : 'count';
         $this->aggregateRegionData();
     }
 
@@ -46,6 +49,7 @@ class RegionalDistributionMap extends Component
             ->orderBy('name')
             ->get();
         $countsByAreaId = $this->loadCountsByAreaId();
+        $threatByAreaId = $this->loadThreatByAreaId();
 
         $this->areaData = [];
         $this->maxCount = 0;
@@ -54,6 +58,8 @@ class RegionalDistributionMap extends Component
         foreach ($areas as $area) {
             $count = (int) ($countsByAreaId[$area->id] ?? 0);
             $geometry = $this->resolveAreaGeometry($area);
+            $threat = $threatByAreaId[$area->id] ?? null;
+            $featureColor = $this->resolveFeatureColor($count, $threat);
 
             $this->areaData[$area->id] = [
                 'name' => $area->name,
@@ -61,6 +67,9 @@ class RegionalDistributionMap extends Component
                 'id' => $area->id,
                 'code' => $area->code,
                 'geometry_available' => is_array($geometry),
+                'threat_code' => $threat['code'] ?? null,
+                'threat_label' => $threat['label'] ?? null,
+                'threat_color' => $threat['color_code'] ?? null,
             ];
 
             if ($count > $this->maxCount) {
@@ -76,7 +85,9 @@ class RegionalDistributionMap extends Component
                         'name' => $area->name,
                         'code' => $area->code,
                         'count' => $count,
-                        'color' => $this->getColorHex($count),
+                        'color' => $featureColor,
+                        'threat_code' => $threat['code'] ?? null,
+                        'threat_label' => $threat['label'] ?? null,
                     ],
                 ];
             }
@@ -104,6 +115,42 @@ class RegionalDistributionMap extends Component
             ->pluck('aggregate_count', 'distribution_area_id')
             ->map(fn ($count) => (int) $count)
             ->all();
+    }
+
+    private function loadThreatByAreaId(): array
+    {
+        if (!$this->species) {
+            return [];
+        }
+
+        return SpeciesDistributionArea::query()
+            ->with('threatCategory:id,code,label,color_code')
+            ->where('species_id', $this->species->id)
+            ->get()
+            ->keyBy('distribution_area_id')
+            ->map(function (SpeciesDistributionArea $item) {
+                $threat = $item->threatCategory;
+                if (!$threat) {
+                    return null;
+                }
+
+                return [
+                    'code' => $threat->code,
+                    'label' => $threat->label,
+                    'color_code' => $threat->color_code,
+                ];
+            })
+            ->filter()
+            ->all();
+    }
+
+    private function resolveFeatureColor(int $count, ?array $threat): string
+    {
+        if ($this->colorMode === 'threat' && $threat && !empty($threat['color_code'])) {
+            return (string) $threat['color_code'];
+        }
+
+        return $this->getColorHex($count);
     }
 
     private function resolveAreaGeometry(DistributionArea $area): ?array
@@ -214,6 +261,7 @@ class RegionalDistributionMap extends Component
         return view('livewire.public.regional-distribution-map', [
             'areaData' => $this->areaData,
             'displayMode' => $this->displayMode,
+            'colorMode' => $this->colorMode,
             'mapPayload' => $this->mapPayload,
         ]);
     }

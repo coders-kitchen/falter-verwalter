@@ -8,6 +8,8 @@ Die öffentliche Verbreitungskarte zeigt Gebiete nicht mehr als Block-Grid, sond
 - Besucher öffnen `/map` und sehen die Gebiete als Flächen auf einer Leaflet-Karte.
 - Besucher wechseln zwischen `Alle Arten` und `Gefährdete Arten`.
 - Die Flächenfarbe bleibt nach Häufigkeit (Heatmap-Logik) abgestuft.
+- In der Art-Detailseite (`/species/{id}`) gibt es einen extra Tab `🗺️ Karte`.
+- Dort wird die Karte nach Gefährdungscode (`threatCategory.color_code`) der gewählten Art eingefärbt.
 
 ## Data Model
 `distribution_areas` wurde erweitert um:
@@ -29,8 +31,12 @@ Hinweise:
 - `app/Livewire/Public/RegionalDistributionMap.php`
   - lädt Geometrie aus `geojson_path` (Storage-Datei)
   - baut daraus ein GeoJSON FeatureCollection-Payload auf
-  - liefert Farbwerte pro Gebiet für die Kartenfläche
+  - unterstützt zwei Farbmodi:
+    - `count`: Heatmap-Farbe nach Anzahl
+    - `threat`: Farbe nach Gefährdungscode je Gebiet
   - dispatcht Browser-Event bei Moduswechsel
+- `resources/views/public/species-detail.blade.php`
+  - rendert Detailinhalt via Blade-Include, damit die Seite stabil mit eingebetteten Karten-Komponenten funktioniert
 - `app/Livewire/DistributionAreaManager.php`
   - Admin-Form um `code` und dateibasierten GeoJSON-Upload erweitert
   - Validierung für `code` und GeoJSON-Datei-Upload
@@ -47,10 +53,13 @@ Hinweise:
 
 ## UI Changes
 - `resources/views/livewire/public/regional-distribution-map.blade.php`
-  - ersetzt Grid-Kachelansicht durch Leaflet-Kartenansicht
+  - ersetzt Grid-Kachelansicht durch Leaflet-Kartenansicht (map-first Layout)
   - zeichnet GeoJSON-Flächen farbcodiert
-  - Popup pro Gebiet mit Name, Code, Anzahl
+  - Popup pro Gebiet mit Name, Code, Anzahl und optionalem Threat-Status
   - Warnt bei Gebieten ohne Geometrie
+- `resources/views/livewire/public/species-detail.blade.php`
+  - neuer Tab `🗺️ Karte`
+  - bindet `public.regional-distribution-map` mit `colorMode=threat` ein
 - `resources/views/livewire/distribution-area-manager.blade.php`
   - neue Felder für `code` und GeoJSON-Datei-Upload
   - Spalte mit Geometrie-Status
@@ -59,6 +68,7 @@ Hinweise:
 - `/map` zeigt eine interaktive Karte mit GeoJSON-Gebieten.
 - Gebiete mit Geometrie erscheinen als Polygone/MultiPolygone.
 - Farbintensität pro Gebiet entspricht der bestehenden Count-Logik.
+- `/species/{id}` enthält einen Karten-Tab mit artbezogener Färbung nach Gefährdungscode.
 - Admin kann Code und GeoJSON je Gebiet pflegen.
 - Admin kann große GeoJSON-Polygone per Datei-Upload pflegen.
 - API liefert Code + Datei-Referenz.
