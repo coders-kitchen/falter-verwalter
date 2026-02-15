@@ -5,7 +5,149 @@
 
         <div class="form-control">
             <label class="label">
-                <span class="label-text font-semibold">Verfügbare Pflanzen</span>
+                <span class="label-text font-semibold">🔎 Pflanze nach Name suchen</span>
+            </label>
+            <input
+                wire:model.live.debounce.300ms="plantSearch"
+                type="text"
+                placeholder="z.B. Salbei, Klee, Distel..."
+                class="input input-bordered w-full"
+            />
+        </div>
+
+        <details class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg">
+            <summary class="collapse-title font-semibold">
+                Erweiterte Filter
+            </summary>
+            <div class="collapse-content space-y-3">
+                <details class="collapse collapse-arrow bg-base-200 border border-base-300 rounded-lg">
+                    <summary class="collapse-title text-sm font-semibold">
+                        Blühzeit & Größe
+                    </summary>
+                    <div class="collapse-content">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Blühmonat</span>
+                                </label>
+                                <select wire:model.live="filterBloomMonth" class="select select-bordered w-full">
+                                    <option value="">Alle Monate</option>
+                                    @foreach ($monthOptions as $monthNumber => $monthName)
+                                        <option value="{{ $monthNumber }}">{{ $monthName }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Mindesthöhe (cm)</span>
+                                </label>
+                                <input
+                                    wire:model.live.debounce.300ms="filterHeightMin"
+                                    type="number"
+                                    min="0"
+                                    class="input input-bordered w-full"
+                                />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Maximalhöhe (cm)</span>
+                                </label>
+                                <input
+                                    wire:model.live.debounce.300ms="filterHeightMax"
+                                    type="number"
+                                    min="0"
+                                    class="input input-bordered w-full"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="collapse collapse-arrow bg-base-200 border border-base-300 rounded-lg">
+                    <summary class="collapse-title text-sm font-semibold">
+                        Ökologische Zeigerwerte
+                    </summary>
+                    <div class="collapse-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Lichtzahl</span></label>
+                                <select wire:model.live="filterLight" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['light'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Salzzahl</span></label>
+                                <select wire:model.live="filterSalt" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['salt'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Temperaturzahl</span></label>
+                                <select wire:model.live="filterTemperature" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['temperature'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Kontinentalitätszahl</span></label>
+                                <select wire:model.live="filterContinentality" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['continentality'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Reaktionszahl</span></label>
+                                <select wire:model.live="filterReaction" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['reaction'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Feuchtezahl</span></label>
+                                <select wire:model.live="filterMoisture" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['moisture'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Feuchtewechsel</span></label>
+                                <select wire:model.live="filterMoistureVariation" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['moistureVariation'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Stickstoffzahl</span></label>
+                                <select wire:model.live="filterNitrogen" class="select select-bordered w-full">
+                                    @foreach ($indicatorOptions['nitrogen'] as $option)
+                                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <div class="flex justify-end">
+                    <button wire:click="resetPlantFilters" class="btn btn-sm btn-outline">
+                        Erweiterte Filter zurücksetzen
+                    </button>
+                </div>
+            </div>
+        </details>
+
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text font-semibold">Verfügbare Pflanzen ({{ $plants->count() }})</span>
             </label>
             <select
                 wire:model.live="selectedPlantIds"
@@ -35,7 +177,7 @@
                 <div class="flex flex-wrap gap-2">
                     @foreach ($selectedPlantIds as $plantId)
                         @php
-                            $plant = \App\Models\Plant::find($plantId);
+                            $plant = $selectedPlants->get((int) $plantId);
                         @endphp
                         @if ($plant)
                             <div class="badge badge-lg badge-primary gap-2">
@@ -60,6 +202,12 @@
             >
                 🔄 Auswahl löschen
             </button>
+        @endif
+
+        @if ($plants->isEmpty())
+            <div class="alert alert-warning mt-2">
+                <span>Keine Pflanzen für die aktuellen Filter gefunden. Bitte Filter anpassen.</span>
+            </div>
         @endif
     </div>
 
