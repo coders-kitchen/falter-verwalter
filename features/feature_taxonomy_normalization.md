@@ -7,7 +7,7 @@ Introduce a normalized taxonomy model that supports both plants and butterflies,
 - Model must be shared across plants and butterflies.
 - Admin selections must be type-restricted (`plant` vs `butterfly`).
 - During entity creation/editing, display genus with full hierarchy path:
-  - `Familie >> Unterfamilie (>> Tribus) >> Gattung`
+  - `Gattung (Familie > Unterfamilie (> Tribus))`
 - **Legacy structure must remain in place initially** so migration/backfill can be verified safely.
 
 ## Current Problem
@@ -45,9 +45,10 @@ Notes:
 ## Admin UX Requirements
 - Create/edit plant: genus dropdown/search restricted to `family.type = plant`.
 - Create/edit butterfly species: genus dropdown/search restricted to `family.type = butterfly`.
-- Each genus option should show path label:
-  - with tribe: `Fam >> Subfam >> Tribe >> Genus`
-  - without tribe: `Fam >> Subfam >> Genus`
+- Each genus option should show path label in scan-friendly format:
+  - with tribe: `Gattung (Familie > Unterfamilie > Tribus)`
+  - without tribe: `Gattung (Familie > Unterfamilie)`
+- Sub-management pages should provide breadcrumb navigation to the previous level.
 
 ## User/Admin Filtering Requirements
 Support filtering by any taxonomy level:
@@ -86,6 +87,16 @@ Phase 4: Cleanup (later, separate task)
 - Admin can select genus with correct type restriction and full hierarchy label.
 - Filtering by subfamily and other levels is possible.
 - Legacy structure still exists after rollout for validation.
+- Admin can navigate back through taxonomy sub-level pages using breadcrumbs.
+
+## Implemented QoL (Current State)
+- Dropdown labels in admin and public taxonomy filters use:
+  - `Gattung (Familie > Unterfamilie (> Tribus))`
+- Breadcrumbs added to admin sub-pages:
+  - Unterfamilien
+  - Triben
+  - Gattungen
+  - species-specific sub-managers (Generationen, Verbreitungsgebiete, Pflanzenzuordnung)
 
 ## Follow-up Tasks
 - Implement migrations and backfill command/seeder.

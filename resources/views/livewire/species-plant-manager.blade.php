@@ -1,4 +1,13 @@
 <div class="space-y-4">
+    <div class="text-sm breadcrumbs">
+        <ul>
+            <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ route('admin.species.index') }}">Arten</a></li>
+            <li>{{ $species->name }}</li>
+            <li>Pflanzenzuordnung</li>
+        </ul>
+    </div>
+
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h2 class="text-2xl font-bold">Pflanzenzuordnung von: {{ $species->name }}</h2>

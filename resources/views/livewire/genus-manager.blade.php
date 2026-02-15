@@ -1,4 +1,14 @@
 <div class="space-y-4">
+    <div class="text-sm breadcrumbs">
+        <ul>
+            <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ route('admin.families.index') }}">Familien</a></li>
+            <li><a href="{{ route('admin.subfamilies.index', $subfamily->family_id) }}">{{ $subfamily->family->name ?? 'Familie' }}</a></li>
+            <li>{{ $subfamily->name }}</li>
+            <li>Gattungen</li>
+        </ul>
+    </div>
+
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h2 class="text-2xl font-bold">Gattungen von: {{ $subfamily->name }}</h2>
