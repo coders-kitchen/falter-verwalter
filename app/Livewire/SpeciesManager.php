@@ -20,7 +20,6 @@ class SpeciesManager extends Component
         'scientific_name' => '',
         'family_id' => '',
         'size_category' => '',
-        'generations_per_year' => '',
         'hibernation_stage' => '',
         'sage_feeding_indicator' => 'keine genaue Angabe',
         'habitat_ids' => []
@@ -31,7 +30,6 @@ class SpeciesManager extends Component
         'form.scientific_name' => 'nullable|string|max:255',
         'form.family_id' => 'required|exists:families,id',
         'form.size_category' => 'required|in:XS,S,M,L,XL',
-        'form.generations_per_year' => 'nullable|integer|min:1',
         'form.hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
         'form.sage_feeding_indicator' => 'required|in:Ja,Nein,keine genaue Angabe',
         'form.habitat_ids' => 'nullable|array',
@@ -96,7 +94,7 @@ class SpeciesManager extends Component
     public function openEditModal(Species $species)
     {
         $this->species = $species;
-        $this->form = $species->only('name', 'scientific_name', 'family_id', 'size_category', 'generations_per_year', 'hibernation_stage', 'sage_feeding_indicator');
+        $this->form = $species->only('name', 'scientific_name', 'family_id', 'size_category', 'hibernation_stage', 'sage_feeding_indicator');
 
         $this->form['habitat_ids'] = $species->habitats()->pluck('habitats.id')->toArray();
 
@@ -146,7 +144,6 @@ class SpeciesManager extends Component
             'scientific_name' => '',
             'family_id' => '',
             'size_category' => '',
-            'generations_per_year' => '',
             'hibernation_stage' => '',
             'sage_feeding_indicator' => 'keine genaue Angabe',
             'habitat_ids' => [],

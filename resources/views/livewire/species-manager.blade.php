@@ -163,19 +163,6 @@
                         @enderror
                     </div>
 
-                    <!-- Generations per Year -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Generationen pro Jahr</span>
-                        </label>
-                        <input
-                            wire:model="form.generations_per_year"
-                            type="number"
-                            min="1"
-                            class="input input-bordered"
-                        />
-                    </div>
-
                     <!-- Hibernation Stage -->
                     <div class="form-control">
                         <label class="label">

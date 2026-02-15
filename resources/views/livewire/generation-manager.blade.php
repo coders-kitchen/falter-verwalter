@@ -80,25 +80,6 @@
                 </h3>
 
                 <div class="space-y-4">
-                    <!-- Generation Number -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Generationsnummer</span>
-                        </label>
-                        <input
-                            type="number"
-                            min="1"
-                            max="12"
-                            wire:model="form.generation_number"
-                            class="input input-bordered"
-                            placeholder="z.B. 1, 2, 3">
-                        @error('form.generation_number')
-                            <label class="label">
-                                <span class="label-text-alt text-error">{{ $message }}</span>
-                            </label>
-                        @enderror
-                    </div>
-
                     <!-- Larva Period -->
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-control">

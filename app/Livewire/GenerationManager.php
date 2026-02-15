@@ -18,7 +18,6 @@ class GenerationManager extends Component
     public $search = '';
 
     public $form = [
-        'generation_number' => 1,
         'larva_start_month' => 1,
         'larva_end_month' => 12,
         'flight_start_month' => 1,
@@ -27,7 +26,6 @@ class GenerationManager extends Component
     ];
 
     protected $rules = [
-        'form.generation_number' => 'required|integer|min:1|max:12',
         'form.larva_start_month' => 'required|integer|between:1,12',
         'form.larva_end_month' => 'required|integer|between:1,12',
         'form.flight_start_month' => 'required|integer|between:1,12',
@@ -62,7 +60,6 @@ class GenerationManager extends Component
     {
         $this->generation = $generation;
         $this->form = [
-            'generation_number' => $generation->generation_number,
             'larva_start_month' => $generation->larva_start_month,
             'larva_end_month' => $generation->larva_end_month,
             'flight_start_month' => $generation->flight_start_month,
@@ -76,30 +73,7 @@ class GenerationManager extends Component
     {
         $this->validate();
 
-        // Ensure generation number is unique per species
-        if (!$this->generation) {
-            $existing = Generation::where('species_id', $this->species_id)
-                ->where('generation_number', $this->form['generation_number'])
-                ->first();
-
-            if ($existing) {
-                $this->addError('form.generation_number', 'Diese Generationsnummer existiert bereits für diese Art.');
-                return;
-            }
-        } else {
-            $existing = Generation::where('species_id', $this->species_id)
-                ->where('generation_number', $this->form['generation_number'])
-                ->where('id', '!=', $this->generation->id)
-                ->first();
-
-            if ($existing) {
-                $this->addError('form.generation_number', 'Diese Generationsnummer existiert bereits für diese Art.');
-                return;
-            }
-        }
-
         $formData = [
-            'generation_number' => $this->form['generation_number'],
             'larva_start_month' => $this->form['larva_start_month'],
             'larva_end_month' => $this->form['larva_end_month'],
             'flight_start_month' => $this->form['flight_start_month'],
@@ -138,7 +112,6 @@ class GenerationManager extends Component
     {
         $this->generation = null;
         $this->form = [
-            'generation_number' => 1,
             'larva_start_month' => 1,
             'larva_end_month' => 12,
             'flight_start_month' => 1,

@@ -21,7 +21,6 @@ class SpeciesRequest extends FormRequest
             'color_description' => 'nullable|string',
             'special_features' => 'nullable|string',
             'gender_differences' => 'nullable|string',
-            'generations_per_year' => 'nullable|integer|min:1',
             'hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
             'pupal_duration_days' => 'nullable|integer|min:0',
             'red_list_status_de' => 'nullable|string|max:255',
