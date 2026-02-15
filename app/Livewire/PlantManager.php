@@ -48,6 +48,7 @@ class PlantManager extends Component
         'is_native' => false,
         'is_invasive' => false,
         'threat_status' => '',
+        'heavy_metal_resistance' => 'nicht schwermetallresistent',
         'habitat_ids' => [],
     ];
 
@@ -82,6 +83,7 @@ class PlantManager extends Component
         'form.is_native' => 'boolean',
         'form.is_invasive' => 'boolean',
         'form.threat_status' => 'nullable|string|max:255',
+        'form.heavy_metal_resistance' => 'required|in:nicht schwermetallresistent,mäßig schwermetallresistent,ausgesprochen schwermetallresistent',
     ];
 
     public function render()
@@ -185,6 +187,7 @@ class PlantManager extends Component
             'is_native' => (bool) $plant->is_native,
             'is_invasive' => (bool) $plant->is_invasive,
             'threat_status' => $plant->threat_status,
+            'heavy_metal_resistance' => $plant->heavy_metal_resistance ?? 'nicht schwermetallresistent',
             'habitat_ids' => $plant->habitats()->pluck('habitats.id')->toArray(),
         ];
 
@@ -261,6 +264,7 @@ class PlantManager extends Component
             'is_native' => false,
             'is_invasive' => false,
             'threat_status' => '',
+            'heavy_metal_resistance' => 'nicht schwermetallresistent',
             'habitat_ids' => [],
         ];
         $this->resetErrorBag();

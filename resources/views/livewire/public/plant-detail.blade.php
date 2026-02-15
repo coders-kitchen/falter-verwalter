@@ -51,6 +51,13 @@
                     <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Feuchtewechsel</span><span class="font-semibold">{{ $plant->indicatorDisplay('moisture_variation') }}</span></div>
                     <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Stickstoffzahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('nitrogen_number') }}</span></div>
                 </div>
+
+                <div class="mt-4">
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2">
+                        <span>Schwermetallresistenz</span>
+                        <span class="font-semibold">{{ $plant->heavy_metal_resistance ?? '—' }}</span>
+                    </div>
+                </div>
             </div>
         </div>
 

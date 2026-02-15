@@ -38,6 +38,7 @@ class PlantResource extends JsonResource
             'is_native' => $this->is_native,
             'is_invasive' => $this->is_invasive,
             'threat_status' => $this->threat_status,
+            'heavy_metal_resistance' => $this->heavy_metal_resistance,
             'persistence_organs' => $this->persistence_organs,
             'habitats' => $this->whenLoaded('habitats', HabitatResource::collection($this->habitats)),
             'created_at' => $this->created_at,

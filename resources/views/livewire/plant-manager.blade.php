@@ -297,6 +297,20 @@
                                 class="input input-bordered"
                             />
                         </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Schwermetallresistenz *</span>
+                            </label>
+                            <select wire:model="form.heavy_metal_resistance" class="select select-bordered @error('form.heavy_metal_resistance') select-error @enderror">
+                                <option value="nicht schwermetallresistent">nicht schwermetallresistent</option>
+                                <option value="mäßig schwermetallresistent">mäßig schwermetallresistent</option>
+                                <option value="ausgesprochen schwermetallresistent">ausgesprochen schwermetallresistent</option>
+                            </select>
+                            @error('form.heavy_metal_resistance')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Flags -->

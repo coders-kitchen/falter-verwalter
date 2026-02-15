@@ -45,6 +45,7 @@ class PlantRequest extends FormRequest
             'is_native' => 'boolean',
             'is_invasive' => 'boolean',
             'threat_status' => 'nullable|string|max:255',
+            'heavy_metal_resistance' => 'required|in:nicht schwermetallresistent,mäßig schwermetallresistent,ausgesprochen schwermetallresistent',
             'persistence_organs' => 'nullable|string',
             'habitat_ids' => 'nullable|array',
             'habitat_ids.*' => 'exists:habitats,id',

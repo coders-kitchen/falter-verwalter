@@ -44,12 +44,19 @@ class Plant extends Model
         'is_native',
         'is_invasive',
         'threat_status',
+        'heavy_metal_resistance',
         'persistence_organs',
     ];
 
     protected $casts = [
         'is_native' => 'boolean',
         'is_invasive' => 'boolean',
+    ];
+
+    public const HEAVY_METAL_RESISTANCE_LEVELS = [
+        'nicht schwermetallresistent',
+        'mäßig schwermetallresistent',
+        'ausgesprochen schwermetallresistent',
     ];
 
     public function indicatorDisplay(string $field): string
