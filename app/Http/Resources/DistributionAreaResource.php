@@ -12,7 +12,9 @@ class DistributionAreaResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'code' => $this->code,
             'description' => $this->description,
+            'geometry_geojson' => $this->geometry_geojson,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

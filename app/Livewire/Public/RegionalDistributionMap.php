@@ -14,6 +14,10 @@ class RegionalDistributionMap extends Component
     public $areaData = [];
     public $selectedArea = null;
     public $maxCount = 0;
+    public $mapPayload = [
+        'type' => 'FeatureCollection',
+        'features' => [],
+    ];
 
     public function mount($species = null)
     {
@@ -25,11 +29,13 @@ class RegionalDistributionMap extends Component
     {
         $this->displayMode = $mode;
         $this->aggregateRegionData();
+        $this->dispatchMapUpdate();
     }
 
     public function selectArea($areaId)
     {
         $this->selectedArea = $this->selectedArea === $areaId ? null : $areaId;
+        $this->dispatchMapUpdate();
     }
 
     public function aggregateRegionData()
@@ -37,6 +43,7 @@ class RegionalDistributionMap extends Component
         $areas = DistributionArea::orderBy('name')->get();
         $this->areaData = [];
         $this->maxCount = 0;
+        $features = [];
 
         foreach ($areas as $area) {
             $query = SpeciesDistributionArea::where('distribution_area_id', $area->id)
@@ -56,12 +63,33 @@ class RegionalDistributionMap extends Component
                 'name' => $area->name,
                 'count' => $count,
                 'id' => $area->id,
+                'code' => $area->code,
+                'geometry_available' => !empty($area->geometry_geojson),
             ];
 
             if ($count > $this->maxCount) {
                 $this->maxCount = $count;
             }
+
+            if ($area->geometry_geojson && in_array($area->geometry_geojson['type'] ?? null, ['Polygon', 'MultiPolygon'], true)) {
+                $features[] = [
+                    'type' => 'Feature',
+                    'geometry' => $area->geometry_geojson,
+                    'properties' => [
+                        'id' => $area->id,
+                        'name' => $area->name,
+                        'code' => $area->code,
+                        'count' => $count,
+                        'color' => $this->getColorHex($count),
+                    ],
+                ];
+            }
         }
+
+        $this->mapPayload = [
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        ];
     }
 
     public function getColorIntensity($count)
@@ -87,11 +115,46 @@ class RegionalDistributionMap extends Component
         }
     }
 
+    public function getColorHex($count): string
+    {
+        if ($this->maxCount === 0 || $count === 0) {
+            return '#e5e7eb';
+        }
+
+        $percentage = ($count / $this->maxCount) * 100;
+
+        if ($percentage < 20) {
+            return '#fef08a';
+        }
+        if ($percentage < 40) {
+            return '#facc15';
+        }
+        if ($percentage < 60) {
+            return '#fb923c';
+        }
+        if ($percentage < 80) {
+            return '#ea580c';
+        }
+
+        return '#dc2626';
+    }
+
+    public function dispatchMapUpdate(): void
+    {
+        $this->dispatch(
+            'regional-map-data-updated',
+            payload: $this->mapPayload,
+            selectedArea: $this->selectedArea,
+            displayMode: $this->displayMode
+        );
+    }
+
     public function render()
     {
         return view('livewire.public.regional-distribution-map', [
             'areaData' => $this->areaData,
             'displayMode' => $this->displayMode,
+            'mapPayload' => $this->mapPayload,
         ]);
     }
 }
