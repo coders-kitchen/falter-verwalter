@@ -17,91 +17,62 @@
                 🦋 Alle Arten
             </button>
         </div>
-
-        <div class="space-y-2 mt-4">
-            <p class="text-sm font-semibold">Farbintensität (von hell zu dunkel):</p>
-            <div class="space-y-1 text-xs">
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-gray-200 border border-gray-300"></div>
-                    <span>Keine Arten</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-yellow-200"></div>
-                    <span>Wenige Arten (1-20%)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-yellow-400"></div>
-                    <span>Einige Arten (20-40%)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-orange-400"></div>
-                    <span>Viele Arten (40-60%)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-orange-600"></div>
-                    <span>Sehr viele Arten (60-80%)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 bg-red-600"></div>
-                    <span>Maximale Arten (80-100%)</span>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div class="space-y-4">
-        <p class="text-sm text-gray-500">
-            Interaktive GeoJSON-Karte: Gebiete mit hinterlegten Polygonen werden direkt auf der Karte dargestellt.
-        </p>
-
-        <div wire:ignore class="rounded-lg overflow-hidden border border-base-300 bg-base-100">
-            <div id="regional-distribution-map-canvas" class="w-full h-[620px]"></div>
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-4 items-start">
+        <div class="xl:col-span-3 space-y-3">
+            <p class="text-sm text-gray-500">
+                Interaktive GeoJSON-Karte: Klick auf ein Gebiet zeigt Name, Code und Anzahl.
+            </p>
+            <div wire:ignore class="rounded-lg overflow-hidden border border-base-300 bg-base-100">
+                <div
+                    id="regional-distribution-map-canvas"
+                    class="w-full"
+                    style="height: 680px; min-height: 480px;"
+                ></div>
+            </div>
         </div>
 
-        @php
-            $areasWithoutGeometry = collect($areaData)->filter(fn ($item) => !($item['geometry_available'] ?? false));
-        @endphp
-
-        @if ($areasWithoutGeometry->count() > 0)
-            <div class="alert alert-warning">
-                <div>
-                    <h3 class="font-bold">Geometrie fehlt für {{ $areasWithoutGeometry->count() }} Gebiet(e)</h3>
-                    <div class="text-sm">
-                        Diese Gebiete werden aktuell nicht auf der Karte gezeichnet und benötigen ein GeoJSON-Polygon.
-                    </div>
-                </div>
-            </div>
-        @endif
-    </div>
-
-    <div class="overflow-x-auto">
-        <table class="table table-zebra">
-            <thead>
-                <tr>
-                    <th>Gebiet</th>
-                    <th>Code</th>
-                    <th>Anzahl</th>
-                    <th>GeoJSON</th>
-                </tr>
-            </thead>
-            <tbody>
+        <aside class="xl:col-span-1 rounded-lg border border-base-300 bg-base-100 p-3">
+            <h3 class="font-semibold mb-3">Gebiete</h3>
+            <div class="space-y-2 max-h-[680px] overflow-y-auto pr-1">
                 @foreach ($areaData as $data)
-                    <tr>
-                        <td>{{ $data['name'] }}</td>
-                        <td><code>{{ $data['code'] ?? '—' }}</code></td>
-                        <td>{{ $data['count'] }}</td>
-                        <td>
-                            @if ($data['geometry_available'])
-                                <span class="badge badge-success badge-sm">vorhanden</span>
-                            @else
-                                <span class="badge badge-ghost badge-sm">fehlt</span>
+                    <button
+                        type="button"
+                        wire:click="selectArea({{ $data['id'] }})"
+                        class="w-full text-left p-3 rounded border transition
+                            {{ $selectedArea === $data['id'] ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/30' }}"
+                    >
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-medium">{{ $data['name'] }}</span>
+                            <span class="badge badge-neutral">{{ $data['count'] }}</span>
+                        </div>
+                        <div class="text-xs opacity-70 mt-1">
+                            <code>{{ $data['code'] ?? '—' }}</code>
+                            @if (!$data['geometry_available'])
+                                <span class="ml-2 text-warning">kein GeoJSON</span>
                             @endif
-                        </td>
-                    </tr>
+                        </div>
+                    </button>
                 @endforeach
-            </tbody>
-        </table>
+            </div>
+        </aside>
     </div>
+
+    @php
+        $areasWithoutGeometry = collect($areaData)->filter(fn ($item) => !($item['geometry_available'] ?? false));
+    @endphp
+
+    @if ($areasWithoutGeometry->count() > 0)
+        <div class="alert alert-warning">
+            <div>
+                <h3 class="font-bold">Geometrie fehlt für {{ $areasWithoutGeometry->count() }} Gebiet(e)</h3>
+                <div class="text-sm">
+                    Diese Gebiete werden aktuell nicht auf der Karte gezeichnet und benötigen ein GeoJSON-Polygon.
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="alert alert-info">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -119,12 +90,10 @@
         <link
             rel="stylesheet"
             href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""
         />
         <script
             src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""
         ></script>
     @endonce
@@ -134,6 +103,7 @@
             const mapContainerId = 'regional-distribution-map-canvas';
             let map = null;
             let geoJsonLayer = null;
+            let selectedArea = @json($selectedArea);
 
             function readPayload() {
                 const node = document.getElementById('regional-map-payload');
@@ -189,11 +159,13 @@
 
                 geoJsonLayer = L.geoJSON(payload, {
                     style: function (feature) {
+                        const featureId = feature?.properties?.id;
+                        const isSelected = selectedArea !== null && Number(selectedArea) === Number(featureId);
                         return {
-                            color: '#1f2937',
-                            weight: 1,
+                            color: isSelected ? '#111827' : '#1f2937',
+                            weight: isSelected ? 3 : 1,
                             fillColor: feature?.properties?.color || '#e5e7eb',
-                            fillOpacity: 0.75,
+                            fillOpacity: isSelected ? 0.9 : 0.75,
                         };
                     },
                     onEachFeature: function (feature, layer) {
@@ -215,10 +187,39 @@
                 renderGeoJson(payload);
             }
 
+            function bootWhenReady(attemptsLeft = 20) {
+                const container = document.getElementById(mapContainerId);
+                if (!container) {
+                    return;
+                }
+
+                if (typeof L !== 'undefined') {
+                    boot();
+                    setTimeout(function () {
+                        if (map) {
+                            map.invalidateSize();
+                        }
+                    }, 50);
+                    return;
+                }
+
+                if (attemptsLeft > 0) {
+                    setTimeout(function () {
+                        bootWhenReady(attemptsLeft - 1);
+                    }, 100);
+                    return;
+                }
+
+                container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:1rem;color:#6b7280;">Karte konnte nicht geladen werden (Leaflet nicht verfügbar).</div>';
+            }
+
+            bootWhenReady();
             document.addEventListener('DOMContentLoaded', boot);
+            window.addEventListener('load', bootWhenReady);
             document.addEventListener('livewire:navigated', boot);
             window.addEventListener('regional-map-data-updated', function (event) {
                 const payload = event?.detail?.payload;
+                selectedArea = event?.detail?.selectedArea ?? null;
                 renderGeoJson(payload);
             });
         })();
