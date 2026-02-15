@@ -6,6 +6,7 @@ use App\Models\Plant;
 use App\Models\LifeForm;
 use App\Models\Habitat;
 use App\Models\Family;
+use App\Models\ThreatCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,6 +23,7 @@ class PlantManager extends Component
         'scientific_name' => '',
         'family_id' => null,
         'life_form_id' => null,
+        'threat_category_id' => null,
         'light_number' => 5,
         'light_number_state' => 'numeric',
         'salt_number' => 5,
@@ -57,6 +59,7 @@ class PlantManager extends Component
         'form.scientific_name' => 'nullable|string|max:255',
         'form.family_id' => 'nullable|exists:families,id',
         'form.life_form_id' => 'required|exists:life_forms,id',
+        'form.threat_category_id' => 'nullable|exists:threat_categories,id',
         'form.light_number_state' => 'required|in:numeric,x,unknown',
         'form.salt_number_state' => 'required|in:numeric,x,unknown',
         'form.temperature_number_state' => 'required|in:numeric,x,unknown',
@@ -95,12 +98,13 @@ class PlantManager extends Component
                   ->orWhere('scientific_name', 'like', '%' . $this->search . '%');
         }
 
-        $items = $query->with('lifeForm', 'family')
+        $items = $query->with('lifeForm', 'family', 'threatCategory')
                        ->orderBy('name')
                        ->paginate(50);
 
         $families = Family::where('type', 'plant')->orderBy('name')->get();
         $lifeForms = LifeForm::orderBy('name')->get();
+        $threatCategories = ThreatCategory::orderBy('rank')->get();
 
         // Get habitats with hierarchy ordering (root nodes first, then children)
         $habitats = $this->getHierarchicalHabitats();
@@ -109,6 +113,7 @@ class PlantManager extends Component
             'items' => $items,
             'families' => $families,
             'lifeForms' => $lifeForms,
+            'threatCategories' => $threatCategories,
             'habitats' => $habitats,
         ]);
     }
@@ -161,6 +166,7 @@ class PlantManager extends Component
             'scientific_name' => $plant->scientific_name,
             'family_id' => $plant->family_id,
             'life_form_id' => $plant->life_form_id,
+            'threat_category_id' => $plant->threat_category_id,
             'light_number' => $plant->light_number,
             'light_number_state' => $stateOrFallback('light_number'),
             'salt_number' => $plant->salt_number,
@@ -237,7 +243,9 @@ class PlantManager extends Component
         $this->form = [
             'name' => '',
             'scientific_name' => '',
+            'family_id' => null,
             'life_form_id' => null,
+            'threat_category_id' => null,
             'light_number' => 5,
             'light_number_state' => 'numeric',
             'salt_number' => 5,

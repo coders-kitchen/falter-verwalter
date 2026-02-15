@@ -15,6 +15,7 @@ class Plant extends Model
         'user_id',
         'life_form_id',
         'family_id',
+        'threat_category_id',
         'name',
         'scientific_name',
         'family_genus',
@@ -83,6 +84,11 @@ class Plant extends Model
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);
+    }
+
+    public function threatCategory(): BelongsTo
+    {
+        return $this->belongsTo(ThreatCategory::class);
     }
 
     public function habitats(): BelongsToMany

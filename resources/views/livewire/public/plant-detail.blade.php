@@ -38,6 +38,19 @@
                             <p class="text-lg font-mono">{{ $plant->code }}</p>
                         </div>
                     @endif
+
+                    <div>
+                        <label class="font-semibold text-sm opacity-75">Gefährdungskategorie</label>
+                        <div class="mt-1">
+                            @if ($plant->threatCategory)
+                                <span class="badge badge-lg text-white" style="background: {{ $plant->threatCategory->color_code }};">
+                                    {{ $plant->threatCategory->code }} ({{ $plant->threatCategory->label }})
+                                </span>
+                            @else
+                                <span class="badge badge-outline">Keine Kategorie</span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
                 <div class="divider my-6">Ökologische Zeigerwerte</div>

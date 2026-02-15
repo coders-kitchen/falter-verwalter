@@ -288,14 +288,19 @@
 
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Gefährdungsstatus</span>
+                                <span class="label-text font-semibold">Gefährdungskategorie</span>
                             </label>
-                            <input
-                                wire:model="form.threat_status"
-                                type="text"
-                                placeholder="z.B. Nicht gefährdet"
-                                class="input input-bordered"
-                            />
+                            <select wire:model="form.threat_category_id" class="select select-bordered @error('form.threat_category_id') select-error @enderror">
+                                <option value="">— Keine Kategorie —</option>
+                                @foreach($threatCategories as $threatCategory)
+                                    <option value="{{ $threatCategory->id }}">
+                                        {{ $threatCategory->code }} ({{ $threatCategory->label }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('form.threat_category_id')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="form-control">

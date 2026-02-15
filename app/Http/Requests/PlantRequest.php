@@ -19,6 +19,7 @@ class PlantRequest extends FormRequest
             'scientific_name' => 'nullable|string|max:255',
             'family_genus' => 'nullable|string|max:255',
             'life_form_id' => 'required|exists:life_forms,id',
+            'threat_category_id' => 'nullable|exists:threat_categories,id',
             'light_number_state' => 'required|in:numeric,x,unknown',
             'salt_number_state' => 'required|in:numeric,x,unknown',
             'temperature_number_state' => 'required|in:numeric,x,unknown',

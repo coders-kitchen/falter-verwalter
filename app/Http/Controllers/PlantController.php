@@ -11,7 +11,7 @@ class PlantController extends Controller
 {
     public function index(): JsonResponse
     {
-        $plants = Plant::with('lifeForm:id,name')->paginate(50);
+        $plants = Plant::with('lifeForm:id,name', 'threatCategory:id,code,label,color_code')->paginate(50);
 
         return response()->json([
             'data' => PlantResource::collection($plants),
@@ -32,14 +32,14 @@ class PlantController extends Controller
         }
 
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
         ], 201);
     }
 
     public function show(Plant $plant): JsonResponse
     {
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'speciesAsHostPlant:id,name')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'speciesAsHostPlant:id,name', 'threatCategory:id,code,label,color_code')),
         ]);
     }
 
@@ -52,7 +52,7 @@ class PlantController extends Controller
         }
 
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
         ]);
     }
 

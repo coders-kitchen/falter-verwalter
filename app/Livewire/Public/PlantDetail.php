@@ -14,6 +14,7 @@ class PlantDetail extends Component
         $this->plant = $plant->load([
             'family',
             'habitats',
+            'threatCategory',
         ]);
     }
 

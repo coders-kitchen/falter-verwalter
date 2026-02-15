@@ -18,6 +18,12 @@ class PlantResource extends JsonResource
                 'id' => $this->lifeForm->id,
                 'name' => $this->lifeForm->name,
             ]),
+            'threat_category' => $this->whenLoaded('threatCategory', fn() => [
+                'id' => $this->threatCategory->id,
+                'code' => $this->threatCategory->code,
+                'label' => $this->threatCategory->label,
+                'color_code' => $this->threatCategory->color_code,
+            ]),
             'ecological_scales' => [
                 'light' => ['value' => $this->light_number, 'state' => $this->light_number_state],
                 'salt' => ['value' => $this->salt_number, 'state' => $this->salt_number_state],
