@@ -73,4 +73,9 @@ class Species extends Model
             ->withPivot('conservation_status')
             ->withTimestamps();
     }
+
+    public function endangeredRegionsList(): BelongsToMany
+    {
+        return $this->regions()->wherePivot('conservation_status', 'gefährdet');
+    }
 }

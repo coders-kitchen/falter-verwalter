@@ -93,10 +93,16 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     })->name('speciesDistributionAreas.index');
 });
 
+Route::middleware(['auth'])->get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->name('dashboard');
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
-Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->middleware('guest');
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])
+    ->middleware('guest')
+    ->name('login.store');
 
 Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');

@@ -32,6 +32,10 @@ class SpeciesRegion extends Pivot
         'conservation_status',
     ];
 
+    protected $attributes = [
+        'conservation_status' => 'nicht_gefährdet',
+    ];
+
     /**
      * Conservation status constants and labels.
      */
