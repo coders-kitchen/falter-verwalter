@@ -1,30 +1,14 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center flex-wrap gap-4">
-        <h2 class="text-3xl font-bold">👨‍👩‍👧 Familien</h2>
+        <h2 class="text-3xl font-bold">
+            @if($type === 'butterfly')
+                🦋 Familien (Schmetterlinge)
+            @else
+                🌿 Familien (Pflanzen)
+            @endif
+        </h2>
         <button wire:click="openCreateModal" class="btn btn-primary">
             + Neue Familie
-        </button>
-    </div>
-
-    <!-- Type Filter Tabs -->
-    <div class="tabs tabs-bordered">
-        <button
-            wire:click="switchType('butterfly')"
-            @class([
-                'tab',
-                'tab-active' => $filterType === 'butterfly',
-            ])
-        >
-            🦋 Schmetterlinge
-        </button>
-        <button
-            wire:click="switchType('plant')"
-            @class([
-                'tab',
-                'tab-active' => $filterType === 'plant',
-            ])
-        >
-            🌿 Pflanzen
         </button>
     </div>
 
@@ -44,7 +28,7 @@
             <thead>
                 <tr>
                     <th>Familie</th>
-                    <th>@if($filterType === 'butterfly')Arten@else Pflanzen @endif</th>
+                    <th>@if($type === 'butterfly')Arten @else Pflanzen @endif</th>
                     <th>Beschreibung</th>
                     <th>Aktionen</th>
                 </tr>
@@ -56,7 +40,7 @@
                             <div class="font-semibold">{{ $item->name }}</div>
                         </td>
                         <td>
-                            @if($filterType === 'butterfly')
+                            @if($type === 'butterfly')
                                 <span class="badge badge-primary">{{ $item->species_count }}</span>
                             @else
                                 <span class="badge badge-success">{{ $item->plants_count }}</span>
@@ -111,31 +95,8 @@
                 </h3>
 
                 <form wire:submit="save" class="space-y-4">
-                    <!-- Type Selection -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Typ *</span>
-                        </label>
-                        <div class="flex gap-4">
-                            <label class="label cursor-pointer gap-2">
-                                <input
-                                    type="radio"
-                                    wire:model="form.type"
-                                    value="butterfly"
-                                    class="radio radio-sm"
-                                />
-                                <span class="label-text">🦋 Schmetterling</span>
-                            </label>
-                            <label class="label cursor-pointer gap-2">
-                                <input
-                                    type="radio"
-                                    wire:model="form.type"
-                                    value="plant"
-                                    class="radio radio-sm"
-                                />
-                                <span class="label-text">🌿 Pflanze</span>
-                            </label>
-                        </div>
+                    <div class="alert alert-info">
+                        <span>Typ: {{ $type === 'butterfly' ? 'Schmetterling' : 'Pflanze' }}</span>
                     </div>
 
                     <!-- Familie (Name) -->

@@ -45,6 +45,11 @@ Notes:
 ## Admin UX Requirements
 - Create/edit plant: genus dropdown/search restricted to `family.type = plant`.
 - Create/edit butterfly species: genus dropdown/search restricted to `family.type = butterfly`.
+- Family management is split into two dedicated admin entries/views:
+  - Schmetterlingsfamilien
+  - Pflanzenfamilien
+- In family creation/editing, `type` is no longer selectable in the form.
+  - `type` is fixed by the selected view/route context.
 - Each genus option should show path label in scan-friendly format:
   - with tribe: `Gattung (Familie > Unterfamilie > Tribus)`
   - without tribe: `Gattung (Familie > Unterfamilie)`
@@ -92,6 +97,11 @@ Phase 4: Cleanup (later, separate task)
 ## Implemented QoL (Current State)
 - Dropdown labels in admin and public taxonomy filters use:
   - `Gattung (Familie > Unterfamilie (> Tribus))`
+- Family management split by type in menu/navigation:
+  - `/admin/families/butterflies`
+  - `/admin/families/plants`
+- `FamilyManager` receives `type` via `mount($type)` from route/view context.
+  - No runtime type switching in the family form.
 - Breadcrumbs added to admin sub-pages:
   - Unterfamilien
   - Triben

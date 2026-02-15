@@ -2,7 +2,7 @@
     <div class="text-sm breadcrumbs">
         <ul>
             <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ route('admin.families.index') }}">Familien</a></li>
+            <li><a href="{{ ($subfamily->family->type ?? 'butterfly') === 'plant' ? route('admin.families.plants') : route('admin.families.butterflies') }}">Familien</a></li>
             <li><a href="{{ route('admin.subfamilies.index', $subfamily->family_id) }}">{{ $subfamily->family->name ?? 'Familie' }}</a></li>
             <li>{{ $subfamily->name }}</li>
             <li>Gattungen</li>

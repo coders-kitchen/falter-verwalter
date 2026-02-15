@@ -80,8 +80,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.families.index') }}" @class(['active' => request()->routeIs('admin.families.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Familien verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Familien verwalten</span>
+                                    <a href="{{ route('admin.families.butterflies') }}" @class(['active' => request()->routeIs('admin.families.butterflies') || request()->routeIs('admin.subfamilies.*') || request()->routeIs('admin.tribes.*') || request()->routeIs('admin.genera.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Schmetterlingsfamilien verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Familien (Schmetterlinge)</span>
                                     </a>
                                 </li>
                                 <li>
@@ -117,6 +117,11 @@
                                 <li>
                                     <a href="{{ route('admin.plants.index') }}" @class(['active' => request()->routeIs('admin.plants.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Pflanzen verwalten">
                                         <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Pflanzen verwalten</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.families.plants') }}" @class(['active' => request()->routeIs('admin.families.plants'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Pflanzenfamilien verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Familien (Pflanzen)</span>
                                     </a>
                                 </li>
                                 <li>

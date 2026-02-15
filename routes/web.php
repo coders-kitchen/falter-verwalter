@@ -54,8 +54,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     })->name('species.index');
 
     Route::get('families', function () {
-        return view('admin.families');
+        return redirect()->route('admin.families.butterflies');
     })->name('families.index');
+    Route::get('families/butterflies', function () {
+        return view('admin.families-butterflies');
+    })->name('families.butterflies');
+    Route::get('families/plants', function () {
+        return view('admin.families-plants');
+    })->name('families.plants');
 
     Route::get('habitats', function () {
         return view('admin.habitats');

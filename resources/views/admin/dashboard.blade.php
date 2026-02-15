@@ -32,8 +32,9 @@
                     <h2 class="card-title text-2xl">👨‍👩‍👧</h2>
                     <p class="text-sm text-gray-600">Familien</p>
                     <div class="text-3xl font-bold">{{ \App\Models\Family::count() }}</div>
-                    <div class="card-actions justify-end mt-4">
-                        <a href="{{ route('admin.families.index') }}" class="btn btn-sm btn-primary">Verwalten</a>
+                    <div class="card-actions justify-end mt-4 gap-2">
+                        <a href="{{ route('admin.families.butterflies') }}" class="btn btn-sm btn-primary">Schmetterlinge</a>
+                        <a href="{{ route('admin.families.plants') }}" class="btn btn-sm btn-outline">Pflanzen</a>
                     </div>
                 </div>
             </div>

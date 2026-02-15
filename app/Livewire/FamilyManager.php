@@ -11,26 +11,29 @@ class FamilyManager extends Component
     use WithPagination;
 
     public $search = '';
-    public $filterType = 'butterfly';
+    public $type = 'butterfly';
     public $showModal = false;
     public $family = null;
 
     public $form = [
         'name' => '',
-        'type' => 'butterfly',
         'description' => '',
     ];
 
     protected $rules = [
         'form.name' => 'required|string|max:255',
-        'form.type' => 'required|in:butterfly,plant',
         'form.description' => 'nullable|string',
     ];
+
+    public function mount(string $type = 'butterfly')
+    {
+        $this->type = in_array($type, ['butterfly', 'plant'], true) ? $type : 'butterfly';
+    }
 
     public function render()
     {
         $query = Family::withCount(['species', 'plants'])
-            ->where('type', $this->filterType)
+            ->where('type', $this->type)
             ->whereNull('subfamily')
             ->whereNull('genus')
             ->whereNull('tribe');
@@ -43,26 +46,20 @@ class FamilyManager extends Component
 
         return view('livewire.family-manager', [
             'items' => $query->orderBy('name')->paginate(50),
+            'type' => $this->type,
         ]);
-    }
-
-    public function switchType($type)
-    {
-        $this->filterType = $type;
-        $this->resetPage();
     }
 
     public function openCreateModal()
     {
         $this->resetForm();
-        $this->form['type'] = $this->filterType;
         $this->showModal = true;
     }
 
     public function openEditModal(Family $family)
     {
         $this->family = $family;
-        $this->form = $family->only('name', 'type', 'description');
+        $this->form = $family->only('name', 'description');
         $this->showModal = true;
     }
 
@@ -76,7 +73,7 @@ class FamilyManager extends Component
     {
         $this->validate();
 
-        $existsQuery = Family::where('type', $this->form['type'])
+        $existsQuery = Family::where('type', $this->type)
             ->where('name', $this->form['name'])
             ->whereNull('subfamily')
             ->whereNull('genus')
@@ -91,6 +88,7 @@ class FamilyManager extends Component
 
         if ($this->family) {
             $this->family->update(array_merge($this->form, [
+                'type' => $this->type,
                 'subfamily' => null,
                 'genus' => null,
                 'tribe' => null,
@@ -98,6 +96,7 @@ class FamilyManager extends Component
         } else {
             Family::create(array_merge($this->form, [
                 'user_id' => auth()->id(),
+                'type' => $this->type,
                 'subfamily' => null,
                 'genus' => null,
                 'tribe' => null,
@@ -126,7 +125,6 @@ class FamilyManager extends Component
     {
         $this->form = [
             'name' => '',
-            'type' => 'butterfly',
             'description' => '',
         ];
         $this->family = null;
