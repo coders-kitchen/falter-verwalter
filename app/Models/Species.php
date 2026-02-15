@@ -15,6 +15,7 @@ class Species extends Model
     protected $fillable = [
         'user_id',
         'family_id',
+        'genus_id',
         'name',
         'scientific_name',
         'size_category',
@@ -34,6 +35,11 @@ class Species extends Model
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);
+    }
+
+    public function genus(): BelongsTo
+    {
+        return $this->belongsTo(Genus::class);
     }
 
     public function generations(): HasMany

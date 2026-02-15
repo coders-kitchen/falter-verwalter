@@ -34,6 +34,11 @@ class Family extends Model
         return $this->hasMany(Plant::class, 'family_id');
     }
 
+    public function subfamilies(): HasMany
+    {
+        return $this->hasMany(Subfamily::class);
+    }
+
     /**
      * Get full taxonomic classification path
      */
