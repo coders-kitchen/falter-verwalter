@@ -126,66 +126,43 @@
             <div class="space-y-6">
                 <h3 class="text-2xl font-bold mb-4">Pflanzliche Verbindungen</h3>
 
-                @if ($species->generations && count($species->generations) > 0)
-                    @foreach ($species->generations as $generation)
-                        <div class="divider">{{ $generation->generation_number }}. Generation</div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <!-- Nectar Plants -->
-                            <div>
-                                <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanzen</h4>
-                                @if ($generation->nectar_plants && is_array($generation->nectar_plants) && count($generation->nectar_plants) > 0)
-                                    <ul class="space-y-2">
-                                        @foreach ($generation->nectar_plants as $plantId)
-                                            @php
-                                                $plant = \App\Models\Plant::find($plantId);
-                                            @endphp
-                                            @if ($plant)
-                                                <li class="flex items-center gap-2">
-                                                    <span class="text-lg">🌼</span>
-                                                    <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
-                                                        {{ $plant->name }}
-                                                    </a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <p class="text-gray-400 italic">Keine Nektarpflanzen bekannt</p>
-                                @endif
-                            </div>
-
-                            <!-- Larval Host Plants -->
-                            <div>
-                                <h4 class="text-xl font-bold mb-4">🥬 Futterpflanzen (Raupen)</h4>
-                                @if ($generation->larval_host_plants && is_array($generation->larval_host_plants) && count($generation->larval_host_plants) > 0)
-                                    <ul class="space-y-2">
-                                        @foreach ($generation->larval_host_plants as $plantId)
-                                            @php
-                                                $plant = \App\Models\Plant::find($plantId);
-                                            @endphp
-                                            @if ($plant)
-                                                <li class="flex items-center gap-2">
-                                                    <span class="text-lg">🐛</span>
-                                                    <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
-                                                        {{ $plant->name }}
-                                                    </a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <p class="text-gray-400 italic">Keine Futterpflanzen bekannt</p>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="alert alert-info">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <div>Keine Generationsdaten verfügbar</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanzen</h4>
+                        @if ($species->nectarPlants->count() > 0)
+                            <ul class="space-y-2">
+                                @foreach ($species->nectarPlants as $plant)
+                                    <li class="flex items-center gap-2">
+                                        <span class="text-lg">🌼</span>
+                                        <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
+                                            {{ $plant->name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="text-gray-400 italic">Keine Nektarpflanzen bekannt</p>
+                        @endif
                     </div>
-                @endif
+
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">🥬 Futterpflanzen (Raupen)</h4>
+                        @if ($species->larvalHostPlants->count() > 0)
+                            <ul class="space-y-2">
+                                @foreach ($species->larvalHostPlants as $plant)
+                                    <li class="flex items-center gap-2">
+                                        <span class="text-lg">🐛</span>
+                                        <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
+                                            {{ $plant->name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="text-gray-400 italic">Keine Futterpflanzen bekannt</p>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
 

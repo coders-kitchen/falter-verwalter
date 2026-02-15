@@ -51,6 +51,12 @@
                             >
                                 Verbreitungsgebiete
                             </a>
+                            <a
+                                href="{{ route('admin.speciesPlants.index', $item->id) }}"
+                                class="btn btn-xs btn-success"
+                            >
+                                Pflanzen
+                            </a>
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
                                 class="btn btn-xs btn-info"

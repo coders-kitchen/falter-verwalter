@@ -3,6 +3,7 @@
 namespace App\Livewire\Public;
 
 use App\Models\Plant;
+use App\Models\Species;
 use Livewire\Component;
 
 class PlantDetail extends Component
@@ -20,19 +21,17 @@ class PlantDetail extends Component
 
     public function render()
     {
-        // Get species that use this plant as nectar plant
-        $nectarSpecies = \App\Models\Species::with('generations')
-            ->whereHas('generations', function ($query) {
-                $query->whereJsonContains('nectar_plants', $this->plant->id);
-            })
+        $nectarSpecies = Species::whereHas('plants', function ($query) {
+            $query->where('plants.id', $this->plant->id)
+                ->where('species_plant.is_nectar', true);
+        })
             ->orderBy('name')
             ->get();
 
-        // Get species that use this plant as larval host plant
-        $larvalSpecies = \App\Models\Species::with('generations')
-            ->whereHas('generations', function ($query) {
-                $query->whereJsonContains('larval_host_plants', $this->plant->id);
-            })
+        $larvalSpecies = Species::whereHas('plants', function ($query) {
+            $query->where('plants.id', $this->plant->id)
+                ->where('species_plant.is_larval_host', true);
+        })
             ->orderBy('name')
             ->get();
 

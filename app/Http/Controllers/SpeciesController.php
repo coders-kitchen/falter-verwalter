@@ -37,19 +37,22 @@ class SpeciesController extends Controller
         }
         if ($request->has('host_plant_ids')) {
             foreach ($request->host_plant_ids as $plantId) {
-                $species->hostPlants()->attach($plantId, ['plant_type' => 'host']);
+                $species->plants()->attach($plantId, [
+                    'is_nectar' => false,
+                    'is_larval_host' => true,
+                ]);
             }
         }
 
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'hostPlants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ], 201);
     }
 
     public function show(Species $species): JsonResponse
     {
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'hostPlants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ]);
     }
 
@@ -65,14 +68,17 @@ class SpeciesController extends Controller
             $species->habitats()->sync($request->habitat_ids);
         }
         if ($request->has('host_plant_ids')) {
-            $species->hostPlants()->detach();
+            $species->plants()->detach();
             foreach ($request->host_plant_ids as $plantId) {
-                $species->hostPlants()->attach($plantId, ['plant_type' => 'host']);
+                $species->plants()->attach($plantId, [
+                    'is_nectar' => false,
+                    'is_larval_host' => true,
+                ]);
             }
         }
 
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'hostPlants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ]);
     }
 

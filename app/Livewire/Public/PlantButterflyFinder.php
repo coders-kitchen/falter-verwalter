@@ -18,7 +18,6 @@ class PlantButterflyFinder extends Component
 
     public function mount()
     {
-        // If plant IDs are provided via URL, update matching species
         if (!empty($this->selectedPlantIds)) {
             $this->showResults = true;
         }
@@ -26,36 +25,26 @@ class PlantButterflyFinder extends Component
 
     public function updatedSelectedPlantIds()
     {
+        $this->selectedPlantIds = array_map('intval', (array) $this->selectedPlantIds);
         $this->resetPage();
-        if (!empty($this->selectedPlantIds)) {
-            $this->showResults = true;
-        } else {
-            $this->showResults = false;
-        }
+        $this->showResults = !empty($this->selectedPlantIds);
     }
 
     public function getMatchingSpeciesQuery()
     {
-        $query = Species::with(['generations', 'distributionAreas']);
+        $query = Species::with(['plants', 'distributionAreas']);
 
         if (!empty($this->selectedPlantIds)) {
-            $query->whereHas('generations', function ($q) {
-                $q->where(function ($subQ) {
-                    // Check nectar plants
-                    foreach ($this->selectedPlantIds as $plantId) {
-                        $subQ->orWhereJsonContains('nectar_plants', (int)$plantId);
-                    }
-                })->orWhere(function ($subQ) {
-                    // Check larval host plants
-                    foreach ($this->selectedPlantIds as $plantId) {
-                        $subQ->orWhereJsonContains('larval_host_plants', (int)$plantId);
-                    }
-                });
+            $query->whereHas('plants', function ($q) {
+                $q->whereIn('plants.id', $this->selectedPlantIds)
+                    ->where(function ($pivotQuery) {
+                        $pivotQuery->where('species_plant.is_nectar', true)
+                            ->orWhere('species_plant.is_larval_host', true);
+                    });
             });
         }
 
-        return $query->distinct()
-            ->orderBy('name');
+        return $query->distinct()->orderBy('name');
     }
 
     public function clearSelection()
@@ -64,32 +53,37 @@ class PlantButterflyFinder extends Component
         $this->resetPage();
     }
 
-    public function removeSelectedPlant($plantId) {
-        $position = array_search($plantId, $this->selectedPlantIds);
-        array_splice($this->selectedPlantIds, $position, 1);
+    public function removeSelectedPlant($plantId)
+    {
+        $position = array_search((int) $plantId, array_map('intval', $this->selectedPlantIds), true);
+
+        if ($position !== false) {
+            array_splice($this->selectedPlantIds, $position, 1);
+        }
+
+        $this->selectedPlantIds = array_values(array_map('intval', $this->selectedPlantIds));
+        $this->showResults = !empty($this->selectedPlantIds);
     }
 
     public function getPlantUseForSpecies($species)
     {
         $uses = [];
 
-        foreach ($this->selectedPlantIds as $plantId) {
-            $plantId = (int)$plantId;
+        foreach ($species->plants as $plant) {
+            if (!in_array((int) $plant->id, array_map('intval', $this->selectedPlantIds), true)) {
+                continue;
+            }
 
-            foreach ($species->generations as $generation) {
-                // Check nectar plants
-                if ($generation->nectar_plants && in_array($plantId, $generation->nectar_plants)) {
-                    $uses[] = 'Nektarpflanze';
-                }
+            if ($plant->pivot->is_nectar) {
+                $uses[] = 'Nektarpflanze';
+            }
 
-                // Check larval host plants
-                if ($generation->larval_host_plants && in_array($plantId, $generation->larval_host_plants)) {
-                    $uses[] = 'Futterpflanze';
-                }
+            if ($plant->pivot->is_larval_host) {
+                $uses[] = 'Futterpflanze';
             }
         }
 
-        return array_unique($uses);
+        return array_values(array_unique($uses));
     }
 
     public function render()
@@ -98,9 +92,7 @@ class PlantButterflyFinder extends Component
             ->orderBy('name')
             ->get();
 
-        // Get paginated matching species using the query builder
-        $paginatedSpecies = $this->getMatchingSpeciesQuery()
-            ->paginate(20);
+        $paginatedSpecies = $this->getMatchingSpeciesQuery()->paginate(20);
 
         return view('livewire.public.plant-butterfly-finder', [
             'plants' => $plants,

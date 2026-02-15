@@ -55,10 +55,25 @@ class Species extends Model
             ->withTimestamps();
     }
 
-    public function hostPlants(): BelongsToMany
+    public function plants(): BelongsToMany
     {
         return $this->belongsToMany(Plant::class, 'species_plant', 'species_id', 'plant_id')
-            ->withPivot('plant_type')
+            ->withPivot('is_nectar', 'is_larval_host')
             ->withTimestamps();
+    }
+
+    public function nectarPlants(): BelongsToMany
+    {
+        return $this->plants()->wherePivot('is_nectar', true);
+    }
+
+    public function larvalHostPlants(): BelongsToMany
+    {
+        return $this->plants()->wherePivot('is_larval_host', true);
+    }
+
+    public function hostPlants(): BelongsToMany
+    {
+        return $this->larvalHostPlants();
     }
 }

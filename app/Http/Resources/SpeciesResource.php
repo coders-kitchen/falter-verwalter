@@ -33,7 +33,16 @@ class SpeciesResource extends JsonResource
             'sage_feeding_indicator' => $this->sage_feeding_indicator,
             'distribution_areas' => $this->whenLoaded('distributionAreas', DistributionAreaResource::collection($this->distributionAreas)),
             'habitats' => $this->whenLoaded('habitats', HabitatResource::collection($this->habitats)),
-            'host_plants' => $this->whenLoaded('hostPlants', PlantResource::collection($this->hostPlants)),
+            'plants' => $this->whenLoaded('plants', function () {
+                return $this->plants->map(function ($plant) {
+                    return [
+                        'id' => $plant->id,
+                        'name' => $plant->name,
+                        'is_nectar' => (bool) ($plant->pivot->is_nectar ?? false),
+                        'is_larval_host' => (bool) ($plant->pivot->is_larval_host ?? false),
+                    ];
+                });
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

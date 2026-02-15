@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Generation;
 use App\Models\Species;
-use App\Models\Plant;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -25,8 +24,6 @@ class GenerationManager extends Component
         'flight_start_month' => 1,
         'flight_end_month' => 12,
         'description' => '',
-        'nectar_plants' => [],
-        'larval_host_plants' => [],
     ];
 
     protected $rules = [
@@ -50,11 +47,8 @@ class GenerationManager extends Component
             ->orderBy('generation_number')
             ->paginate(20);
 
-        $plants = Plant::orderBy('name')->get();
-
         return view('livewire.generation-manager', [
             'generations' => $generations,
-            'plants' => $plants,
         ]);
     }
 
@@ -74,8 +68,6 @@ class GenerationManager extends Component
             'flight_start_month' => $generation->flight_start_month,
             'flight_end_month' => $generation->flight_end_month,
             'description' => $generation->description ?? '',
-            'nectar_plants' => $generation->nectar_plants ?? [],
-            'larval_host_plants' => $generation->larval_host_plants ?? [],
         ];
         $this->showModal = true;
     }
@@ -112,8 +104,6 @@ class GenerationManager extends Component
             'larva_end_month' => $this->form['larva_end_month'],
             'flight_start_month' => $this->form['flight_start_month'],
             'flight_end_month' => $this->form['flight_end_month'],
-            'nectar_plants' => $this->form['nectar_plants'] ?? [],
-            'larval_host_plants' => $this->form['larval_host_plants'] ?? [],
             'description' => $this->form['description'],
         ];
 
@@ -154,8 +144,6 @@ class GenerationManager extends Component
             'flight_start_month' => 1,
             'flight_end_month' => 12,
             'description' => '',
-            'nectar_plants' => [],
-            'larval_host_plants' => [],
         ];
         $this->resetErrorBag();
     }

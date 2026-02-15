@@ -21,7 +21,6 @@
                         <th>Generation</th>
                         <th>Raupenzeit</th>
                         <th>Flugzeit</th>
-                        <th>Pflanzen</th>
                         <th>Aktionen</th>
                     </tr>
                 </thead>
@@ -39,23 +38,6 @@
                                 <div class="text-sm">
                                     {{ \App\Models\Generation::getMonthName($generation->flight_start_month) }}
                                     - {{ \App\Models\Generation::getMonthName($generation->flight_end_month) }}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="text-sm flex gap-2">
-                                    @php
-                                        $nectarCount = count($generation->nectar_plants ?? []);
-                                        $hostCount = count($generation->larval_host_plants ?? []);
-                                    @endphp
-                                    @if($nectarCount > 0)
-                                        <span class="badge badge-info" title="Nektarpflanzen">🌺 {{ $nectarCount }}</span>
-                                    @endif
-                                    @if($hostCount > 0)
-                                        <span class="badge badge-success" title="Futterpflanzen">🥬 {{ $hostCount }}</span>
-                                    @endif
-                                    @if($nectarCount === 0 && $hostCount === 0)
-                                        <span class="text-base-content/50">Keine</span>
-                                    @endif
                                 </div>
                             </td>
                             <td>
@@ -176,39 +158,8 @@
                             rows="2"
                             placeholder="z.B. Besonderheiten dieser Generation..."></textarea>
                     </div>
-
-                    <!-- Nektarpflanzen Selection -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">🌺 Nektarpflanzen (für Schmetterlinge)</span>
-                        </label>
-                        <select
-                            wire:model="form.nectar_plants"
-                            multiple
-                            class="select select-bordered w-full"
-                            size="6"
-                        >
-                            @foreach($plants as $plant)
-                                <option value="{{ $plant->id }}">{{ $plant->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Larval Host Plants Selection -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">🥬 Futterpflanzen (für Raupen)</span>
-                        </label>
-                        <select
-                            wire:model="form.larval_host_plants"
-                            multiple
-                            class="select select-bordered w-full"
-                            size="6"
-                        >
-                            @foreach($plants as $plant)
-                                <option value="{{ $plant->id }}">{{ $plant->name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="alert alert-info">
+                        <span>Die Zuordnung von Nektar- und Futterpflanzen erfolgt jetzt artbezogen im Bereich "Pflanzen".</span>
                     </div>
                 </div>
 
