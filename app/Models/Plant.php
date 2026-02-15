@@ -41,7 +41,6 @@ class Plant extends Model
     ];
 
     protected $casts = [
-        'bloom_months' => 'json',
         'is_native' => 'boolean',
         'is_invasive' => 'boolean',
     ];

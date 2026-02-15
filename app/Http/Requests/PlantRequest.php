@@ -25,7 +25,6 @@ class PlantRequest extends FormRequest
             'moisture_number' => 'nullable|integer|min:1|max:9',
             'moisture_variation' => 'nullable|integer|min:1|max:9',
             'nitrogen_number' => 'nullable|integer|min:1|max:9',
-            'bloom_months' => 'nullable|array',
             'bloom_months.*' => 'string',
             'bloom_color' => 'nullable|string|max:255',
             'plant_height_cm' => 'nullable|integer|min:0',
