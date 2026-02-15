@@ -14,6 +14,17 @@ class PlantResource extends JsonResource
             'name' => $this->name,
             'scientific_name' => $this->scientific_name,
             'family_genus' => $this->family_genus,
+            'genus' => $this->whenLoaded('genus', function () {
+                if (!$this->genus) {
+                    return null;
+                }
+
+                return [
+                    'id' => $this->genus->id,
+                    'name' => $this->genus->name,
+                    'path' => $this->genus->hierarchyPath(),
+                ];
+            }),
             'life_form' => $this->whenLoaded('lifeForm', fn() => [
                 'id' => $this->lifeForm->id,
                 'name' => $this->lifeForm->name,

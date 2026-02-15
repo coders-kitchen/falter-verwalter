@@ -23,7 +23,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Familie</th>
+                    <th>Gattung</th>
                     <th>Größe</th>
                     <th>Generationen</th>
                     <th>Aktionen</th>
@@ -33,7 +33,7 @@
                 @forelse($items as $item)
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
-                        <td>{{ $item->family->name ?? '—' }}</td>
+                        <td>{{ $item->genus->name ?? '—' }}</td>
                         <td>
                             <span class="badge badge-lg">{{ $item->size_category }}</span>
                         </td>
@@ -129,18 +129,18 @@
                         />
                     </div>
 
-                    <!-- Family -->
+                    <!-- Genus -->
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">Familie *</span>
+                            <span class="label-text font-semibold">Gattung (mit Hierarchie) *</span>
                         </label>
-                        <select wire:model="form.family_id" class="select select-bordered @error('form.family_id') select-error @enderror">
-                            <option value="">— Wählen Sie eine Familie —</option>
-                            @foreach($families as $family)
-                                <option value="{{ $family->id }}">{{ $family->name }}</option>
+                        <select wire:model="form.genus_id" class="select select-bordered @error('form.genus_id') select-error @enderror">
+                            <option value="">— Wählen Sie eine Gattung —</option>
+                            @foreach($genera as $genus)
+                                <option value="{{ $genus['id'] }}">{{ $genus['label'] }}</option>
                             @endforeach
                         </select>
-                        @error('form.family_id')
+                        @error('form.genus_id')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>
                         @enderror
                     </div>

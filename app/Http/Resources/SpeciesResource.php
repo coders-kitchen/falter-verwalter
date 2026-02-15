@@ -17,6 +17,17 @@ class SpeciesResource extends JsonResource
                 'id' => $this->family->id,
                 'name' => $this->family->name,
             ]),
+            'genus' => $this->whenLoaded('genus', function () {
+                if (!$this->genus) {
+                    return null;
+                }
+
+                return [
+                    'id' => $this->genus->id,
+                    'name' => $this->genus->name,
+                    'path' => $this->genus->hierarchyPath(),
+                ];
+            }),
             'size_category' => $this->size_category,
             'color_description' => $this->color_description,
             'special_features' => $this->special_features,

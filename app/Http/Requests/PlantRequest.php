@@ -17,6 +17,8 @@ class PlantRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'scientific_name' => 'nullable|string|max:255',
+            'family_id' => 'nullable|exists:families,id|required_without:genus_id',
+            'genus_id' => 'nullable|exists:genera,id|required_without:family_id',
             'family_genus' => 'nullable|string|max:255',
             'life_form_id' => 'required|exists:life_forms,id',
             'threat_category_id' => 'nullable|exists:threat_categories,id',

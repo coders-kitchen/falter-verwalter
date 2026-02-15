@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SpeciesRequest;
 use App\Http\Resources\SpeciesResource;
+use App\Models\Genus;
 use App\Models\Species;
 use Illuminate\Http\JsonResponse;
 
@@ -11,7 +12,7 @@ class SpeciesController extends Controller
 {
     public function index(): JsonResponse
     {
-        $species = Species::with('family:id,name')
+        $species = Species::with('family:id,name', 'genus.subfamily.family', 'genus.tribe')
             ->paginate(50);
 
         return response()->json([
@@ -23,8 +24,14 @@ class SpeciesController extends Controller
 
     public function store(SpeciesRequest $request): JsonResponse
     {
+        $payload = $request->validated();
+        if (!empty($payload['genus_id'])) {
+            $genus = Genus::with('subfamily.family')->findOrFail((int) $payload['genus_id']);
+            $payload['family_id'] = $genus->subfamily->family->id;
+        }
+
         $species = Species::create(array_merge(
-            $request->validated(),
+            $payload,
             ['user_id' => auth()->id()]
         ));
 
@@ -45,20 +52,26 @@ class SpeciesController extends Controller
         }
 
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'genus.subfamily.family', 'genus.tribe', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ], 201);
     }
 
     public function show(Species $species): JsonResponse
     {
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'genus.subfamily.family', 'genus.tribe', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ]);
     }
 
     public function update(SpeciesRequest $request, Species $species): JsonResponse
     {
-        $species->update($request->validated());
+        $payload = $request->validated();
+        if (!empty($payload['genus_id'])) {
+            $genus = Genus::with('subfamily.family')->findOrFail((int) $payload['genus_id']);
+            $payload['family_id'] = $genus->subfamily->family->id;
+        }
+
+        $species->update($payload);
 
         // Update many-to-many relationships
         if ($request->has('distribution_area_ids')) {
@@ -78,7 +91,7 @@ class SpeciesController extends Controller
         }
 
         return response()->json([
-            'data' => new SpeciesResource($species->load('family:id,name', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
+            'data' => new SpeciesResource($species->load('family:id,name', 'genus.subfamily.family', 'genus.tribe', 'distributionAreas:id,name', 'habitats:id,name', 'plants:id,name')),
         ]);
     }
 

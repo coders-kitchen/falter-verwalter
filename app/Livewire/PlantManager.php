@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Plant;
 use App\Models\LifeForm;
 use App\Models\Habitat;
-use App\Models\Family;
+use App\Models\Genus;
 use App\Models\ThreatCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,6 +22,7 @@ class PlantManager extends Component
         'name' => '',
         'scientific_name' => '',
         'family_id' => null,
+        'genus_id' => null,
         'life_form_id' => null,
         'threat_category_id' => null,
         'light_number' => 5,
@@ -57,7 +58,7 @@ class PlantManager extends Component
     protected $rules = [
         'form.name' => 'required|string|max:255',
         'form.scientific_name' => 'nullable|string|max:255',
-        'form.family_id' => 'nullable|exists:families,id',
+        'form.genus_id' => 'required|exists:genera,id',
         'form.life_form_id' => 'required|exists:life_forms,id',
         'form.threat_category_id' => 'nullable|exists:threat_categories,id',
         'form.light_number_state' => 'required|in:numeric,x,unknown',
@@ -102,7 +103,20 @@ class PlantManager extends Component
                        ->orderBy('name')
                        ->paginate(50);
 
-        $families = Family::where('type', 'plant')->orderBy('name')->get();
+        $genera = Genus::with(['subfamily.family', 'tribe'])
+            ->whereHas('subfamily.family', function ($q) {
+                $q->where('type', 'plant');
+            })
+            ->orderBy('name')
+            ->get()
+            ->map(function ($genus) {
+                return [
+                    'id' => $genus->id,
+                    'name' => $genus->name,
+                    'label' => $genus->displayLabel(),
+                ];
+            });
+
         $lifeForms = LifeForm::orderBy('name')->get();
         $threatCategories = ThreatCategory::orderBy('rank')->get();
 
@@ -111,7 +125,7 @@ class PlantManager extends Component
 
         return view('livewire.plant-manager', [
             'items' => $items,
-            'families' => $families,
+            'genera' => $genera,
             'lifeForms' => $lifeForms,
             'threatCategories' => $threatCategories,
             'habitats' => $habitats,
@@ -165,6 +179,7 @@ class PlantManager extends Component
             'name' => $plant->name,
             'scientific_name' => $plant->scientific_name,
             'family_id' => $plant->family_id,
+            'genus_id' => $plant->genus_id,
             'life_form_id' => $plant->life_form_id,
             'threat_category_id' => $plant->threat_category_id,
             'light_number' => $plant->light_number,
@@ -206,6 +221,8 @@ class PlantManager extends Component
 
         $formData = $this->form;
         $this->normalizeIndicatorValues($formData);
+        $genus = Genus::with('subfamily.family')->findOrFail((int) $formData['genus_id']);
+        $formData['family_id'] = $genus->subfamily->family->id;
 
         if ($this->plant) {
             $habitatIds = $this->form['habitat_ids'];
@@ -244,6 +261,7 @@ class PlantManager extends Component
             'name' => '',
             'scientific_name' => '',
             'family_id' => null,
+            'genus_id' => null,
             'life_form_id' => null,
             'threat_category_id' => null,
             'light_number' => 5,

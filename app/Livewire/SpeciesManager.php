@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Species;
-use App\Models\Family;
+use App\Models\Genus;
 use App\Models\Habitat;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,7 +18,7 @@ class SpeciesManager extends Component
     public $form = [
         'name' => '',
         'scientific_name' => '',
-        'family_id' => '',
+        'genus_id' => '',
         'size_category' => '',
         'hibernation_stage' => '',
         'sage_feeding_indicator' => 'keine genaue Angabe',
@@ -28,7 +28,7 @@ class SpeciesManager extends Component
     protected $rules = [
         'form.name' => 'required|string|max:255',
         'form.scientific_name' => 'nullable|string|max:255',
-        'form.family_id' => 'required|exists:families,id',
+        'form.genus_id' => 'required|exists:genera,id',
         'form.size_category' => 'required|in:XS,S,M,L,XL',
         'form.hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
         'form.sage_feeding_indicator' => 'required|in:Ja,Nein,keine genaue Angabe',
@@ -38,7 +38,7 @@ class SpeciesManager extends Component
 
     public function render()
     {
-        $query = Species::with('family')->orderBy('name');
+        $query = Species::with(['family', 'genus'])->orderBy('name');
 
         if ($this->search) {
             $query->where('name', 'like', '%' . $this->search . '%')
@@ -48,9 +48,23 @@ class SpeciesManager extends Component
         // Get habitats with hierarchy ordering (root nodes first, then children)
         $habitats = $this->getHierarchicalHabitats();
 
+        $genera = Genus::with(['subfamily.family', 'tribe'])
+            ->whereHas('subfamily.family', function ($q) {
+                $q->where('type', 'butterfly');
+            })
+            ->orderBy('name')
+            ->get()
+            ->map(function ($genus) {
+                return [
+                    'id' => $genus->id,
+                    'name' => $genus->name,
+                    'label' => $genus->displayLabel(),
+                ];
+            });
+
         return view('livewire.species-manager', [
             'items' => $query->paginate(50),
-            'families' => Family::orderBy('name')->get(),
+            'genera' => $genera,
             'habitats' => $habitats,
         ]);
     }
@@ -94,7 +108,7 @@ class SpeciesManager extends Component
     public function openEditModal(Species $species)
     {
         $this->species = $species;
-        $this->form = $species->only('name', 'scientific_name', 'family_id', 'size_category', 'hibernation_stage', 'sage_feeding_indicator');
+        $this->form = $species->only('name', 'scientific_name', 'genus_id', 'size_category', 'hibernation_stage', 'sage_feeding_indicator');
 
         $this->form['habitat_ids'] = $species->habitats()->pluck('habitats.id')->toArray();
 
@@ -115,6 +129,8 @@ class SpeciesManager extends Component
         $formData = $this->form;
 
         unset($formData['habitat_ids']);
+        $genus = Genus::with('subfamily.family')->findOrFail((int) $formData['genus_id']);
+        $formData['family_id'] = $genus->subfamily->family->id;
 
         if ($this->species) {
             $this->species->update($formData);
@@ -142,7 +158,7 @@ class SpeciesManager extends Component
         $this->form = [
             'name' => '',
             'scientific_name' => '',
-            'family_id' => '',
+            'genus_id' => '',
             'size_category' => '',
             'hibernation_stage' => '',
             'sage_feeding_indicator' => 'keine genaue Angabe',

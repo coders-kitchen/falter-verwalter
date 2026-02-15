@@ -16,7 +16,8 @@ class SpeciesRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'scientific_name' => 'nullable|string|max:255',
-            'family_id' => 'required|exists:families,id',
+            'family_id' => 'nullable|exists:families,id|required_without:genus_id',
+            'genus_id' => 'nullable|exists:genera,id|required_without:family_id',
             'size_category' => 'required|in:XS,S,M,L,XL',
             'color_description' => 'nullable|string',
             'special_features' => 'nullable|string',
@@ -41,8 +42,8 @@ class SpeciesRequest extends FormRequest
     {
         return [
             'name.required' => 'Der Artname ist erforderlich.',
-            'family_id.required' => 'Die Familie ist erforderlich.',
-            'family_id.exists' => 'Die ausgewählte Familie existiert nicht.',
+            'genus_id.required' => 'Die Gattung ist erforderlich.',
+            'genus_id.exists' => 'Die ausgewählte Gattung existiert nicht.',
             'size_category.required' => 'Die Größenkategorie ist erforderlich.',
             'size_category.in' => 'Die Größenkategorie muss eine gültige Option sein.',
         ];

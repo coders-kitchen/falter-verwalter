@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlantRequest;
 use App\Http\Resources\PlantResource;
+use App\Models\Genus;
 use App\Models\Plant;
 use Illuminate\Http\JsonResponse;
 
@@ -11,7 +12,7 @@ class PlantController extends Controller
 {
     public function index(): JsonResponse
     {
-        $plants = Plant::with('lifeForm:id,name', 'threatCategory:id,code,label,color_code')->paginate(50);
+        $plants = Plant::with('lifeForm:id,name', 'genus.subfamily.family', 'genus.tribe', 'threatCategory:id,code,label,color_code')->paginate(50);
 
         return response()->json([
             'data' => PlantResource::collection($plants),
@@ -22,8 +23,14 @@ class PlantController extends Controller
 
     public function store(PlantRequest $request): JsonResponse
     {
+        $payload = $request->validated();
+        if (!empty($payload['genus_id'])) {
+            $genus = Genus::with('subfamily.family')->findOrFail((int) $payload['genus_id']);
+            $payload['family_id'] = $genus->subfamily->family->id;
+        }
+
         $plant = Plant::create(array_merge(
-            $request->validated(),
+            $payload,
             ['user_id' => auth()->id()]
         ));
 
@@ -32,27 +39,33 @@ class PlantController extends Controller
         }
 
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'genus.subfamily.family', 'genus.tribe', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
         ], 201);
     }
 
     public function show(Plant $plant): JsonResponse
     {
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'speciesAsHostPlant:id,name', 'threatCategory:id,code,label,color_code')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'genus.subfamily.family', 'genus.tribe', 'habitats:id,name', 'speciesAsHostPlant:id,name', 'threatCategory:id,code,label,color_code')),
         ]);
     }
 
     public function update(PlantRequest $request, Plant $plant): JsonResponse
     {
-        $plant->update($request->validated());
+        $payload = $request->validated();
+        if (!empty($payload['genus_id'])) {
+            $genus = Genus::with('subfamily.family')->findOrFail((int) $payload['genus_id']);
+            $payload['family_id'] = $genus->subfamily->family->id;
+        }
+
+        $plant->update($payload);
 
         if ($request->has('habitat_ids')) {
             $plant->habitats()->sync($request->habitat_ids);
         }
 
         return response()->json([
-            'data' => new PlantResource($plant->load('lifeForm:id,name', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
+            'data' => new PlantResource($plant->load('lifeForm:id,name', 'genus.subfamily.family', 'genus.tribe', 'habitats:id,name', 'threatCategory:id,code,label,color_code')),
         ]);
     }
 
