@@ -19,7 +19,7 @@ class DistributionAreaRequest extends FormRequest
             'name' => 'required|string|max:255|unique:distribution_areas,name,' . $distributionAreaId,
             'code' => 'required|string|max:120|alpha_dash|unique:distribution_areas,code,' . $distributionAreaId,
             'description' => 'nullable|string',
-            'geometry_geojson' => 'nullable|json',
+            'geojson_path' => 'nullable|string|max:255',
         ];
     }
 
@@ -31,7 +31,7 @@ class DistributionAreaRequest extends FormRequest
             'code.required' => 'Der Code ist erforderlich.',
             'code.alpha_dash' => 'Der Code darf nur Buchstaben, Zahlen und Bindestriche enthalten.',
             'code.unique' => 'Dieser Code existiert bereits.',
-            'geometry_geojson.json' => 'Die GeoJSON-Geometrie muss gültiges JSON sein.',
+            'geojson_path.max' => 'Der GeoJSON-Pfad ist zu lang.',
         ];
     }
 }

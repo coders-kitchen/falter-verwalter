@@ -32,7 +32,7 @@
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td><code>{{ $item->code }}</code></td>
                         <td>
-                            @if ($item->geometry_geojson)
+                            @if ($item->geojson_path)
                                 <span class="badge badge-success badge-sm">vorhanden</span>
                             @else
                                 <span class="badge badge-ghost badge-sm">fehlt</span>
@@ -127,20 +127,40 @@
 
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">GeoJSON-Geometrie</span>
+                            <span class="label-text font-semibold">GeoJSON-Datei</span>
                         </label>
-                        <textarea
-                            wire:model="form.geometry_geojson"
-                            class="textarea textarea-bordered font-mono text-xs @error('form.geometry_geojson') textarea-error @enderror"
-                            placeholder='{"type":"Polygon","coordinates":[...]}'
-                            rows="8"
-                        ></textarea>
+                        <div
+                            x-data="{ uploadError: '' }"
+                            x-on:livewire-upload-error="uploadError = 'Datei-Upload fehlgeschlagen. Prüfe Dateigröße/Limits und Server-Konfiguration (CACHE_STORE, upload_max_filesize).'"
+                        >
+                            <input
+                                wire:model="geojsonFile"
+                                type="file"
+                                accept=".geojson,.json,application/geo+json,application/json"
+                                class="file-input file-input-bordered @error('geojsonFile') file-input-error @enderror"
+                                x-on:change="uploadError = ''"
+                            />
+                            <div x-show="uploadError" class="text-error text-sm mt-1" x-text="uploadError"></div>
+                        </div>
                         <label class="label">
-                            <span class="label-text-alt opacity-75">Erlaubt: GeoJSON Polygon oder MultiPolygon</span>
+                            <span class="label-text-alt opacity-75">Upload einer Datei (max. 5 MB). Erlaubt: Polygon oder MultiPolygon.</span>
                         </label>
-                        @error('form.geometry_geojson')
+                        @error('geojsonFile')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>
                         @enderror
+                        <div wire:loading wire:target="geojsonFile" class="text-xs opacity-75 mt-1">
+                            Datei wird verarbeitet...
+                        </div>
+
+                        @if(!empty($form['geojson_path']))
+                            <label class="label">
+                                <span class="label-text-alt">Aktuelle Datei: <code>{{ $form['geojson_path'] }}</code></span>
+                            </label>
+                            <label class="label cursor-pointer justify-start gap-3">
+                                <input wire:model="removeGeojson" type="checkbox" class="checkbox checkbox-sm" />
+                                <span class="label-text">Vorhandene GeoJSON-Datei entfernen</span>
+                            </label>
+                        @endif
                     </div>
 
                     <div class="flex gap-4 justify-end mt-8">

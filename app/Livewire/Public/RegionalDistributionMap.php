@@ -5,6 +5,7 @@ namespace App\Livewire\Public;
 use App\Models\DistributionArea;
 use App\Models\Species;
 use App\Models\SpeciesDistributionArea;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class RegionalDistributionMap extends Component
@@ -40,7 +41,10 @@ class RegionalDistributionMap extends Component
 
     public function aggregateRegionData()
     {
-        $areas = DistributionArea::orderBy('name')->get();
+        $areas = DistributionArea::query()
+            ->select(['id', 'name', 'code', 'geojson_path'])
+            ->orderBy('name')
+            ->get();
         $this->areaData = [];
         $this->maxCount = 0;
         $features = [];
@@ -64,17 +68,18 @@ class RegionalDistributionMap extends Component
                 'count' => $count,
                 'id' => $area->id,
                 'code' => $area->code,
-                'geometry_available' => !empty($area->geometry_geojson),
+                'geometry_available' => !empty($area->geojson_path),
             ];
 
             if ($count > $this->maxCount) {
                 $this->maxCount = $count;
             }
 
-            if ($area->geometry_geojson && in_array($area->geometry_geojson['type'] ?? null, ['Polygon', 'MultiPolygon'], true)) {
+            $geometry = $this->resolveAreaGeometry($area);
+            if (is_array($geometry) && in_array($geometry['type'] ?? null, ['Polygon', 'MultiPolygon'], true)) {
                 $features[] = [
                     'type' => 'Feature',
-                    'geometry' => $area->geometry_geojson,
+                    'geometry' => $geometry,
                     'properties' => [
                         'id' => $area->id,
                         'name' => $area->name,
@@ -89,6 +94,52 @@ class RegionalDistributionMap extends Component
         $this->mapPayload = [
             'type' => 'FeatureCollection',
             'features' => $features,
+        ];
+    }
+
+    private function resolveAreaGeometry(DistributionArea $area): ?array
+    {
+        if ($area->geojson_path && Storage::disk('public')->exists($area->geojson_path)) {
+            $raw = Storage::disk('public')->get($area->geojson_path);
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                return $this->extractGeometryFromGeoJson($decoded);
+            }
+        }
+
+        return null;
+    }
+
+    private function extractGeometryFromGeoJson(array $decoded): ?array
+    {
+        $type = $decoded['type'] ?? null;
+
+        if ($type === 'Feature') {
+            $geometry = $decoded['geometry'] ?? null;
+            return is_array($geometry) ? $this->extractGeometryFromGeoJson($geometry) : null;
+        }
+
+        if ($type === 'FeatureCollection') {
+            $features = $decoded['features'] ?? null;
+            if (!is_array($features) || count($features) === 0 || !is_array($features[0])) {
+                return null;
+            }
+
+            return $this->extractGeometryFromGeoJson($features[0]);
+        }
+
+        if (!in_array($type, ['Polygon', 'MultiPolygon'], true)) {
+            return null;
+        }
+
+        $coordinates = $decoded['coordinates'] ?? null;
+        if (!is_array($coordinates) || count($coordinates) === 0) {
+            return null;
+        }
+
+        return [
+            'type' => $type,
+            'coordinates' => $coordinates,
         ];
     }
 

@@ -162,7 +162,10 @@ class SpeciesBrowser extends Component
             'tribes' => $tribes,
             'genera' => $genera,
             'habitats' => Habitat::orderBy('name')->get(),
-            'distributionAreas' => DistributionArea::orderBy('name')->get(),
+            'distributionAreas' => DistributionArea::query()
+                ->select(['id', 'name', 'code'])
+                ->orderBy('name')
+                ->get(),
             'threatCategories' => ThreatCategory::orderBy('rank')->get()
         ]);
     }

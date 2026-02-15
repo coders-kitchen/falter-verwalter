@@ -11,7 +11,10 @@ class DistributionAreaController extends Controller
 {
     public function index(): JsonResponse
     {
-        $areas = DistributionArea::paginate(50);
+        $areas = DistributionArea::query()
+            ->select(['id', 'name', 'code', 'description', 'geojson_path', 'created_at', 'updated_at'])
+            ->orderBy('name')
+            ->paginate(50);
 
         return response()->json([
             'data' => DistributionAreaResource::collection($areas),
@@ -23,8 +26,6 @@ class DistributionAreaController extends Controller
     public function store(DistributionAreaRequest $request): JsonResponse
     {
         $payload = $request->validated();
-        $payload['geometry_geojson'] = empty($payload['geometry_geojson']) ? null : json_decode($payload['geometry_geojson'], true);
-
         $area = DistributionArea::create(array_merge($payload, ['user_id' => auth()->id()]));
 
         return response()->json([
@@ -42,8 +43,6 @@ class DistributionAreaController extends Controller
     public function update(DistributionAreaRequest $request, DistributionArea $distributionArea): JsonResponse
     {
         $payload = $request->validated();
-        $payload['geometry_geojson'] = empty($payload['geometry_geojson']) ? null : json_decode($payload['geometry_geojson'], true);
-
         $distributionArea->update($payload);
 
         return response()->json([

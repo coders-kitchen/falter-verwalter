@@ -15,11 +15,7 @@ class DistributionArea extends Model
         'name',
         'code',
         'description',
-        'geometry_geojson',
-    ];
-
-    protected $casts = [
-        'geometry_geojson' => 'array',
+        'geojson_path',
     ];
 
     public function species(): BelongsToMany
