@@ -133,7 +133,6 @@ class PlantManager extends Component
     public function openEditModal(Plant $plant)
     {
         $this->plant = $plant;
-        $bloomMonths = $plant->bloom_months ? json_decode($plant->bloom_months, true) : [];
 
         $this->form = [
             'name' => $plant->name,
@@ -168,7 +167,6 @@ class PlantManager extends Component
     {
         $this->validate();
 
-        // Decode bloom_months JSON
         $formData = $this->form;
 
         if ($this->plant) {

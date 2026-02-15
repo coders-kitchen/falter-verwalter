@@ -29,7 +29,6 @@ class Plant extends Model
         'bloom_start_month',
         'bloom_end_month',
         'bloom_color',
-        'plant_height_cm',
         'plant_height_cm_from',
         'plant_height_cm_until',
         'lifespan',
