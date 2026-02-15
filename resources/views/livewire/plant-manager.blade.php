@@ -169,6 +169,20 @@
 
                         <div class="form-control">
                             <label class="label">
+                                <span class="label-text font-semibold">Salzzahl (0-9)</span>
+                            </label>
+                            <input                            
+                                wire:model="form.salt_number"    
+                                type="range"
+                                min="0"
+                                max="9"
+                                class="range"
+                            />
+                            <div class="text-xs text-center mt-1">{{ $form['light_number'] }}</div>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
                                 <span class="label-text font-semibold">Temperaturzahl (1-9)</span>
                             </label>
                             <input
