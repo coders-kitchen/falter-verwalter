@@ -19,13 +19,21 @@ class Plant extends Model
         'scientific_name',
         'family_genus',
         'light_number',
+        'light_number_state',
         'salt_number',
+        'salt_number_state',
         'temperature_number',
+        'temperature_number_state',
         'continentality_number',
+        'continentality_number_state',
         'reaction_number',
+        'reaction_number_state',
         'moisture_number',
+        'moisture_number_state',
         'moisture_variation',
+        'moisture_variation_state',
         'nitrogen_number',
+        'nitrogen_number_state',
         'bloom_start_month',
         'bloom_end_month',
         'bloom_color',
@@ -43,6 +51,22 @@ class Plant extends Model
         'is_native' => 'boolean',
         'is_invasive' => 'boolean',
     ];
+
+    public function indicatorDisplay(string $field): string
+    {
+        $state = $this->{"{$field}_state"} ?? 'numeric';
+
+        if ($state === 'x') {
+            return 'X';
+        }
+
+        if ($state === 'unknown') {
+            return '?';
+        }
+
+        $value = $this->{$field};
+        return $value === null ? '—' : (string) $value;
+    }
 
     public function lifeForm(): BelongsTo
     {

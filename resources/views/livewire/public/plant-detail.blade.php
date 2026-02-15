@@ -39,6 +39,18 @@
                         </div>
                     @endif
                 </div>
+
+                <div class="divider my-6">Ökologische Zeigerwerte</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Lichtzahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('light_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Salzzahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('salt_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Temperaturzahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('temperature_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Kontinentalitätszahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('continentality_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Reaktionszahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('reaction_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Feuchtezahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('moisture_number') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Feuchtewechsel</span><span class="font-semibold">{{ $plant->indicatorDisplay('moisture_variation') }}</span></div>
+                    <div class="flex justify-between bg-base-200 rounded px-3 py-2"><span>Stickstoffzahl</span><span class="font-semibold">{{ $plant->indicatorDisplay('nitrogen_number') }}</span></div>
+                </div>
             </div>
         </div>
 

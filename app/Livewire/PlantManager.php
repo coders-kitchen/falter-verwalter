@@ -23,13 +23,21 @@ class PlantManager extends Component
         'family_id' => null,
         'life_form_id' => null,
         'light_number' => 5,
+        'light_number_state' => 'numeric',
         'salt_number' => 5,
+        'salt_number_state' => 'numeric',
         'temperature_number' => 5,
+        'temperature_number_state' => 'numeric',
         'continentality_number' => 5,
+        'continentality_number_state' => 'numeric',
         'reaction_number' => 5,
+        'reaction_number_state' => 'numeric',
         'moisture_number' => 5,
+        'moisture_number_state' => 'numeric',
         'moisture_variation' => 5,
+        'moisture_variation_state' => 'numeric',
         'nitrogen_number' => 5,
+        'nitrogen_number_state' => 'numeric',
         'bloom_start_month' => null,
         'bloom_end_month' => null,
         'bloom_color' => '',
@@ -48,14 +56,22 @@ class PlantManager extends Component
         'form.scientific_name' => 'nullable|string|max:255',
         'form.family_id' => 'nullable|exists:families,id',
         'form.life_form_id' => 'required|exists:life_forms,id',
-        'form.light_number' => 'required|integer|between:1,9',
-        'form.salt_number' => 'required|integer|between:0,9',
-        'form.temperature_number' => 'required|integer|between:1,9',
-        'form.continentality_number' => 'required|integer|between:1,9',
-        'form.reaction_number' => 'required|integer|between:1,9',
-        'form.moisture_number' => 'required|integer|between:1,12',
-        'form.moisture_variation' => 'required|integer|between:1,9',
-        'form.nitrogen_number' => 'required|integer|between:1,9',
+        'form.light_number_state' => 'required|in:numeric,x,unknown',
+        'form.salt_number_state' => 'required|in:numeric,x,unknown',
+        'form.temperature_number_state' => 'required|in:numeric,x,unknown',
+        'form.continentality_number_state' => 'required|in:numeric,x,unknown',
+        'form.reaction_number_state' => 'required|in:numeric,x,unknown',
+        'form.moisture_number_state' => 'required|in:numeric,x,unknown',
+        'form.moisture_variation_state' => 'required|in:numeric,x,unknown',
+        'form.nitrogen_number_state' => 'required|in:numeric,x,unknown',
+        'form.light_number' => 'nullable|integer|between:1,9|required_if:form.light_number_state,numeric',
+        'form.salt_number' => 'nullable|integer|between:0,9|required_if:form.salt_number_state,numeric',
+        'form.temperature_number' => 'nullable|integer|between:1,9|required_if:form.temperature_number_state,numeric',
+        'form.continentality_number' => 'nullable|integer|between:1,9|required_if:form.continentality_number_state,numeric',
+        'form.reaction_number' => 'nullable|integer|between:1,9|required_if:form.reaction_number_state,numeric',
+        'form.moisture_number' => 'nullable|integer|between:1,12|required_if:form.moisture_number_state,numeric',
+        'form.moisture_variation' => 'nullable|integer|between:1,9|required_if:form.moisture_variation_state,numeric',
+        'form.nitrogen_number' => 'nullable|integer|between:1,9|required_if:form.nitrogen_number_state,numeric',
         'form.bloom_start_month' => 'required|integer|between:1,12',
         'form.bloom_end_month' => 'required|integer|between:1,12',
         'form.bloom_color' => 'nullable|string|max:255',
@@ -133,6 +149,10 @@ class PlantManager extends Component
     public function openEditModal(Plant $plant)
     {
         $this->plant = $plant;
+        $stateOrFallback = function (string $field) use ($plant): string {
+            $stateField = "{$field}_state";
+            return $plant->{$stateField} ?? ($plant->{$field} === null ? 'unknown' : 'numeric');
+        };
 
         $this->form = [
             'name' => $plant->name,
@@ -140,13 +160,21 @@ class PlantManager extends Component
             'family_id' => $plant->family_id,
             'life_form_id' => $plant->life_form_id,
             'light_number' => $plant->light_number,
+            'light_number_state' => $stateOrFallback('light_number'),
             'salt_number' => $plant->salt_number,
+            'salt_number_state' => $stateOrFallback('salt_number'),
             'temperature_number' => $plant->temperature_number,
+            'temperature_number_state' => $stateOrFallback('temperature_number'),
             'continentality_number' => $plant->continentality_number,
+            'continentality_number_state' => $stateOrFallback('continentality_number'),
             'reaction_number' => $plant->reaction_number,
+            'reaction_number_state' => $stateOrFallback('reaction_number'),
             'moisture_number' => $plant->moisture_number,
+            'moisture_number_state' => $stateOrFallback('moisture_number'),
             'moisture_variation' => $plant->moisture_variation,
+            'moisture_variation_state' => $stateOrFallback('moisture_variation'),
             'nitrogen_number' => $plant->nitrogen_number,
+            'nitrogen_number_state' => $stateOrFallback('nitrogen_number'),
             'bloom_start_month' => $plant->bloom_start_month,
             'bloom_end_month' => $plant->bloom_end_month,
             'bloom_color' => $plant->bloom_color,
@@ -168,6 +196,7 @@ class PlantManager extends Component
         $this->validate();
 
         $formData = $this->form;
+        $this->normalizeIndicatorValues($formData);
 
         if ($this->plant) {
             $habitatIds = $this->form['habitat_ids'];
@@ -207,13 +236,21 @@ class PlantManager extends Component
             'scientific_name' => '',
             'life_form_id' => null,
             'light_number' => 5,
+            'light_number_state' => 'numeric',
             'salt_number' => 5,
+            'salt_number_state' => 'numeric',
             'temperature_number' => 5,
+            'temperature_number_state' => 'numeric',
             'continentality_number' => 5,
+            'continentality_number_state' => 'numeric',
             'reaction_number' => 5,
+            'reaction_number_state' => 'numeric',
             'moisture_number' => 5,
+            'moisture_number_state' => 'numeric',
             'moisture_variation' => 5,
+            'moisture_variation_state' => 'numeric',
             'nitrogen_number' => 5,
+            'nitrogen_number_state' => 'numeric',
             'bloom_start_month' => null,
             'bloom_end_month' => null,
             'bloom_color' => '',
@@ -227,5 +264,26 @@ class PlantManager extends Component
             'habitat_ids' => [],
         ];
         $this->resetErrorBag();
+    }
+
+    private function normalizeIndicatorValues(array &$formData): void
+    {
+        $fields = [
+            'light_number',
+            'salt_number',
+            'temperature_number',
+            'continentality_number',
+            'reaction_number',
+            'moisture_number',
+            'moisture_variation',
+            'nitrogen_number',
+        ];
+
+        foreach ($fields as $field) {
+            $state = $formData["{$field}_state"] ?? 'numeric';
+            if ($state !== 'numeric') {
+                $formData[$field] = null;
+            }
+        }
     }
 }

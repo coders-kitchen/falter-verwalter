@@ -152,118 +152,58 @@
 
                     <!-- Ecological Scales (1-9) -->
                     <div class="divider my-4">Ökologische Zeigerwerte</div>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Lichtzahl (1-9)</span>
-                            </label>
-                            <input
-                                wire:model="form.light_number"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['light_number'] }}</div>
-                        </div>
+                    @php
+                        $indicatorConfig = [
+                            ['field' => 'light_number', 'label' => 'Lichtzahl', 'min' => 1, 'max' => 9],
+                            ['field' => 'salt_number', 'label' => 'Salzzahl', 'min' => 0, 'max' => 9],
+                            ['field' => 'temperature_number', 'label' => 'Temperaturzahl', 'min' => 1, 'max' => 9],
+                            ['field' => 'continentality_number', 'label' => 'Kontinentalitätszahl', 'min' => 1, 'max' => 9],
+                            ['field' => 'reaction_number', 'label' => 'Reaktionszahl', 'min' => 1, 'max' => 9],
+                            ['field' => 'moisture_number', 'label' => 'Feuchtezahl', 'min' => 1, 'max' => 12],
+                            ['field' => 'moisture_variation', 'label' => 'Feuchtewechsel', 'min' => 1, 'max' => 9],
+                            ['field' => 'nitrogen_number', 'label' => 'Stickstoffzahl', 'min' => 1, 'max' => 9],
+                        ];
+                    @endphp
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($indicatorConfig as $indicator)
+                            @php
+                                $field = $indicator['field'];
+                                $stateField = $field . '_state';
+                                $state = $form[$stateField] ?? 'numeric';
+                            @endphp
+                            <div class="form-control border border-base-300 rounded-lg p-3">
+                                <label class="label pt-0">
+                                    <span class="label-text font-semibold">{{ $indicator['label'] }} ({{ $indicator['min'] }}-{{ $indicator['max'] }})</span>
+                                </label>
+                                <select wire:model.live="form.{{ $stateField }}" class="select select-bordered mb-2">
+                                    <option value="numeric">Zahl</option>
+                                    <option value="x">X (indifferent)</option>
+                                    <option value="unknown">? (ungeklärt)</option>
+                                </select>
 
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Salzzahl (0-9)</span>
-                            </label>
-                            <input                            
-                                wire:model="form.salt_number"    
-                                type="range"
-                                min="0"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['light_number'] }}</div>
-                        </div>
+                                @if($state === 'numeric')
+                                    <input
+                                        wire:model="form.{{ $field }}"
+                                        type="range"
+                                        min="{{ $indicator['min'] }}"
+                                        max="{{ $indicator['max'] }}"
+                                        class="range"
+                                    />
+                                    <div class="text-xs text-center mt-1">{{ $form[$field] ?? '—' }}</div>
+                                @else
+                                    <div class="text-sm text-center mt-2 font-semibold">
+                                        {{ $state === 'x' ? 'X' : '?' }}
+                                    </div>
+                                @endif
 
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Temperaturzahl (1-9)</span>
-                            </label>
-                            <input
-                                wire:model="form.temperature_number"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['temperature_number'] }}</div>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Kontinentalitätszahl (1-9)</span>
-                            </label>
-                            <input
-                                wire:model="form.continentality_number"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['continentality_number'] }}</div>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Reaktionszahl (1-9)</span>
-                            </label>
-                            <input
-                                wire:model="form.reaction_number"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['reaction_number'] }}</div>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Feuchtezahl  (1-12)</span>
-                            </label>
-                            <input
-                                wire:model="form.moisture_number"
-                                type="range"
-                                min="1"
-                                max="12"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['moisture_number'] }}</div>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Feuchtewechsel</span>
-                            </label>
-                            <input
-                                wire:model="form.moisture_variation"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['moisture_variation'] }}</div>
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text font-semibold">Stickstoffzahl</span>
-                            </label>
-                            <input
-                                wire:model="form.nitrogen_number"
-                                type="range"
-                                min="1"
-                                max="9"
-                                class="range"
-                            />
-                            <div class="text-xs text-center mt-1">{{ $form['nitrogen_number'] }}</div>
-                        </div>
+                                @error('form.' . $field)
+                                    <span class="text-error text-sm mt-1">{{ $message }}</span>
+                                @enderror
+                                @error('form.' . $stateField)
+                                    <span class="text-error text-sm mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endforeach
                     </div>
 
                     <!-- Botanical Attributes -->
