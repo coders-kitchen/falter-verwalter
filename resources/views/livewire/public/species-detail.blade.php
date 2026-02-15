@@ -68,6 +68,11 @@
                             <p class="text-lg">{{ $species->genus }}</p>
                         </div>
                     @endif
+
+                    <div>
+                        <label class="font-semibold text-sm opacity-75">Frisst auch Salbei-Arten</label>
+                        <p class="text-lg">{{ $species->sage_feeding_indicator ?? 'keine genaue Angabe' }}</p>
+                    </div>
                 </div>
             </div>
         </div>

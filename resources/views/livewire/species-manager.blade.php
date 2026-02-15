@@ -183,6 +183,20 @@
                             <option value="adult">Imago (Schmetterling)</option>
                         </select>
                     </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Frisst auch Salbei-Arten</span>
+                        </label>
+                        <select wire:model="form.sage_feeding_indicator" class="select select-bordered @error('form.sage_feeding_indicator') select-error @enderror">
+                            <option value="keine genaue Angabe">keine genaue Angabe</option>
+                            <option value="Ja">Ja</option>
+                            <option value="Nein">Nein</option>
+                        </select>
+                        @error('form.sage_feeding_indicator')
+                            <span class="text-error text-sm mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
                     
                     <!-- Habitats Multi-Select -->
                     <div class="form-control">

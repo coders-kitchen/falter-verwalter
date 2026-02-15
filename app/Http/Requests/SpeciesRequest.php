@@ -28,6 +28,7 @@ class SpeciesRequest extends FormRequest
             'red_list_status_eu' => 'nullable|string|max:255',
             'abundance_trend' => 'nullable|string|max:255',
             'protection_status' => 'nullable|string|max:255',
+            'sage_feeding_indicator' => 'required|in:Ja,Nein,keine genaue Angabe',
             'distribution_area_ids' => 'nullable|array',
             'distribution_area_ids.*' => 'exists:distribution_areas,id',
             'habitat_ids' => 'nullable|array',

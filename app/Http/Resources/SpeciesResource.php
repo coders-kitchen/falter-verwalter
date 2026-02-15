@@ -30,6 +30,7 @@ class SpeciesResource extends JsonResource
             ],
             'abundance_trend' => $this->abundance_trend,
             'protection_status' => $this->protection_status,
+            'sage_feeding_indicator' => $this->sage_feeding_indicator,
             'distribution_areas' => $this->whenLoaded('distributionAreas', DistributionAreaResource::collection($this->distributionAreas)),
             'habitats' => $this->whenLoaded('habitats', HabitatResource::collection($this->habitats)),
             'host_plants' => $this->whenLoaded('hostPlants', PlantResource::collection($this->hostPlants)),

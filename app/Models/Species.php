@@ -28,6 +28,7 @@ class Species extends Model
         'red_list_status_eu',
         'abundance_trend',
         'protection_status',
+        'sage_feeding_indicator',
     ];
 
     public function family(): BelongsTo
