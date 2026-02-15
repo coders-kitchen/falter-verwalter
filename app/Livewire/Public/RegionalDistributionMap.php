@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Public;
 
-use App\Models\Region;
+use App\Models\DistributionArea;
 use App\Models\Species;
+use App\Models\SpeciesDistributionArea;
 use Livewire\Component;
 
 class RegionalDistributionMap extends Component
 {
     public $species = null;
     public $displayMode = 'all'; // 'all' or 'endangered'
-    public $regionData = [];
-    public $selectedRegion = null;
+    public $areaData = [];
+    public $selectedArea = null;
     public $maxCount = 0;
 
     public function mount($species = null)
@@ -26,41 +27,35 @@ class RegionalDistributionMap extends Component
         $this->aggregateRegionData();
     }
 
-    public function selectRegion($regionCode)
+    public function selectArea($areaId)
     {
-        // For future filtering - can be used to filter species by region
-        $this->selectedRegion = $this->selectedRegion === $regionCode ? null : $regionCode;
+        $this->selectedArea = $this->selectedArea === $areaId ? null : $areaId;
     }
 
     public function aggregateRegionData()
     {
-        $regions = Region::all();
-        $this->regionData = [];
+        $areas = DistributionArea::orderBy('name')->get();
+        $this->areaData = [];
         $this->maxCount = 0;
 
-        foreach ($regions as $region) {
+        foreach ($areas as $area) {
+            $query = SpeciesDistributionArea::where('distribution_area_id', $area->id)
+                ->when($this->species, function ($q) {
+                    $q->where('species_id', $this->species->id);
+                });
+
             if ($this->displayMode === 'endangered') {
-                // Count endangered species in this region
-                $count = $region->species()
-                    ->wherePivot('conservation_status', 'gefährdet')
-                    ->when($this->species, function ($query) {
-                        $query->where('species_region.species_id', $this->species->id);
-                    })
-                    ->count('species.id');
-            } else {
-                // Count all species in this region
-                $count = $region->species()
-                    ->when($this->species, function ($query) {
-                        $query->where('species_region.species_id', $this->species->id);
-                    })
-                    ->count('species.id');
+                $query->whereHas('threatCategory', function ($q) {
+                    $q->where('code', 'VU');
+                });
             }
 
-            $this->regionData[$region->code] = [
-                'name' => $region->name,
-                'code' => $region->code,
+            $count = $query->count();
+
+            $this->areaData[$area->id] = [
+                'name' => $area->name,
                 'count' => $count,
-                'id' => $region->id,
+                'id' => $area->id,
             ];
 
             if ($count > $this->maxCount) {
@@ -95,7 +90,7 @@ class RegionalDistributionMap extends Component
     public function render()
     {
         return view('livewire.public.regional-distribution-map', [
-            'regionData' => $this->regionData,
+            'areaData' => $this->areaData,
             'displayMode' => $this->displayMode,
         ]);
     }

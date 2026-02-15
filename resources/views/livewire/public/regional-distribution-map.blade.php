@@ -54,19 +54,18 @@
     <!-- Map Display -->
     <div class="space-y-4">
         <p class="text-sm text-gray-500">
-            Klicke auf eine Region, um sie hervorzuheben
+            Klicke auf ein Verbreitungsgebiet, um es hervorzuheben
         </p>
 
-        <!-- Regions Grid -->
+        <!-- Distribution Areas Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach ($regionData as $code => $data)
+            @foreach ($areaData as $data)
                 <button
-                    wire:click="selectRegion('{{ $code }}')"
-                    class="p-4 rounded-lg border-2 border-base-300 transition-all hover:border-primary {{ $selectedRegion === $code ? 'border-primary ring-2 ring-primary' : '' }} {{ $this->getColorIntensity($data['count']) }}"
+                    wire:click="selectArea({{ $data['id'] }})"
+                    class="p-4 rounded-lg border-2 border-base-300 transition-all hover:border-primary {{ $selectedArea === $data['id'] ? 'border-primary ring-2 ring-primary' : '' }} {{ $this->getColorIntensity($data['count']) }}"
                     title="Klicken zum Filtern nach {{ $data['name'] }}"
                 >
                     <div class="flex flex-col items-start h-full">
-                        <p class="font-bold text-lg">{{ $data['code'] }}</p>
                         <p class="text-sm font-semibold opacity-75">{{ $data['name'] }}</p>
                         <div class="mt-auto">
                             @if ($data['count'] > 0)
@@ -89,10 +88,10 @@
     <div class="alert alert-info">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <div>
-            <h3 class="font-bold">Über die Regionen</h3>
+            <h3 class="font-bold">Über die Verbreitungsgebiete</h3>
             <div class="text-sm">
-                Die Daten zeigen die Verbreitung von Schmetterlingsarten in verschiedenen Regionen.
-                Dunklere Farben bedeuten mehr Arten in dieser Region.
+                Die Daten zeigen die Verbreitung von Schmetterlingsarten in verschiedenen Verbreitungsgebieten.
+                Dunklere Farben bedeuten mehr Arten in einem Gebiet.
             </div>
         </div>
     </div>

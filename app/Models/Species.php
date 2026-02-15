@@ -43,8 +43,8 @@ class Species extends Model
     public function distributionAreas(): BelongsToMany
     {
         return $this->belongsToMany(DistributionArea::class, 'species_distribution_areas')
-        ->using(SpeciesDistributionArea::class)
-        ->withPivot('threat_category_id')
+            ->using(SpeciesDistributionArea::class)
+            ->withPivot('status', 'threat_category_id', 'user_id')
             ->withTimestamps();
     }
 
@@ -59,23 +59,5 @@ class Species extends Model
         return $this->belongsToMany(Plant::class, 'species_plant', 'species_id', 'plant_id')
             ->withPivot('plant_type')
             ->withTimestamps();
-    }
-
-    public function regions(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Region::class,
-            'species_region',
-            'species_id',
-            'region_id'
-        )
-            ->using(SpeciesRegion::class)
-            ->withPivot('conservation_status')
-            ->withTimestamps();
-    }
-
-    public function endangeredRegionsList(): BelongsToMany
-    {
-        return $this->regions()->wherePivot('conservation_status', 'gefährdet');
     }
 }

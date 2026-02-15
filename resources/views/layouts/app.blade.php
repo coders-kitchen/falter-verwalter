@@ -89,13 +89,13 @@
                                         <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Verbreitungsgebiete verwalten</span>
                                     </a>
                                 </li>
-                            <!--
-                                <li>
-                                    <a href="{{ route('admin.regions.index') }}" @class(['active' => request()->routeIs('admin.regions.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Regionen verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Regionen</span>
-                                    </a>
-                                </li>
-                            -->
+                            {{--
+                            <li>
+                                <a href="#" class="block py-1 px-3 rounded hover:bg-base-300 transition-colors">
+                                    <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Regionen</span>
+                                </a>
+                            </li>
+                            --}}
                             </ul>
                         </details>
                     </li>

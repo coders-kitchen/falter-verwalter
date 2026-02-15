@@ -57,10 +57,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         return view('admin.families');
     })->name('families.index');
 
-    Route::get('regions', function () {
-        return view('admin.regions');
-    })->name('regions.index');
-
     Route::get('habitats', function () {
         return view('admin.habitats');
     })->name('habitats.index');

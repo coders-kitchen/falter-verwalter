@@ -12,7 +12,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             LifeFormSeeder::class,
             DistributionAreaSeeder::class,
-            RegionSeeder::class,
             ThreatCategorySeeder::class
         ]);
     }

@@ -3,9 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\ThreatCategory;
-use App\Models\Family;
-use App\Models\Habitat;
-use App\Models\Region;
 use Livewire\Component;
 use Livewire\WithPagination;
 

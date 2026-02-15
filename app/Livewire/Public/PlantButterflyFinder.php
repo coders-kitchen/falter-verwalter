@@ -36,7 +36,7 @@ class PlantButterflyFinder extends Component
 
     public function getMatchingSpeciesQuery()
     {
-        $query = Species::with('generations');
+        $query = Species::with(['generations', 'distributionAreas']);
 
         if (!empty($this->selectedPlantIds)) {
             $query->whereHas('generations', function ($q) {

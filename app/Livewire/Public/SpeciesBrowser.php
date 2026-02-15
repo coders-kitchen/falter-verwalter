@@ -6,7 +6,6 @@ use App\Models\DistributionArea;
 use App\Models\Species;
 use App\Models\Family;
 use App\Models\Habitat;
-use App\Models\Region;
 use App\Models\ThreatCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,11 +21,11 @@ class SpeciesBrowser extends Component
     public $threatCategoryId = null;
     public $distributionAreaIds = [];
 
-    protected $queryString = ['search', 'familyId', 'genusId', 'endangeredStatus', 'page'];
+    protected $queryString = ['search', 'familyId', 'genusId', 'threatCategoryId', 'distributionAreaIds', 'page'];
 
     public function render()
     {
-        $query = Species::with('family', 'habitats', 'regions')
+        $query = Species::with('family', 'habitats')
             ->orderBy('name');
 
         // Search filter

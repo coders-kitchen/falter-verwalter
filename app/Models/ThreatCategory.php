@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ThreatCategory extends Model
 {
@@ -27,9 +27,8 @@ class ThreatCategory extends Model
     protected $table = 'threat_categories';
 
 
-    public function speciesDistributionArea(): BelongsToMany
+    public function speciesDistributionAreas(): HasMany
     {
-        return $this->belongsToMany(SpeciesDistributionArea::class)
-            ->withTimestamps();
+        return $this->hasMany(SpeciesDistributionArea::class);
     }
 }

@@ -23,13 +23,13 @@ class SpeciesDistributionAreaManager extends Component
     public $form = [
         'distribution_area_id' => '',
         'status' => 'heimisch',
-        'thread_category_id' => ''
+        'threat_category_id' => ''
     ];
 
     protected $rules = [
         'form.distribution_area_id' => 'required|exists:distribution_areas,id',
         'form.status' => 'required|in:heimisch,ausgestorben,neobiotisch',
-        'form.thread_category_id' => 'exists:threat_categories,id',
+        'form.threat_category_id' => 'nullable|exists:threat_categories,id',
     ];
 
     public function mount($speciesId)
@@ -112,7 +112,7 @@ class SpeciesDistributionAreaManager extends Component
         $this->form = [
             'distribution_area_id' => '',
             'status' => 'heimisch',
-            'thread_category_id' => ''
+            'threat_category_id' => ''
         ];
         $this->resetErrorBag();
     }

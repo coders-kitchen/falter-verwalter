@@ -111,9 +111,14 @@
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        @if ($species->regions->count() > 0)
+                                        @php
+                                            $threatenedCount = $species->distributionAreas
+                                                ->filter(fn ($area) => optional($area->pivot->threatCategory)->code === 'VU')
+                                                ->count();
+                                        @endphp
+                                        @if ($threatenedCount > 0)
                                             <span class="badge badge-error badge-sm">
-                                                {{ $species->regions->count() }}
+                                                {{ $threatenedCount }}
                                             </span>
                                         @else
                                             <span class="text-gray-400">—</span>

@@ -50,7 +50,7 @@ class SpeciesDistributionArea extends Pivot
      */
     public function species(): BelongsTo
     {
-        return $this->belongsTo(Species::class, 'species_distribution');
+        return $this->belongsTo(Species::class);
     }
 
     /**
@@ -60,7 +60,7 @@ class SpeciesDistributionArea extends Pivot
      */
     public function distributionArea(): BelongsTo
     {
-        return $this->belongsTo(distributionArea::class);
+        return $this->belongsTo(DistributionArea::class);
     }
 
     /**
