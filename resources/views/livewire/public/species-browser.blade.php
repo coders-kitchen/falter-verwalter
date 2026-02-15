@@ -37,10 +37,46 @@
                 <option value="">Alle Familien</option>
                 @foreach ($families as $family)
                     <option value="{{ $family->id }}">
-                        {{ $family->code }} - {{ $family->name }}
+                        {{ $family->name }}
                     </option>
                 @endforeach
             </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Unterfamilie</span>
+                </label>
+                <select wire:model.live="subfamilyId" class="select select-bordered w-full">
+                    <option value="">Alle Unterfamilien</option>
+                    @foreach ($subfamilies as $subfamily)
+                        <option value="{{ $subfamily->id }}">{{ $subfamily->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Tribus</span>
+                </label>
+                <select wire:model.live="tribeId" class="select select-bordered w-full">
+                    <option value="">Alle Triben</option>
+                    @foreach ($tribes as $tribe)
+                        <option value="{{ $tribe->id }}">{{ $tribe->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-semibold">Gattung</span>
+                </label>
+                <select wire:model.live="genusId" class="select select-bordered w-full">
+                    <option value="">Alle Gattungen</option>
+                    @foreach ($genera as $genus)
+                        <option value="{{ $genus->id }}">{{ $genus->displayLabel() }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
         <!-- Habitats Multi-Select -->
@@ -76,7 +112,7 @@
                     class="select select-sm select-bordered">
                     <option value="">Alle</option>
                     @foreach ($threatCategories as $category)
-                        <option value="{{ $category->id }}}">{{$category->code}} {{$category->label}}</option>
+                        <option value="{{ $category->id }}">{{$category->code}} {{$category->label}}</option>
                     @endforeach
                     
                 </select>
@@ -131,7 +167,7 @@
                             <td class="font-semibold">{{ $item->name }}</td>
                             <td class="text-sm">
                                 @if ($item->family)
-                                    <span class="badge badge-sm">{{ $item->family->code }}</span>
+                                    <span class="badge badge-sm">{{ $item->family->name }}</span>
                                 @else
                                     <span class="text-gray-400">—</span>
                                 @endif

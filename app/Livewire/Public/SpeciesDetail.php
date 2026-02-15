@@ -13,6 +13,8 @@ class SpeciesDetail extends Component
     {
         $this->species = $species->load([
             'family',
+            'genus.subfamily.family',
+            'genus.tribe',
             'habitats',
             'generations' => function ($query) {
                 $query->orderBy('generation_number');

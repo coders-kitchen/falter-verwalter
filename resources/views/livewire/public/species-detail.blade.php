@@ -41,31 +41,43 @@
                 <h3 class="text-2xl font-bold mb-4">Taxonomische Einordnung</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @if ($species->family)
+                    @if ($species->genus && $species->genus->subfamily && $species->genus->subfamily->family)
                         <div>
                             <label class="font-semibold text-sm opacity-75">Familie</label>
-                            <p class="text-lg">{{ $species->family->name }}</p>
+                            <p class="text-lg">{{ $species->genus->subfamily->family->name }}</p>
                         </div>
                     @endif
 
-                    @if ($species->subfamily)
+                    @if ($species->genus && $species->genus->subfamily)
                         <div>
                             <label class="font-semibold text-sm opacity-75">Unterfamilie</label>
-                            <p class="text-lg">{{ $species->subfamily }}</p>
+                            <p class="text-lg">{{ $species->genus->subfamily->name }}</p>
                         </div>
                     @endif
 
-                    @if ($species->tribe)
+                    @if ($species->genus && $species->genus->tribe)
                         <div>
                             <label class="font-semibold text-sm opacity-75">Tribus</label>
-                            <p class="text-lg">{{ $species->tribe }}</p>
+                            <p class="text-lg">{{ $species->genus->tribe->name }}</p>
                         </div>
                     @endif
 
                     @if ($species->genus)
                         <div>
                             <label class="font-semibold text-sm opacity-75">Gattung</label>
-                            <p class="text-lg">{{ $species->genus }}</p>
+                            <p class="text-lg">{{ $species->genus->name }}</p>
+                        </div>
+                    @endif
+
+                    @if ($species->genus)
+                        <div class="md:col-span-2">
+                            <label class="font-semibold text-sm opacity-75">Taxonomiepfad</label>
+                            <p class="text-lg">{{ $species->genus->hierarchyPath() }}</p>
+                        </div>
+                    @elseif ($species->family)
+                        <div>
+                            <label class="font-semibold text-sm opacity-75">Familie</label>
+                            <p class="text-lg">{{ $species->family->name }}</p>
                         </div>
                     @endif
 
