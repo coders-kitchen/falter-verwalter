@@ -45,37 +45,28 @@ class RegionalDistributionMap extends Component
             ->select(['id', 'name', 'code', 'geojson_path'])
             ->orderBy('name')
             ->get();
+        $countsByAreaId = $this->loadCountsByAreaId();
+
         $this->areaData = [];
         $this->maxCount = 0;
         $features = [];
 
         foreach ($areas as $area) {
-            $query = SpeciesDistributionArea::where('distribution_area_id', $area->id)
-                ->when($this->species, function ($q) {
-                    $q->where('species_id', $this->species->id);
-                });
-
-            if ($this->displayMode === 'endangered') {
-                $query->whereHas('threatCategory', function ($q) {
-                    $q->where('code', 'VU');
-                });
-            }
-
-            $count = $query->count();
+            $count = (int) ($countsByAreaId[$area->id] ?? 0);
+            $geometry = $this->resolveAreaGeometry($area);
 
             $this->areaData[$area->id] = [
                 'name' => $area->name,
                 'count' => $count,
                 'id' => $area->id,
                 'code' => $area->code,
-                'geometry_available' => !empty($area->geojson_path),
+                'geometry_available' => is_array($geometry),
             ];
 
             if ($count > $this->maxCount) {
                 $this->maxCount = $count;
             }
 
-            $geometry = $this->resolveAreaGeometry($area);
             if (is_array($geometry) && in_array($geometry['type'] ?? null, ['Polygon', 'MultiPolygon'], true)) {
                 $features[] = [
                     'type' => 'Feature',
@@ -95,6 +86,24 @@ class RegionalDistributionMap extends Component
             'type' => 'FeatureCollection',
             'features' => $features,
         ];
+    }
+
+    private function loadCountsByAreaId(): array
+    {
+        return SpeciesDistributionArea::query()
+            ->selectRaw('distribution_area_id, COUNT(*) as aggregate_count')
+            ->when($this->species, function ($query) {
+                $query->where('species_id', $this->species->id);
+            })
+            ->when($this->displayMode === 'endangered', function ($query) {
+                $query->whereHas('threatCategory', function ($threatQuery) {
+                    $threatQuery->where('code', 'VU');
+                });
+            })
+            ->groupBy('distribution_area_id')
+            ->pluck('aggregate_count', 'distribution_area_id')
+            ->map(fn ($count) => (int) $count)
+            ->all();
     }
 
     private function resolveAreaGeometry(DistributionArea $area): ?array
