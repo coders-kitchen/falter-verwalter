@@ -82,8 +82,8 @@
                     @endif
 
                     <div>
-                        <label class="font-semibold text-sm opacity-75">Frisst auch Salbei-Arten</label>
-                        <p class="text-lg">{{ $species->sage_feeding_indicator ?? 'keine genaue Angabe' }}</p>
+                        <label class="font-semibold text-sm opacity-75">Besondere Merkmale</label>
+                        <p class="text-lg">{{ $species->special_features ?: 'keine genaue Angabe' }}</p>
                     </div>
                 </div>
             </div>
