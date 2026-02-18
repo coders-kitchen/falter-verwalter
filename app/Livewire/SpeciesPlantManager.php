@@ -228,8 +228,13 @@ class SpeciesPlantManager extends Component
         if (trim($this->assignedSearch) !== '') {
             $search = '%' . trim($this->assignedSearch) . '%';
             $query->whereHas('plant', function (Builder $q) use ($search) {
-                $q->where('name', 'like', $search)
-                    ->orWhere('scientific_name', 'like', $search);
+                $q->where(function (Builder $plantQuery) use ($search) {
+                    $plantQuery->where('name', 'like', $search)
+                        ->orWhere('scientific_name', 'like', $search)
+                        ->orWhereHas('genus', function (Builder $genusQuery) use ($search) {
+                            $genusQuery->where('name', 'like', $search);
+                        });
+                });
             });
         }
 
@@ -259,7 +264,10 @@ class SpeciesPlantManager extends Component
             $search = '%' . trim($this->addSearch) . '%';
             $query->where(function (Builder $q) use ($search) {
                 $q->where('name', 'like', $search)
-                    ->orWhere('scientific_name', 'like', $search);
+                    ->orWhere('scientific_name', 'like', $search)
+                    ->orWhereHas('genus', function (Builder $genusQuery) use ($search) {
+                        $genusQuery->where('name', 'like', $search);
+                    });
             });
         }
 

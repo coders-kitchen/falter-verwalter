@@ -29,7 +29,7 @@
                         type="text"
                         wire:model.live.debounce.300ms="assignedSearch"
                         class="input input-bordered"
-                        placeholder="Pflanzenname oder wissenschaftlicher Name"
+                        placeholder="Pflanzenname, wissenschaftlicher Name oder Gattung"
                     >
                 </div>
                 <div class="form-control">
@@ -134,7 +134,7 @@
                                 type="text"
                                 wire:model.live.debounce.300ms="addSearch"
                                 class="input input-bordered"
-                                placeholder="Pflanzenname oder wissenschaftlicher Name"
+                                placeholder="Pflanzenname, wissenschaftlicher Name oder Gattung"
                             >
                         </div>
 
