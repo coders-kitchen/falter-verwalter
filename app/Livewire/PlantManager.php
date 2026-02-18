@@ -46,7 +46,7 @@ class PlantManager extends Component
         'bloom_color' => '',
         'plant_height_cm_from' => null,
         'plant_height_cm_until' => null,
-        'lifespan' => 'perennial',
+        'lifespan' => null,
         'location' => '',
         'is_native' => false,
         'is_invasive' => false,
@@ -89,6 +89,41 @@ class PlantManager extends Component
         'form.threat_status' => 'nullable|string|max:255',
         'form.heavy_metal_resistance' => 'required|in:nicht schwermetallresistent,mäßig schwermetallresistent,ausgesprochen schwermetallresistent',
     ];
+
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+            'form.genus_id.required' => 'Bitte eine Gattung auswählen.',
+            'form.genus_id.exists' => 'Die ausgewählte Gattung ist ungültig.',
+            'form.life_form_id.required' => 'Bitte eine Lebensart auswählen.',
+            'form.life_form_id.exists' => 'Die ausgewählte Lebensart ist ungültig.',
+            'form.bloom_start_month.required' => 'Bitte einen Startmonat für die Blüte auswählen.',
+            'form.bloom_end_month.required' => 'Bitte einen Endmonat für die Blüte auswählen.',
+            'form.lifespan.required' => 'Bitte eine Lebensdauer auswählen.',
+            'form.plant_height_cm_from.required' => 'Bitte eine minimale Pflanzenhöhe angeben.',
+            'form.plant_height_cm_from.integer' => 'Die minimale Pflanzenhöhe muss eine ganze Zahl sein.',
+            'form.plant_height_cm_from.min' => 'Die minimale Pflanzenhöhe darf nicht negativ sein.',
+            'form.plant_height_cm_until.required' => 'Bitte eine maximale Pflanzenhöhe angeben.',
+            'form.plant_height_cm_until.integer' => 'Die maximale Pflanzenhöhe muss eine ganze Zahl sein.',
+            'form.plant_height_cm_until.min' => 'Die maximale Pflanzenhöhe darf nicht negativ sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.bloom_start_month' => 'Blühmonat Start',
+            'form.bloom_end_month' => 'Blühmonat Ende',
+            'form.lifespan' => 'Lebensdauer',
+            'form.name' => 'Name',
+            'form.genus_id' => 'Gattung',
+            'form.life_form_id' => 'Lebensart',
+            'form.plant_height_cm_from' => 'Pflanzenhöhe von',
+            'form.plant_height_cm_until' => 'Pflanzenhöhe bis',
+        ];
+    }
 
     public function render()
     {
@@ -285,7 +320,7 @@ class PlantManager extends Component
             'bloom_color' => '',
             'plant_height_cm_from' => null,
             'plant_height_cm_until' => null,
-            'lifespan' => 'perennial',
+            'lifespan' => null,
             'location' => '',
             'is_native' => false,
             'is_invasive' => false,

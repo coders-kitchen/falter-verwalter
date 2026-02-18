@@ -145,11 +145,15 @@
                             <label class="label">
                                 <span class="label-text font-semibold">Lifespan *</span>
                             </label>
-                            <select wire:model="form.lifespan" class="select select-bordered">
+                            <select wire:model="form.lifespan" class="select select-bordered @error('form.lifespan') select-error @enderror">
+                                <option value="">— Lebensdauer wählen —</option>
                                 <option value="annual">Einjährig</option>
                                 <option value="biennial">Zweijährig</option>
                                 <option value="perennial">Mehrjährig</option>
                             </select>
+                            @error('form.lifespan')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -272,21 +276,29 @@
                             <label class="label">
                                 <span class="label-text font-semibold">Blühmonate Start</span>
                             </label>
-                            <select wire:model="form.bloom_start_month" class="select select-bordered">
+                            <select wire:model="form.bloom_start_month" class="select select-bordered @error('form.bloom_start_month') select-error @enderror">
+                                <option value="">— Monat wählen —</option>
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Plant::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.bloom_start_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text font-semibold">Blühmonate Ende</span>
                             </label>
-                            <select wire:model="form.bloom_end_month" class="select select-bordered">
+                            <select wire:model="form.bloom_end_month" class="select select-bordered @error('form.bloom_end_month') select-error @enderror">
+                                <option value="">— Monat wählen —</option>
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Plant::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.bloom_end_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="form-control">
