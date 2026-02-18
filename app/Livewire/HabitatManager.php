@@ -26,6 +26,24 @@ class HabitatManager extends Component
         'form.parent_id' => 'nullable|exists:habitats,id',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+            'form.parent_id.exists' => 'Das ausgewählte übergeordnete Habitat ist ungültig.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.description' => 'Beschreibung',
+            'form.parent_id' => 'Übergeordnetes Habitat',
+        ];
+    }
+
     public function render()
     {
         $query = Habitat::query();

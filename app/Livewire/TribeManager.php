@@ -24,6 +24,21 @@ class TribeManager extends Component
         'form.name' => 'required|string|max:100',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 100 Zeichen lang sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+        ];
+    }
+
     public function mount($subfamilyId): void
     {
         $this->subfamily_id = (int) $subfamilyId;

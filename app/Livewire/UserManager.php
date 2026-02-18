@@ -26,6 +26,28 @@ class UserManager extends Component
         'form.password' => 'required|string|min:8|max:255'
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+            'form.email.required' => 'Bitte eine E-Mail-Adresse eingeben.',
+            'form.email.max' => 'Die E-Mail-Adresse darf maximal 255 Zeichen lang sein.',
+            'form.password.required' => 'Bitte ein Passwort eingeben.',
+            'form.password.min' => 'Das Passwort muss mindestens 8 Zeichen lang sein.',
+            'form.password.max' => 'Das Passwort darf maximal 255 Zeichen lang sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.email' => 'E-Mail-Adresse',
+            'form.password' => 'Passwort',
+        ];
+    }
+
     public function render()
     {
         $query = User::orderBy('id');

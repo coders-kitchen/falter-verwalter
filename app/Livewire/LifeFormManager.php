@@ -26,6 +26,25 @@ class LifeFormManager extends Component
         'form.examples' => 'nullable|json',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+            'form.name.unique' => 'Diese Lebensart existiert bereits.',
+            'form.examples.json' => 'Beispiele müssen gültiges JSON sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.description' => 'Beschreibung',
+            'form.examples' => 'Beispiele',
+        ];
+    }
+
     public function render()
     {
         $query = LifeForm::query();

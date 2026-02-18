@@ -40,6 +40,29 @@ class DistributionAreaManager extends Component
         ];
     }
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.unique' => 'Dieser Name ist bereits vergeben.',
+            'form.code.required' => 'Bitte einen Code eingeben.',
+            'form.code.alpha_dash' => 'Der Code darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten.',
+            'form.code.unique' => 'Dieser Code ist bereits vergeben.',
+            'geojsonFile.mimes' => 'Bitte eine gültige GeoJSON-Datei hochladen (.json oder .geojson).',
+            'geojsonFile.max' => 'Die GeoJSON-Datei darf maximal 5 MB groß sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.code' => 'Code',
+            'form.description' => 'Beschreibung',
+            'geojsonFile' => 'GeoJSON-Datei',
+        ];
+    }
+
     public function render()
     {
         $query = DistributionArea::query()

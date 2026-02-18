@@ -33,6 +33,27 @@ class GenerationManager extends Component
         'form.description' => 'nullable|string',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.larva_start_month.required' => 'Bitte den Startmonat der Raupenzeit auswählen.',
+            'form.larva_end_month.required' => 'Bitte den Endmonat der Raupenzeit auswählen.',
+            'form.flight_start_month.required' => 'Bitte den Startmonat der Flugzeit auswählen.',
+            'form.flight_end_month.required' => 'Bitte den Endmonat der Flugzeit auswählen.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.larva_start_month' => 'Raupenzeit Start',
+            'form.larva_end_month' => 'Raupenzeit Ende',
+            'form.flight_start_month' => 'Flugzeit Start',
+            'form.flight_end_month' => 'Flugzeit Ende',
+            'form.description' => 'Beschreibung',
+        ];
+    }
+
     public function mount($speciesId)
     {
         $this->species_id = $speciesId;

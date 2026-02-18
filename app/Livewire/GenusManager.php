@@ -27,6 +27,23 @@ class GenusManager extends Component
         'form.tribe_id' => 'nullable|exists:tribes,id',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 100 Zeichen lang sein.',
+            'form.tribe_id.exists' => 'Die ausgewählte Tribus ist ungültig.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.tribe_id' => 'Tribus',
+        ];
+    }
+
     public function mount($subfamilyId): void
     {
         $this->subfamily_id = (int) $subfamilyId;

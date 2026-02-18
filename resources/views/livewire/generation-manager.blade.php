@@ -95,21 +95,27 @@
                             <label class="label">
                                 <span class="label-text font-semibold">Raupenzeit Start</span>
                             </label>
-                            <select wire:model="form.larva_start_month" class="select select-bordered">
+                            <select wire:model="form.larva_start_month" class="select select-bordered @error('form.larva_start_month') select-error @enderror">
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Generation::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.larva_start_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text font-semibold">Raupenzeit Ende</span>
                             </label>
-                            <select wire:model="form.larva_end_month" class="select select-bordered">
+                            <select wire:model="form.larva_end_month" class="select select-bordered @error('form.larva_end_month') select-error @enderror">
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Generation::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.larva_end_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -119,21 +125,27 @@
                             <label class="label">
                                 <span class="label-text font-semibold">Flugzeit Start</span>
                             </label>
-                            <select wire:model="form.flight_start_month" class="select select-bordered">
+                            <select wire:model="form.flight_start_month" class="select select-bordered @error('form.flight_start_month') select-error @enderror">
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Generation::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.flight_start_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text font-semibold">Flugzeit Ende</span>
                             </label>
-                            <select wire:model="form.flight_end_month" class="select select-bordered">
+                            <select wire:model="form.flight_end_month" class="select select-bordered @error('form.flight_end_month') select-error @enderror">
                                 @for($m = 1; $m <= 12; $m++)
                                     <option value="{{ $m }}">{{ \App\Models\Generation::getMonthName($m) }}</option>
                                 @endfor
                             </select>
+                            @error('form.flight_end_month')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 

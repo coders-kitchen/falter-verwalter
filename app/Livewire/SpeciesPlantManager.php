@@ -38,6 +38,24 @@ class SpeciesPlantManager extends Component
         'form.is_larval_host' => 'boolean',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.plant_id.exists' => 'Die ausgewählte Pflanze ist ungültig.',
+            'form.is_nectar.boolean' => 'Der Wert für Nektarpflanze ist ungültig.',
+            'form.is_larval_host.boolean' => 'Der Wert für Futterpflanze ist ungültig.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.plant_id' => 'Pflanze',
+            'form.is_nectar' => 'Nektarpflanze',
+            'form.is_larval_host' => 'Futterpflanze',
+        ];
+    }
+
     public function mount($speciesId): void
     {
         $this->species_id = (int) $speciesId;

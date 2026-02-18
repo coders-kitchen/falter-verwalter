@@ -25,6 +25,22 @@ class FamilyManager extends Component
         'form.description' => 'nullable|string',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.description' => 'Beschreibung',
+        ];
+    }
+
     public function mount(string $type = 'butterfly')
     {
         $this->type = in_array($type, ['butterfly', 'plant'], true) ? $type : 'butterfly';

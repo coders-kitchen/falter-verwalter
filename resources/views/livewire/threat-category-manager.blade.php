@@ -104,7 +104,7 @@
                             wire:model="form.label"
                             type="text"
                             placeholder="z.B. Nicht gefährdet"
-                            class="input input-bordered @error('form.name') input-error @enderror"
+                            class="input input-bordered @error('form.label') input-error @enderror"
                         />
                         @error('form.label')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>

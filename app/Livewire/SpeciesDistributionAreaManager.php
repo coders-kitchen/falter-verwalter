@@ -32,6 +32,26 @@ class SpeciesDistributionAreaManager extends Component
         'form.threat_category_id' => 'nullable|exists:threat_categories,id',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.distribution_area_id.required' => 'Bitte ein Verbreitungsgebiet auswählen.',
+            'form.distribution_area_id.exists' => 'Das ausgewählte Verbreitungsgebiet ist ungültig.',
+            'form.status.required' => 'Bitte einen Status auswählen.',
+            'form.status.in' => 'Der ausgewählte Status ist ungültig.',
+            'form.threat_category_id.exists' => 'Die ausgewählte Gefährdungskategorie ist ungültig.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.distribution_area_id' => 'Verbreitungsgebiet',
+            'form.status' => 'Status',
+            'form.threat_category_id' => 'Gefährdungskategorie',
+        ];
+    }
+
     public function mount($speciesId)
     {
         $this->species_id = $speciesId;

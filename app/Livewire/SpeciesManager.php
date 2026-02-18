@@ -36,6 +36,34 @@ class SpeciesManager extends Component
         'form.habitat_ids.*' => 'integer|exists:habitats,id',
     ];
 
+    protected function messages(): array
+    {
+        return [
+            'form.name.required' => 'Bitte einen Namen eingeben.',
+            'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
+            'form.genus_id.required' => 'Bitte eine Gattung auswählen.',
+            'form.genus_id.exists' => 'Die ausgewählte Gattung ist ungültig.',
+            'form.size_category.required' => 'Bitte eine Größenkategorie auswählen.',
+            'form.size_category.in' => 'Die Größenkategorie ist ungültig.',
+            'form.hibernation_stage.in' => 'Das Überwinterungsstadium ist ungültig.',
+            'form.special_features.max' => 'Die besonderen Merkmale dürfen maximal 255 Zeichen lang sein.',
+            'form.habitat_ids.*.exists' => 'Mindestens ein ausgewählter Lebensraum ist ungültig.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.name' => 'Name',
+            'form.scientific_name' => 'Wissenschaftlicher Name',
+            'form.genus_id' => 'Gattung',
+            'form.size_category' => 'Größenkategorie',
+            'form.hibernation_stage' => 'Überwinterungsstadium',
+            'form.special_features' => 'Besondere Merkmale',
+            'form.habitat_ids' => 'Lebensräume',
+        ];
+    }
+
     public function render()
     {
         $query = Species::with(['family', 'genus'])->orderBy('name');

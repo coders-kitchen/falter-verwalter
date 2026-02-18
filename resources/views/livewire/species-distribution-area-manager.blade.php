@@ -105,7 +105,7 @@
                         <label class="label">
                             <span class="label-text font-semibold">Status *</span>
                         </label>
-                        <select wire:model="form.status" class="select select-bordered select-sm flex-1">
+                        <select wire:model="form.status" class="select select-bordered select-sm flex-1 @error('form.status') select-error @enderror">
                             <option value="heimisch">
                                 heimisch
                             </option>
@@ -116,6 +116,9 @@
                                 neobiotisch
                             </option>
                         </select>
+                        @error('form.status')
+                            <span class="text-error text-sm mt-1">{{ $message }}</span>
+                        @enderror
                     </div>
                     <!-- Threat Category -->
                     <div class="form-control">

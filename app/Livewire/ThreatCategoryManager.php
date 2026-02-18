@@ -37,7 +37,15 @@ class ThreatCategoryManager extends Component
     protected function messages(): array
     {
         return [
+            'form.code.required' => 'Bitte einen Code eingeben.',
+            'form.code.max' => 'Der Code darf maximal 20 Zeichen lang sein.',
             'form.code.unique' => 'Dieser Code ist bereits vergeben.',
+            'form.label.max' => 'Das Label darf maximal 40 Zeichen lang sein.',
+            'form.rank.required' => 'Bitte einen Rang angeben.',
+            'form.rank.integer' => 'Der Rang muss eine ganze Zahl sein.',
+            'form.rank.min' => 'Der Rang darf nicht negativ sein.',
+            'form.description.max' => 'Die Beschreibung darf maximal 256 Zeichen lang sein.',
+            'form.color_code.required' => 'Bitte einen Farbcode auswählen.',
         ];
     }
 
@@ -45,6 +53,10 @@ class ThreatCategoryManager extends Component
     {
         return [
             'form.code' => 'Code',
+            'form.label' => 'Label',
+            'form.rank' => 'Rang',
+            'form.description' => 'Beschreibung',
+            'form.color_code' => 'Farbcode',
         ];
     }
 
