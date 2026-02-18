@@ -248,7 +248,7 @@ heroku run php artisan view:clear
 1. **Enable Caching**:
    ```bash
    heroku addons:create heroku-redis:premium-0
-   heroku config:set CACHE_DRIVER=redis
+   heroku config:set CACHE_STORE=redis
    heroku run php artisan cache:clear
    ```
 
