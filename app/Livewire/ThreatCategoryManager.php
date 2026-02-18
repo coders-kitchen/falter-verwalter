@@ -21,13 +21,32 @@ class ThreatCategoryManager extends Component
         'color_code' => '#cfcfcf'
     ];
 
-    protected $rules = [
-        'form.code' => 'required|string|max:20',
-        'form.label' => 'nullable|string|max:40',
-        'form.rank' => 'required|integer|min:0',
-        'form.description' => 'nullable|string|max:256',
-        'form.color_code' => 'required|string|min:7|max:7'
-    ];
+    protected function rules(): array
+    {
+        $threatCategoryId = $this->threatCategory?->id ?? 'NULL';
+
+        return [
+            'form.code' => 'required|string|max:20|unique:threat_categories,code,' . $threatCategoryId,
+            'form.label' => 'nullable|string|max:40',
+            'form.rank' => 'required|integer|min:0',
+            'form.description' => 'nullable|string|max:256',
+            'form.color_code' => 'required|string|min:7|max:7'
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'form.code.unique' => 'Dieser Code ist bereits vergeben.',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'form.code' => 'Code',
+        ];
+    }
 
     public function render()
     {
@@ -68,7 +87,7 @@ class ThreatCategoryManager extends Component
             $this->threatCategory->update($formData);
             $this->dispatch('notify', message: 'Gefährdungsstatus aktualisiert');
         } else {
-            $threatCategory = threatCategory::create(array_merge($formData, ['user_id' => auth()->id()]));
+            $threatCategory = ThreatCategory::create(array_merge($formData, ['user_id' => auth()->id()]));
             $this->dispatch('notify', message: 'Gefährdungsstatus erstellt');
         }
         
@@ -76,7 +95,7 @@ class ThreatCategoryManager extends Component
         $this->resetPage();
     }
 
-    public function delete(threatCategory $threatCategory)
+    public function delete(ThreatCategory $threatCategory)
     {
         $threatCategory->delete();
         $this->dispatch('notify', message: 'Gefährdungsstatus gelöscht');
@@ -87,7 +106,6 @@ class ThreatCategoryManager extends Component
     {
         $this->form = [
         'code' => '',
-        'label' => '',
         'label' => '',
         'rank' => 0,
         'description' => null,
