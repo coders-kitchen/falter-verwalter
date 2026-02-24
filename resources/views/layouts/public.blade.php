@@ -25,6 +25,9 @@
             <a href="{{ route('map.index') }}" class="btn btn-ghost btn-sm">
                 📍 Karte
             </a>
+            <a href="{{ route('changelog.index') }}" class="btn btn-ghost btn-sm">
+                📝 Was ist neu
+            </a>
         </div>
     </nav>
 

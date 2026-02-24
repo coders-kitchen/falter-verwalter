@@ -142,9 +142,14 @@
                                 <span class="ml-auto sidebar-chevron transition-transform duration-300 group-open:rotate-180">▼</span>
                             </summary>
                             <ul class="sidebar-submenu pl-8 space-y-1 mt-2 transition-all duration-300" style="max-height: 500px; opacity: 1;">
-                                                                <li>
+                                <li>
                                     <a href="{{ route('admin.threat-categories.index') }}" @class(['active' => request()->routeIs('admin.threat-categories.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Gefährdungsstatus verwalten">
                                         <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Gefährdungsstatus verwalten</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.changelog.index') }}" @class(['active' => request()->routeIs('admin.changelog.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Changelog verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Changelog</span>
                                     </a>
                                 </li>
                             </ul>
@@ -249,5 +254,10 @@
     </div>
 
     @livewireScripts
+    @auth
+        @if(Auth::user()->isAdmin())
+            @livewire('admin-changelog-modal')
+        @endif
+    @endauth
 </body>
 </html>

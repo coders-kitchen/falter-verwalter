@@ -42,6 +42,13 @@ Route::get('/map', function () {
     return view('public.map');
 })->name('map.index');
 
+Route::get('/changelog', function () {
+    if (auth()->check()) {
+        return redirect('/admin/changelog');
+    }
+    return view('public.changelog');
+})->name('changelog.index');
+
 
 // Admin Routes (authenticated)
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -82,6 +89,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('distribution-areas', function () {
         return view('admin.distribution-areas');
     })->name('distribution-areas.index');
+
+    Route::get('changelog', function () {
+        return view('admin.changelog');
+    })->name('changelog.index');
 
     Route::get('users', function () {
         return view('admin.users');

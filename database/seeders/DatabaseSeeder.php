@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             DistributionAreaSeeder::class,
             ThreatCategorySeeder::class,
             PlantFamilyAndPlantDemoSeeder::class,
+            ChangelogEntrySeeder::class,
         ]);
     }
 }
