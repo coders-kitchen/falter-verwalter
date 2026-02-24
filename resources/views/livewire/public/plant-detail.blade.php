@@ -129,15 +129,18 @@
                         <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanze für</h4>
                         @if ($nectarSpecies->count() > 0)
                             <ul class="space-y-2">
-                                @foreach ($nectarSpecies as $species)
+                                @foreach ($nectarSpecies as $entry)
                                     <li class="flex items-center gap-2">
                                         <span class="text-lg">🦋</span>
                                         <a
-                                            href="{{ route('species.show', $species) }}"
+                                            href="{{ route('species.show', $entry['species']) }}"
                                             class="link link-primary"
                                         >
-                                            {{ $species->name }}
+                                            {{ $entry['species']->name }}
                                         </a>
+                                        @if($entry['via_genus'])
+                                            <span class="text-xs text-base-content/60">(via Gattung (sp.))</span>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
@@ -151,15 +154,18 @@
                         <h4 class="text-xl font-bold mb-4">🥬 Futterpflanze (Raupenfutter) für</h4>
                         @if ($larvalSpecies->count() > 0)
                             <ul class="space-y-2">
-                                @foreach ($larvalSpecies as $species)
+                                @foreach ($larvalSpecies as $entry)
                                     <li class="flex items-center gap-2">
                                         <span class="text-lg">🐛</span>
                                         <a
-                                            href="{{ route('species.show', $species) }}"
+                                            href="{{ route('species.show', $entry['species']) }}"
                                             class="link link-primary"
                                         >
-                                            {{ $species->name }}
+                                            {{ $entry['species']->name }}
                                         </a>
+                                        @if($entry['via_genus'])
+                                            <span class="text-xs text-base-content/60">(via Gattung (sp.))</span>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>

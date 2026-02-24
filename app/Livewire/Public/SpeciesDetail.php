@@ -28,10 +28,22 @@ class SpeciesDetail extends Component
             'secondaryNectarPlants' => function ($query) {
                 $query->orderBy('name');
             },
+            'primaryNectarGenera' => function ($query) {
+                $query->orderBy('name');
+            },
+            'secondaryNectarGenera' => function ($query) {
+                $query->orderBy('name');
+            },
             'primaryLarvalHostPlants' => function ($query) {
                 $query->orderBy('name');
             },
             'secondaryLarvalHostPlants' => function ($query) {
+                $query->orderBy('name');
+            },
+            'primaryLarvalHostGenera' => function ($query) {
+                $query->orderBy('name');
+            },
+            'secondaryLarvalHostGenera' => function ($query) {
                 $query->orderBy('name');
             },
         ]);

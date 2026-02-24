@@ -141,8 +141,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanzen</h4>
-                        @if ($species->primaryNectarPlants->count() > 0 || $species->secondaryNectarPlants->count() > 0)
-                            @if ($species->primaryNectarPlants->count() > 0)
+                        @if ($species->primaryNectarPlants->count() > 0 || $species->primaryNectarGenera->count() > 0 || $species->secondaryNectarPlants->count() > 0 || $species->secondaryNectarGenera->count() > 0)
+                            @if ($species->primaryNectarPlants->count() > 0 || $species->primaryNectarGenera->count() > 0)
                                 <h5 class="font-semibold mb-2">Primäre Pflanzen</h5>
                                 <ul class="space-y-2 mb-4">
                                     @foreach ($species->primaryNectarPlants as $plant)
@@ -153,10 +153,16 @@
                                             </a>
                                         </li>
                                     @endforeach
+                                    @foreach ($species->primaryNectarGenera as $genus)
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-lg">🌼</span>
+                                            <span>{{ $genus->name }} (sp.)</span>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             @endif
 
-                            @if ($species->secondaryNectarPlants->count() > 0)
+                            @if ($species->secondaryNectarPlants->count() > 0 || $species->secondaryNectarGenera->count() > 0)
                                 <h5 class="font-semibold text-sm text-base-content/60 mb-2">Sekundäre Pflanzen</h5>
                                 <ul class="space-y-1 text-sm text-base-content/55">
                                     @foreach ($species->secondaryNectarPlants as $plant)
@@ -165,6 +171,9 @@
                                                 {{ $plant->name }}
                                             </a>
                                         </li>
+                                    @endforeach
+                                    @foreach ($species->secondaryNectarGenera as $genus)
+                                        <li>{{ $genus->name }} (sp.)</li>
                                     @endforeach
                                 </ul>
                             @endif
@@ -175,8 +184,8 @@
 
                     <div>
                         <h4 class="text-xl font-bold mb-4">🥬 Futterpflanzen (Raupen)</h4>
-                        @if ($species->primaryLarvalHostPlants->count() > 0 || $species->secondaryLarvalHostPlants->count() > 0)
-                            @if ($species->primaryLarvalHostPlants->count() > 0)
+                        @if ($species->primaryLarvalHostPlants->count() > 0 || $species->primaryLarvalHostGenera->count() > 0 || $species->secondaryLarvalHostPlants->count() > 0 || $species->secondaryLarvalHostGenera->count() > 0)
+                            @if ($species->primaryLarvalHostPlants->count() > 0 || $species->primaryLarvalHostGenera->count() > 0)
                                 <h5 class="font-semibold mb-2">Primäre Pflanzen</h5>
                                 <ul class="space-y-2 mb-4">
                                     @foreach ($species->primaryLarvalHostPlants as $plant)
@@ -187,10 +196,16 @@
                                             </a>
                                         </li>
                                     @endforeach
+                                    @foreach ($species->primaryLarvalHostGenera as $genus)
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-lg">🐛</span>
+                                            <span>{{ $genus->name }} (sp.)</span>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             @endif
 
-                            @if ($species->secondaryLarvalHostPlants->count() > 0)
+                            @if ($species->secondaryLarvalHostPlants->count() > 0 || $species->secondaryLarvalHostGenera->count() > 0)
                                 <h5 class="font-semibold text-sm text-base-content/60 mb-2">Sekundäre Pflanzen</h5>
                                 <ul class="space-y-1 text-sm text-base-content/55">
                                     @foreach ($species->secondaryLarvalHostPlants as $plant)
@@ -199,6 +214,9 @@
                                                 {{ $plant->name }}
                                             </a>
                                         </li>
+                                    @endforeach
+                                    @foreach ($species->secondaryLarvalHostGenera as $genus)
+                                        <li>{{ $genus->name }} (sp.)</li>
                                     @endforeach
                                 </ul>
                             @endif

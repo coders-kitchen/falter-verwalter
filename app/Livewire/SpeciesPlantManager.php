@@ -2,10 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Genus;
 use App\Models\Plant;
 use App\Models\Species;
+use App\Models\SpeciesGenus;
 use App\Models\SpeciesPlant;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,9 +25,10 @@ class SpeciesPlantManager extends Component
 
     public bool $showModal = false;
     public ?SpeciesPlant $speciesPlant = null;
+    public ?SpeciesGenus $speciesGenus = null;
+    public string $assignmentType = 'plant';
 
     public array $form = [
-        'plant_id' => '',
         'is_nectar' => false,
         'is_larval_host' => false,
         'adult_preference' => null,
@@ -33,34 +37,35 @@ class SpeciesPlantManager extends Component
 
     public string $addSearch = '';
     public array $addSelectedPlantIds = [];
+    public array $addSelectedGenusIds = [];
 
     protected $rules = [
-        'form.plant_id' => 'nullable|exists:plants,id',
         'form.is_nectar' => 'boolean',
         'form.is_larval_host' => 'boolean',
         'form.adult_preference' => 'nullable|in:primaer,sekundaer',
         'form.larval_preference' => 'nullable|in:primaer,sekundaer',
+        'assignmentType' => 'in:plant,genus',
     ];
 
     protected function messages(): array
     {
         return [
-            'form.plant_id.exists' => 'Die ausgewählte Pflanze ist ungültig.',
             'form.is_nectar.boolean' => 'Der Wert für Nektarpflanze ist ungültig.',
             'form.is_larval_host.boolean' => 'Der Wert für Futterpflanze ist ungültig.',
             'form.adult_preference.in' => 'Die Präferenz für adulte Falter ist ungültig.',
             'form.larval_preference.in' => 'Die Präferenz für Raupen ist ungültig.',
+            'assignmentType.in' => 'Der Zuordnungstyp ist ungültig.',
         ];
     }
 
     protected function validationAttributes(): array
     {
         return [
-            'form.plant_id' => 'Pflanze',
             'form.is_nectar' => 'Nektarpflanze',
             'form.is_larval_host' => 'Futterpflanze',
             'form.adult_preference' => 'Präferenz (Adulte)',
             'form.larval_preference' => 'Präferenz (Raupe)',
+            'assignmentType' => 'Zuordnungstyp',
         ];
     }
 
@@ -82,7 +87,19 @@ class SpeciesPlantManager extends Component
 
     public function updatedAddSearch(): void
     {
-        $this->resetPage('addPlantsPage');
+        $this->resetPage('addItemsPage');
+    }
+
+    public function updatedAssignmentType(): void
+    {
+        if ($this->speciesPlant || $this->speciesGenus) {
+            return;
+        }
+
+        $this->addSearch = '';
+        $this->addSelectedPlantIds = [];
+        $this->addSelectedGenusIds = [];
+        $this->resetPage('addItemsPage');
     }
 
     public function updatedAddSelectedPlantIds(): void
@@ -90,11 +107,17 @@ class SpeciesPlantManager extends Component
         $this->addSelectedPlantIds = array_values(array_unique(array_map('intval', (array) $this->addSelectedPlantIds)));
     }
 
+    public function updatedAddSelectedGenusIds(): void
+    {
+        $this->addSelectedGenusIds = array_values(array_unique(array_map('intval', (array) $this->addSelectedGenusIds)));
+    }
+
     public function openCreateModal(): void
     {
         $this->speciesPlant = null;
+        $this->speciesGenus = null;
+        $this->assignmentType = 'plant';
         $this->form = [
-            'plant_id' => '',
             'is_nectar' => false,
             'is_larval_host' => false,
             'adult_preference' => null,
@@ -102,20 +125,22 @@ class SpeciesPlantManager extends Component
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
-        $this->resetPage('addPlantsPage');
+        $this->addSelectedGenusIds = [];
+        $this->resetPage('addItemsPage');
         $this->resetErrorBag();
         $this->showModal = true;
     }
 
-    public function openEditModal(SpeciesPlant $speciesPlant): void
+    public function openEditPlantModal(SpeciesPlant $speciesPlant): void
     {
         if ((int) $speciesPlant->species_id !== $this->species_id) {
             return;
         }
 
         $this->speciesPlant = $speciesPlant;
+        $this->speciesGenus = null;
+        $this->assignmentType = 'plant';
         $this->form = [
-            'plant_id' => (string) $speciesPlant->plant_id,
             'is_nectar' => (bool) $speciesPlant->is_nectar,
             'is_larval_host' => (bool) $speciesPlant->is_larval_host,
             'adult_preference' => $speciesPlant->is_nectar
@@ -127,6 +152,33 @@ class SpeciesPlantManager extends Component
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
+        $this->addSelectedGenusIds = [];
+        $this->resetErrorBag();
+        $this->showModal = true;
+    }
+
+    public function openEditGenusModal(SpeciesGenus $speciesGenus): void
+    {
+        if ((int) $speciesGenus->species_id !== $this->species_id) {
+            return;
+        }
+
+        $this->speciesGenus = $speciesGenus;
+        $this->speciesPlant = null;
+        $this->assignmentType = 'genus';
+        $this->form = [
+            'is_nectar' => (bool) $speciesGenus->is_nectar,
+            'is_larval_host' => (bool) $speciesGenus->is_larval_host,
+            'adult_preference' => $speciesGenus->is_nectar
+                ? ($speciesGenus->adult_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
+                : null,
+            'larval_preference' => $speciesGenus->is_larval_host
+                ? ($speciesGenus->larval_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
+                : null,
+        ];
+        $this->addSearch = '';
+        $this->addSelectedPlantIds = [];
+        $this->addSelectedGenusIds = [];
         $this->resetErrorBag();
         $this->showModal = true;
     }
@@ -135,8 +187,9 @@ class SpeciesPlantManager extends Component
     {
         $this->showModal = false;
         $this->speciesPlant = null;
+        $this->speciesGenus = null;
+        $this->assignmentType = 'plant';
         $this->form = [
-            'plant_id' => '',
             'is_nectar' => false,
             'is_larval_host' => false,
             'adult_preference' => null,
@@ -144,14 +197,25 @@ class SpeciesPlantManager extends Component
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
+        $this->addSelectedGenusIds = [];
         $this->resetErrorBag();
     }
 
     public function selectAllOnAddPage(): void
     {
-        $page = (int) $this->getPage('addPlantsPage');
-        if ($page < 1) {
-            $page = 1;
+        $page = max(1, (int) $this->getPage('addItemsPage'));
+
+        if ($this->assignmentType === 'genus') {
+            $ids = $this->buildAddGeneraQuery()
+                ->orderBy('name')
+                ->forPage($page, 20)
+                ->pluck('genera.id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+
+            $this->addSelectedGenusIds = array_values(array_unique(array_merge($this->addSelectedGenusIds, $ids)));
+
+            return;
         }
 
         $ids = $this->buildAddPlantsQuery()
@@ -166,6 +230,11 @@ class SpeciesPlantManager extends Component
 
     public function clearAddSelection(): void
     {
+        if ($this->assignmentType === 'genus') {
+            $this->addSelectedGenusIds = [];
+            return;
+        }
+
         $this->addSelectedPlantIds = [];
     }
 
@@ -223,15 +292,65 @@ class SpeciesPlantManager extends Component
             return;
         }
 
-        $plantIds = array_values(array_unique(array_map('intval', $this->addSelectedPlantIds)));
-        if (empty($plantIds)) {
-            $this->addError('form.plant_id', 'Bitte mindestens eine Pflanze auswählen.');
+        if ($this->speciesGenus) {
+            $this->speciesGenus->update([
+                'is_nectar' => (bool) $this->form['is_nectar'],
+                'is_larval_host' => (bool) $this->form['is_larval_host'],
+                'adult_preference' => $adultPreference,
+                'larval_preference' => $larvalPreference,
+            ]);
+
+            $this->dispatch('notify', message: 'Gattungszuordnung aktualisiert.');
+            $this->closeModal();
             return;
         }
 
         $now = now();
-        $rows = [];
 
+        if ($this->assignmentType === 'genus') {
+            $genusIds = array_values(array_unique(array_map('intval', $this->addSelectedGenusIds)));
+
+            if (empty($genusIds)) {
+                $this->addError('selection', 'Bitte mindestens eine Gattung auswählen.');
+                return;
+            }
+
+            $rows = [];
+            foreach ($genusIds as $genusId) {
+                $rows[] = [
+                    'species_id' => $this->species_id,
+                    'genus_id' => $genusId,
+                    'is_nectar' => (bool) $this->form['is_nectar'],
+                    'is_larval_host' => (bool) $this->form['is_larval_host'],
+                    'adult_preference' => $adultPreference,
+                    'larval_preference' => $larvalPreference,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+
+            DB::transaction(function () use ($rows) {
+                SpeciesGenus::upsert(
+                    $rows,
+                    ['species_id', 'genus_id'],
+                    ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'updated_at']
+                );
+            });
+
+            $this->dispatch('notify', message: count($rows) . ' Gattungen zugeordnet.');
+            $this->closeModal();
+            $this->resetPage('assignedPage');
+            return;
+        }
+
+        $plantIds = array_values(array_unique(array_map('intval', $this->addSelectedPlantIds)));
+
+        if (empty($plantIds)) {
+            $this->addError('selection', 'Bitte mindestens eine Pflanze auswählen.');
+            return;
+        }
+
+        $rows = [];
         foreach ($plantIds as $plantId) {
             $rows[] = [
                 'species_id' => $this->species_id,
@@ -258,7 +377,7 @@ class SpeciesPlantManager extends Component
         $this->resetPage('assignedPage');
     }
 
-    public function delete(SpeciesPlant $speciesPlant): void
+    public function deletePlant(SpeciesPlant $speciesPlant): void
     {
         if ((int) $speciesPlant->species_id !== $this->species_id) {
             return;
@@ -269,31 +388,109 @@ class SpeciesPlantManager extends Component
         $this->dispatch('notify', message: 'Pflanzenzuordnung gelöscht.');
     }
 
+    public function deleteGenus(SpeciesGenus $speciesGenus): void
+    {
+        if ((int) $speciesGenus->species_id !== $this->species_id) {
+            return;
+        }
+
+        $speciesGenus->delete();
+        $this->resetPage('assignedPage');
+        $this->dispatch('notify', message: 'Gattungszuordnung gelöscht.');
+    }
+
     public function render()
     {
-        $speciesPlants = $this->buildAssignedQuery()
-            ->with('plant:id,name,scientific_name')
-            ->orderByDesc('updated_at')
-            ->paginate(20, ['*'], 'assignedPage');
+        $speciesAssignments = $this->buildAssignedRowsPaginator();
 
-        $addPlants = collect();
-        $addPlantsPagination = null;
+        $addItems = collect();
+        $addItemsPagination = null;
 
-        if ($this->showModal && !$this->speciesPlant) {
-            $addPlantsPagination = $this->buildAddPlantsQuery()
-                ->orderBy('name')
-                ->paginate(20, ['*'], 'addPlantsPage');
-            $addPlants = $addPlantsPagination;
+        if ($this->showModal && !$this->speciesPlant && !$this->speciesGenus) {
+            if ($this->assignmentType === 'genus') {
+                $addItemsPagination = $this->buildAddGeneraQuery()
+                    ->with(['subfamily.family', 'tribe'])
+                    ->orderBy('name')
+                    ->paginate(20, ['*'], 'addItemsPage');
+            } else {
+                $addItemsPagination = $this->buildAddPlantsQuery()
+                    ->orderBy('name')
+                    ->paginate(20, ['*'], 'addItemsPage');
+            }
+
+            $addItems = $addItemsPagination;
         }
 
         return view('livewire.species-plant-manager', [
-            'speciesPlants' => $speciesPlants,
-            'addPlants' => $addPlants,
-            'addPlantsPagination' => $addPlantsPagination,
+            'speciesAssignments' => $speciesAssignments,
+            'addItems' => $addItems,
+            'addItemsPagination' => $addItemsPagination,
         ]);
     }
 
-    private function buildAssignedQuery(): Builder
+    private function buildAssignedRowsPaginator(): LengthAwarePaginator
+    {
+        $page = max(1, (int) $this->getPage('assignedPage'));
+        $perPage = 20;
+
+        $plantRows = $this->buildAssignedPlantQuery()
+            ->with('plant:id,name,scientific_name')
+            ->get()
+            ->map(function (SpeciesPlant $row) {
+                return [
+                    'type' => 'plant',
+                    'id' => $row->id,
+                    'name' => $row->plant?->name ?? '—',
+                    'subtitle' => $row->plant?->scientific_name,
+                    'is_nectar' => (bool) $row->is_nectar,
+                    'is_larval_host' => (bool) $row->is_larval_host,
+                    'adult_preference' => $row->adult_preference,
+                    'larval_preference' => $row->larval_preference,
+                    'updated_at' => $row->updated_at,
+                ];
+            });
+
+        $genusRows = $this->buildAssignedGenusQuery()
+            ->with(['genus.subfamily.family', 'genus.tribe'])
+            ->get()
+            ->map(function (SpeciesGenus $row) {
+                return [
+                    'type' => 'genus',
+                    'id' => $row->id,
+                    'name' => ($row->genus?->name ?? '—') . ' (sp.)',
+                    'subtitle' => $row->genus?->displayLabel(),
+                    'is_nectar' => (bool) $row->is_nectar,
+                    'is_larval_host' => (bool) $row->is_larval_host,
+                    'adult_preference' => $row->adult_preference,
+                    'larval_preference' => $row->larval_preference,
+                    'updated_at' => $row->updated_at,
+                ];
+            });
+
+        $allRows = $plantRows
+            ->merge($genusRows)
+            ->sortByDesc(function (array $row) {
+                return $row['updated_at']?->getTimestamp() ?? 0;
+            })
+            ->values();
+
+        $total = $allRows->count();
+
+        $items = $allRows->slice(($page - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),
+                'pageName' => 'assignedPage',
+            ]
+        );
+    }
+
+    private function buildAssignedPlantQuery(): Builder
     {
         $query = SpeciesPlant::query()->where('species_id', $this->species_id);
 
@@ -310,6 +507,34 @@ class SpeciesPlantManager extends Component
             });
         }
 
+        return $this->applyAssignedFilter($query);
+    }
+
+    private function buildAssignedGenusQuery(): Builder
+    {
+        $query = SpeciesGenus::query()->where('species_id', $this->species_id);
+
+        if (trim($this->assignedSearch) !== '') {
+            $search = '%' . trim($this->assignedSearch) . '%';
+            $query->whereHas('genus', function (Builder $q) use ($search) {
+                $q->where('name', 'like', $search)
+                    ->orWhereHas('subfamily', function (Builder $subfamilyQuery) use ($search) {
+                        $subfamilyQuery->where('name', 'like', $search)
+                            ->orWhereHas('family', function (Builder $familyQuery) use ($search) {
+                                $familyQuery->where('name', 'like', $search);
+                            });
+                    })
+                    ->orWhereHas('tribe', function (Builder $tribeQuery) use ($search) {
+                        $tribeQuery->where('name', 'like', $search);
+                    });
+            });
+        }
+
+        return $this->applyAssignedFilter($query);
+    }
+
+    private function applyAssignedFilter(Builder $query): Builder
+    {
         if ($this->assignedFilter === 'nectar_only') {
             $query->where('is_nectar', true)->where('is_larval_host', false);
         }
@@ -339,6 +564,36 @@ class SpeciesPlantManager extends Component
                     ->orWhere('scientific_name', 'like', $search)
                     ->orWhereHas('genus', function (Builder $genusQuery) use ($search) {
                         $genusQuery->where('name', 'like', $search);
+                    });
+            });
+        }
+
+        return $query;
+    }
+
+    private function buildAddGeneraQuery(): Builder
+    {
+        $query = Genus::query()
+            ->whereHas('subfamily.family', function (Builder $familyQuery) {
+                $familyQuery->where('type', 'plant');
+            })
+            ->whereNotIn(
+                'id',
+                SpeciesGenus::where('species_id', $this->species_id)->pluck('genus_id')
+            );
+
+        if (trim($this->addSearch) !== '') {
+            $search = '%' . trim($this->addSearch) . '%';
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('name', 'like', $search)
+                    ->orWhereHas('subfamily', function (Builder $subfamilyQuery) use ($search) {
+                        $subfamilyQuery->where('name', 'like', $search)
+                            ->orWhereHas('family', function (Builder $familyQuery) use ($search) {
+                                $familyQuery->where('name', 'like', $search);
+                            });
+                    })
+                    ->orWhereHas('tribe', function (Builder $tribeQuery) use ($search) {
+                        $tribeQuery->where('name', 'like', $search);
                     });
             });
         }

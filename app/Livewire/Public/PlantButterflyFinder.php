@@ -26,6 +26,7 @@ class PlantButterflyFinder extends Component
     public $filterMoisture = '';
     public $filterMoistureVariation = '';
     public $filterNitrogen = '';
+    protected ?array $selectedGenusIdsCache = null;
 
     protected $queryString = [
         'selectedPlantIds',
@@ -54,6 +55,7 @@ class PlantButterflyFinder extends Component
     public function updatedSelectedPlantIds()
     {
         $this->selectedPlantIds = array_map('intval', (array) $this->selectedPlantIds);
+        $this->selectedGenusIdsCache = null;
         $this->resetPage();
         $this->showResults = !empty($this->selectedPlantIds);
     }
@@ -120,20 +122,39 @@ class PlantButterflyFinder extends Component
 
     public function getMatchingSpeciesQuery()
     {
-        $query = Species::with(['plants', 'distributionAreas']);
+        $query = Species::with(['plants', 'plantGenera', 'distributionAreas']);
 
         if (!empty($this->selectedPlantIds)) {
-            $query->whereHas('plants', function ($q) {
-                $q->whereIn('plants.id', $this->selectedPlantIds)
-                    ->where(function ($pivotQuery) {
-                        $pivotQuery->where(function ($adultQuery) {
-                            $adultQuery->where('species_plant.is_nectar', true)
-                                ->where('species_plant.adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
-                        })->orWhere(function ($larvalQuery) {
-                            $larvalQuery->where('species_plant.is_larval_host', true)
-                                ->where('species_plant.larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+            $selectedGenusIds = $this->getSelectedGenusIds();
+
+            $query->where(function ($speciesQuery) use ($selectedGenusIds) {
+                $speciesQuery->whereHas('plants', function ($q) {
+                    $q->whereIn('plants.id', $this->selectedPlantIds)
+                        ->where(function ($pivotQuery) {
+                            $pivotQuery->where(function ($adultQuery) {
+                                $adultQuery->where('species_plant.is_nectar', true)
+                                    ->where('species_plant.adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                            })->orWhere(function ($larvalQuery) {
+                                $larvalQuery->where('species_plant.is_larval_host', true)
+                                    ->where('species_plant.larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                            });
                         });
+                });
+
+                if (!empty($selectedGenusIds)) {
+                    $speciesQuery->orWhereHas('plantGenera', function ($q) use ($selectedGenusIds) {
+                        $q->whereIn('genera.id', $selectedGenusIds)
+                            ->where(function ($pivotQuery) {
+                                $pivotQuery->where(function ($adultQuery) {
+                                    $adultQuery->where('species_genus.is_nectar', true)
+                                        ->where('species_genus.adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                                })->orWhere(function ($larvalQuery) {
+                                    $larvalQuery->where('species_genus.is_larval_host', true)
+                                        ->where('species_genus.larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                                });
+                            });
                     });
+                }
             });
         }
 
@@ -143,6 +164,7 @@ class PlantButterflyFinder extends Component
     public function clearSelection()
     {
         $this->reset(['selectedPlantIds', 'showResults']);
+        $this->selectedGenusIdsCache = null;
         $this->resetPage();
     }
 
@@ -174,15 +196,18 @@ class PlantButterflyFinder extends Component
         }
 
         $this->selectedPlantIds = array_values(array_map('intval', $this->selectedPlantIds));
+        $this->selectedGenusIdsCache = null;
         $this->showResults = !empty($this->selectedPlantIds);
     }
 
     public function getPlantUseForSpecies($species)
     {
         $uses = [];
+        $selectedPlantIds = array_map('intval', $this->selectedPlantIds);
+        $selectedGenusIds = $this->getSelectedGenusIds();
 
         foreach ($species->plants as $plant) {
-            if (!in_array((int) $plant->id, array_map('intval', $this->selectedPlantIds), true)) {
+            if (!in_array((int) $plant->id, $selectedPlantIds, true)) {
                 continue;
             }
 
@@ -195,7 +220,44 @@ class PlantButterflyFinder extends Component
             }
         }
 
+        foreach ($species->plantGenera as $genus) {
+            if (!in_array((int) $genus->id, $selectedGenusIds, true)) {
+                continue;
+            }
+
+            if ($genus->pivot->is_nectar && $genus->pivot->adult_preference === SpeciesPlant::PREFERENCE_PRIMARY) {
+                $uses[] = 'Nektarpflanze';
+            }
+
+            if ($genus->pivot->is_larval_host && $genus->pivot->larval_preference === SpeciesPlant::PREFERENCE_PRIMARY) {
+                $uses[] = 'Futterpflanze';
+            }
+        }
+
         return array_values(array_unique($uses));
+    }
+
+    private function getSelectedGenusIds(): array
+    {
+        if ($this->selectedGenusIdsCache !== null) {
+            return $this->selectedGenusIdsCache;
+        }
+
+        if (empty($this->selectedPlantIds)) {
+            $this->selectedGenusIdsCache = [];
+            return $this->selectedGenusIdsCache;
+        }
+
+        $this->selectedGenusIdsCache = Plant::query()
+            ->whereIn('id', array_map('intval', $this->selectedPlantIds))
+            ->whereNotNull('genus_id')
+            ->pluck('genus_id')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        return $this->selectedGenusIdsCache;
     }
 
     private function applyIndicatorFilter($query, string $column, string $stateColumn, mixed $filterValue): void

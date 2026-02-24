@@ -67,6 +67,13 @@ class Species extends Model
             ->withTimestamps();
     }
 
+    public function plantGenera(): BelongsToMany
+    {
+        return $this->belongsToMany(Genus::class, 'species_genus', 'species_id', 'genus_id')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
+            ->withTimestamps();
+    }
+
     public function nectarPlants(): BelongsToMany
     {
         return $this->plants()->wherePivot('is_nectar', true);
@@ -82,6 +89,20 @@ class Species extends Model
         return $this->nectarPlants()->wherePivot('adult_preference', SpeciesPlant::PREFERENCE_SECONDARY);
     }
 
+    public function primaryNectarGenera(): BelongsToMany
+    {
+        return $this->plantGenera()
+            ->wherePivot('is_nectar', true)
+            ->wherePivot('adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+    }
+
+    public function secondaryNectarGenera(): BelongsToMany
+    {
+        return $this->plantGenera()
+            ->wherePivot('is_nectar', true)
+            ->wherePivot('adult_preference', SpeciesPlant::PREFERENCE_SECONDARY);
+    }
+
     public function larvalHostPlants(): BelongsToMany
     {
         return $this->plants()->wherePivot('is_larval_host', true);
@@ -95,6 +116,20 @@ class Species extends Model
     public function secondaryLarvalHostPlants(): BelongsToMany
     {
         return $this->larvalHostPlants()->wherePivot('larval_preference', SpeciesPlant::PREFERENCE_SECONDARY);
+    }
+
+    public function primaryLarvalHostGenera(): BelongsToMany
+    {
+        return $this->plantGenera()
+            ->wherePivot('is_larval_host', true)
+            ->wherePivot('larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+    }
+
+    public function secondaryLarvalHostGenera(): BelongsToMany
+    {
+        return $this->plantGenera()
+            ->wherePivot('is_larval_host', true)
+            ->wherePivot('larval_preference', SpeciesPlant::PREFERENCE_SECONDARY);
     }
 
     public function hostPlants(): BelongsToMany
