@@ -6,6 +6,7 @@ use App\Http\Requests\SpeciesRequest;
 use App\Http\Resources\SpeciesResource;
 use App\Models\Genus;
 use App\Models\Species;
+use App\Models\SpeciesPlant;
 use Illuminate\Http\JsonResponse;
 
 class SpeciesController extends Controller
@@ -47,6 +48,8 @@ class SpeciesController extends Controller
                 $species->plants()->attach($plantId, [
                     'is_nectar' => false,
                     'is_larval_host' => true,
+                    'adult_preference' => null,
+                    'larval_preference' => SpeciesPlant::PREFERENCE_PRIMARY,
                 ]);
             }
         }
@@ -86,6 +89,8 @@ class SpeciesController extends Controller
                 $species->plants()->attach($plantId, [
                     'is_nectar' => false,
                     'is_larval_host' => true,
+                    'adult_preference' => null,
+                    'larval_preference' => SpeciesPlant::PREFERENCE_PRIMARY,
                 ]);
             }
         }

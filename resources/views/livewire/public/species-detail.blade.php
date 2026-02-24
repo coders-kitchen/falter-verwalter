@@ -141,17 +141,33 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanzen</h4>
-                        @if ($species->nectarPlants->count() > 0)
-                            <ul class="space-y-2">
-                                @foreach ($species->nectarPlants as $plant)
-                                    <li class="flex items-center gap-2">
-                                        <span class="text-lg">🌼</span>
-                                        <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
-                                            {{ $plant->name }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                        @if ($species->primaryNectarPlants->count() > 0 || $species->secondaryNectarPlants->count() > 0)
+                            @if ($species->primaryNectarPlants->count() > 0)
+                                <h5 class="font-semibold mb-2">Primäre Pflanzen</h5>
+                                <ul class="space-y-2 mb-4">
+                                    @foreach ($species->primaryNectarPlants as $plant)
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-lg">🌼</span>
+                                            <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
+                                                {{ $plant->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
+                            @if ($species->secondaryNectarPlants->count() > 0)
+                                <h5 class="font-semibold text-sm text-base-content/60 mb-2">Sekundäre Pflanzen</h5>
+                                <ul class="space-y-1 text-sm text-base-content/55">
+                                    @foreach ($species->secondaryNectarPlants as $plant)
+                                        <li>
+                                            <a href="{{ route('plants.show', $plant) }}" class="hover:underline">
+                                                {{ $plant->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         @else
                             <p class="text-gray-400 italic">Keine Nektarpflanzen bekannt</p>
                         @endif
@@ -159,17 +175,33 @@
 
                     <div>
                         <h4 class="text-xl font-bold mb-4">🥬 Futterpflanzen (Raupen)</h4>
-                        @if ($species->larvalHostPlants->count() > 0)
-                            <ul class="space-y-2">
-                                @foreach ($species->larvalHostPlants as $plant)
-                                    <li class="flex items-center gap-2">
-                                        <span class="text-lg">🐛</span>
-                                        <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
-                                            {{ $plant->name }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                        @if ($species->primaryLarvalHostPlants->count() > 0 || $species->secondaryLarvalHostPlants->count() > 0)
+                            @if ($species->primaryLarvalHostPlants->count() > 0)
+                                <h5 class="font-semibold mb-2">Primäre Pflanzen</h5>
+                                <ul class="space-y-2 mb-4">
+                                    @foreach ($species->primaryLarvalHostPlants as $plant)
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-lg">🐛</span>
+                                            <a href="{{ route('plants.show', $plant) }}" class="link link-primary">
+                                                {{ $plant->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
+                            @if ($species->secondaryLarvalHostPlants->count() > 0)
+                                <h5 class="font-semibold text-sm text-base-content/60 mb-2">Sekundäre Pflanzen</h5>
+                                <ul class="space-y-1 text-sm text-base-content/55">
+                                    @foreach ($species->secondaryLarvalHostPlants as $plant)
+                                        <li>
+                                            <a href="{{ route('plants.show', $plant) }}" class="hover:underline">
+                                                {{ $plant->name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         @else
                             <p class="text-gray-400 italic">Keine Futterpflanzen bekannt</p>
                         @endif
@@ -177,7 +209,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Tab 4: Distribution -->
         <input
             type="radio"

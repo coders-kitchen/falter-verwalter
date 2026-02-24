@@ -22,10 +22,16 @@ class SpeciesDetail extends Component
             'distributionAreas' => function ($query) {
                 $query->orderBy('threat_category_id');
             },
-            'nectarPlants' => function ($query) {
+            'primaryNectarPlants' => function ($query) {
                 $query->orderBy('name');
             },
-            'larvalHostPlants' => function ($query) {
+            'secondaryNectarPlants' => function ($query) {
+                $query->orderBy('name');
+            },
+            'primaryLarvalHostPlants' => function ($query) {
+                $query->orderBy('name');
+            },
+            'secondaryLarvalHostPlants' => function ($query) {
                 $query->orderBy('name');
             },
         ]);

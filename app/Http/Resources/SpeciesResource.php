@@ -50,6 +50,8 @@ class SpeciesResource extends JsonResource
                         'name' => $plant->name,
                         'is_nectar' => (bool) ($plant->pivot->is_nectar ?? false),
                         'is_larval_host' => (bool) ($plant->pivot->is_larval_host ?? false),
+                        'adult_preference' => $plant->pivot->adult_preference,
+                        'larval_preference' => $plant->pivot->larval_preference,
                     ];
                 });
             }),

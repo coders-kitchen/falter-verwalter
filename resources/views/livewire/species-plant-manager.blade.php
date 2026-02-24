@@ -50,6 +50,7 @@
                             <tr>
                                 <th>Pflanze</th>
                                 <th>Nutzung</th>
+                                <th>Präferenz</th>
                                 <th>Aktionen</th>
                             </tr>
                         </thead>
@@ -69,6 +70,22 @@
                                             @endif
                                             @if($row->is_larval_host)
                                                 <span class="badge badge-success">🥬 Futterpflanze</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="space-y-1 text-sm">
+                                            @if($row->is_nectar)
+                                                <div>
+                                                    <span class="font-medium">Adulte:</span>
+                                                    {{ $row->adult_preference === 'sekundaer' ? 'Sekundär' : ($row->adult_preference === 'primaer' ? 'Primär' : 'nicht gesetzt') }}
+                                                </div>
+                                            @endif
+                                            @if($row->is_larval_host)
+                                                <div>
+                                                    <span class="font-medium">Raupe:</span>
+                                                    {{ $row->larval_preference === 'sekundaer' ? 'Sekundär' : ($row->larval_preference === 'primaer' ? 'Primär' : 'nicht gesetzt') }}
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
@@ -105,19 +122,51 @@
                 <div class="space-y-4">
                     <div class="form-control">
                         <label class="label cursor-pointer justify-start gap-3">
-                            <input type="checkbox" class="checkbox" wire:model="form.is_nectar" />
+                            <input type="checkbox" class="checkbox" wire:model.live="form.is_nectar" />
                             <span class="label-text">🌺 Nektarpflanze (Adulte Falter)</span>
                         </label>
                     </div>
 
+                    @if($form['is_nectar'])
+                        <div class="form-control">
+                            <label class="label"><span class="label-text">Präferenz (Adulte)</span></label>
+                            <select
+                                class="select select-bordered"
+                                wire:model.live="form.adult_preference"
+                            >
+                                <option value="primaer">Primär</option>
+                                <option value="sekundaer">Sekundär</option>
+                            </select>
+                        </div>
+                    @endif
+
                     <div class="form-control">
                         <label class="label cursor-pointer justify-start gap-3">
-                            <input type="checkbox" class="checkbox" wire:model="form.is_larval_host" />
+                            <input type="checkbox" class="checkbox" wire:model.live="form.is_larval_host" />
                             <span class="label-text">🥬 Futterpflanze (Raupen)</span>
                         </label>
                     </div>
 
+                    @if($form['is_larval_host'])
+                        <div class="form-control">
+                            <label class="label"><span class="label-text">Präferenz (Raupe)</span></label>
+                            <select
+                                class="select select-bordered"
+                                wire:model.live="form.larval_preference"
+                            >
+                                <option value="primaer">Primär</option>
+                                <option value="sekundaer">Sekundär</option>
+                            </select>
+                        </div>
+                    @endif
+
                     @error('form.is_nectar')
+                        <span class="text-error text-sm">{{ $message }}</span>
+                    @enderror
+                    @error('form.adult_preference')
+                        <span class="text-error text-sm">{{ $message }}</span>
+                    @enderror
+                    @error('form.larval_preference')
                         <span class="text-error text-sm">{{ $message }}</span>
                     @enderror
 

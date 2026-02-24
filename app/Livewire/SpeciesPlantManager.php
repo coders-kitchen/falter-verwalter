@@ -27,6 +27,8 @@ class SpeciesPlantManager extends Component
         'plant_id' => '',
         'is_nectar' => false,
         'is_larval_host' => false,
+        'adult_preference' => null,
+        'larval_preference' => null,
     ];
 
     public string $addSearch = '';
@@ -36,6 +38,8 @@ class SpeciesPlantManager extends Component
         'form.plant_id' => 'nullable|exists:plants,id',
         'form.is_nectar' => 'boolean',
         'form.is_larval_host' => 'boolean',
+        'form.adult_preference' => 'nullable|in:primaer,sekundaer',
+        'form.larval_preference' => 'nullable|in:primaer,sekundaer',
     ];
 
     protected function messages(): array
@@ -44,6 +48,8 @@ class SpeciesPlantManager extends Component
             'form.plant_id.exists' => 'Die ausgewählte Pflanze ist ungültig.',
             'form.is_nectar.boolean' => 'Der Wert für Nektarpflanze ist ungültig.',
             'form.is_larval_host.boolean' => 'Der Wert für Futterpflanze ist ungültig.',
+            'form.adult_preference.in' => 'Die Präferenz für adulte Falter ist ungültig.',
+            'form.larval_preference.in' => 'Die Präferenz für Raupen ist ungültig.',
         ];
     }
 
@@ -53,6 +59,8 @@ class SpeciesPlantManager extends Component
             'form.plant_id' => 'Pflanze',
             'form.is_nectar' => 'Nektarpflanze',
             'form.is_larval_host' => 'Futterpflanze',
+            'form.adult_preference' => 'Präferenz (Adulte)',
+            'form.larval_preference' => 'Präferenz (Raupe)',
         ];
     }
 
@@ -89,6 +97,8 @@ class SpeciesPlantManager extends Component
             'plant_id' => '',
             'is_nectar' => false,
             'is_larval_host' => false,
+            'adult_preference' => null,
+            'larval_preference' => null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -108,6 +118,12 @@ class SpeciesPlantManager extends Component
             'plant_id' => (string) $speciesPlant->plant_id,
             'is_nectar' => (bool) $speciesPlant->is_nectar,
             'is_larval_host' => (bool) $speciesPlant->is_larval_host,
+            'adult_preference' => $speciesPlant->is_nectar
+                ? ($speciesPlant->adult_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
+                : null,
+            'larval_preference' => $speciesPlant->is_larval_host
+                ? ($speciesPlant->larval_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
+                : null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -123,6 +139,8 @@ class SpeciesPlantManager extends Component
             'plant_id' => '',
             'is_nectar' => false,
             'is_larval_host' => false,
+            'adult_preference' => null,
+            'larval_preference' => null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -151,6 +169,30 @@ class SpeciesPlantManager extends Component
         $this->addSelectedPlantIds = [];
     }
 
+    public function updatedFormIsNectar($value): void
+    {
+        if (!(bool) $value) {
+            $this->form['adult_preference'] = null;
+            return;
+        }
+
+        if ($this->form['adult_preference'] === null || $this->form['adult_preference'] === '') {
+            $this->form['adult_preference'] = SpeciesPlant::PREFERENCE_PRIMARY;
+        }
+    }
+
+    public function updatedFormIsLarvalHost($value): void
+    {
+        if (!(bool) $value) {
+            $this->form['larval_preference'] = null;
+            return;
+        }
+
+        if ($this->form['larval_preference'] === null || $this->form['larval_preference'] === '') {
+            $this->form['larval_preference'] = SpeciesPlant::PREFERENCE_PRIMARY;
+        }
+    }
+
     public function save(): void
     {
         $this->validate();
@@ -160,10 +202,20 @@ class SpeciesPlantManager extends Component
             return;
         }
 
+        $adultPreference = (bool) $this->form['is_nectar']
+            ? ($this->normalizePreference($this->form['adult_preference']) ?? SpeciesPlant::PREFERENCE_PRIMARY)
+            : null;
+
+        $larvalPreference = (bool) $this->form['is_larval_host']
+            ? ($this->normalizePreference($this->form['larval_preference']) ?? SpeciesPlant::PREFERENCE_PRIMARY)
+            : null;
+
         if ($this->speciesPlant) {
             $this->speciesPlant->update([
                 'is_nectar' => (bool) $this->form['is_nectar'],
                 'is_larval_host' => (bool) $this->form['is_larval_host'],
+                'adult_preference' => $adultPreference,
+                'larval_preference' => $larvalPreference,
             ]);
 
             $this->dispatch('notify', message: 'Pflanzenzuordnung aktualisiert.');
@@ -186,6 +238,8 @@ class SpeciesPlantManager extends Component
                 'plant_id' => $plantId,
                 'is_nectar' => (bool) $this->form['is_nectar'],
                 'is_larval_host' => (bool) $this->form['is_larval_host'],
+                'adult_preference' => $adultPreference,
+                'larval_preference' => $larvalPreference,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -195,7 +249,7 @@ class SpeciesPlantManager extends Component
             SpeciesPlant::upsert(
                 $rows,
                 ['species_id', 'plant_id'],
-                ['is_nectar', 'is_larval_host', 'updated_at']
+                ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'updated_at']
             );
         });
 
@@ -290,5 +344,16 @@ class SpeciesPlantManager extends Component
         }
 
         return $query;
+    }
+
+    private function normalizePreference(mixed $value): ?string
+    {
+        if ($value === '' || $value === null) {
+            return null;
+        }
+
+        return in_array($value, [SpeciesPlant::PREFERENCE_PRIMARY, SpeciesPlant::PREFERENCE_SECONDARY], true)
+            ? (string) $value
+            : null;
     }
 }

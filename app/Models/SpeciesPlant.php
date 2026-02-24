@@ -10,6 +10,9 @@ class SpeciesPlant extends Model
 {
     use HasFactory;
 
+    public const PREFERENCE_PRIMARY = 'primaer';
+    public const PREFERENCE_SECONDARY = 'sekundaer';
+
     protected $table = 'species_plant';
 
     protected $fillable = [
@@ -17,6 +20,8 @@ class SpeciesPlant extends Model
         'plant_id',
         'is_nectar',
         'is_larval_host',
+        'adult_preference',
+        'larval_preference',
     ];
 
     protected $casts = [

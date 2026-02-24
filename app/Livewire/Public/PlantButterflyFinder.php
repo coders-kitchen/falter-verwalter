@@ -4,6 +4,7 @@ namespace App\Livewire\Public;
 
 use App\Models\Plant;
 use App\Models\Species;
+use App\Models\SpeciesPlant;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -125,8 +126,13 @@ class PlantButterflyFinder extends Component
             $query->whereHas('plants', function ($q) {
                 $q->whereIn('plants.id', $this->selectedPlantIds)
                     ->where(function ($pivotQuery) {
-                        $pivotQuery->where('species_plant.is_nectar', true)
-                            ->orWhere('species_plant.is_larval_host', true);
+                        $pivotQuery->where(function ($adultQuery) {
+                            $adultQuery->where('species_plant.is_nectar', true)
+                                ->where('species_plant.adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                        })->orWhere(function ($larvalQuery) {
+                            $larvalQuery->where('species_plant.is_larval_host', true)
+                                ->where('species_plant.larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+                        });
                     });
             });
         }
@@ -180,11 +186,11 @@ class PlantButterflyFinder extends Component
                 continue;
             }
 
-            if ($plant->pivot->is_nectar) {
+            if ($plant->pivot->is_nectar && $plant->pivot->adult_preference === SpeciesPlant::PREFERENCE_PRIMARY) {
                 $uses[] = 'Nektarpflanze';
             }
 
-            if ($plant->pivot->is_larval_host) {
+            if ($plant->pivot->is_larval_host && $plant->pivot->larval_preference === SpeciesPlant::PREFERENCE_PRIMARY) {
                 $uses[] = 'Futterpflanze';
             }
         }

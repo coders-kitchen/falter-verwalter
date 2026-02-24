@@ -63,7 +63,7 @@ class Species extends Model
     public function plants(): BelongsToMany
     {
         return $this->belongsToMany(Plant::class, 'species_plant', 'species_id', 'plant_id')
-            ->withPivot('is_nectar', 'is_larval_host')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
             ->withTimestamps();
     }
 
@@ -72,9 +72,29 @@ class Species extends Model
         return $this->plants()->wherePivot('is_nectar', true);
     }
 
+    public function primaryNectarPlants(): BelongsToMany
+    {
+        return $this->nectarPlants()->wherePivot('adult_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+    }
+
+    public function secondaryNectarPlants(): BelongsToMany
+    {
+        return $this->nectarPlants()->wherePivot('adult_preference', SpeciesPlant::PREFERENCE_SECONDARY);
+    }
+
     public function larvalHostPlants(): BelongsToMany
     {
         return $this->plants()->wherePivot('is_larval_host', true);
+    }
+
+    public function primaryLarvalHostPlants(): BelongsToMany
+    {
+        return $this->larvalHostPlants()->wherePivot('larval_preference', SpeciesPlant::PREFERENCE_PRIMARY);
+    }
+
+    public function secondaryLarvalHostPlants(): BelongsToMany
+    {
+        return $this->larvalHostPlants()->wherePivot('larval_preference', SpeciesPlant::PREFERENCE_SECONDARY);
     }
 
     public function hostPlants(): BelongsToMany
