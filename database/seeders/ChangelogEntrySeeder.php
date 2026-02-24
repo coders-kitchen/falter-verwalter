@@ -150,6 +150,16 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.02.24.3',
+                'title' => 'Changelog fuer Public und Admin eingefuehrt',
+                'summary' => 'Neue \"Was ist neu\"-Ansicht fuer Nutzer und ein dedizierter Changelog-Bereich fuer Admins sind jetzt verfuegbar.',
+                'details' => "Public: Neuer Menuepunkt \"Was ist neu\" mit veroeffentlichten, nutzerrelevanten Updates.\nAdmin: Eigener Changelog-Manager plus einmaliges Update-Modal nach Login mit optionalen GitHub-Commit-Links.\nQuelle: features/feature_changelog.md",
+                'audience' => 'both',
+                'published_at' => '2026-02-24T22:30:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

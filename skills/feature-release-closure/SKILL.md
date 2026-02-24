@@ -44,6 +44,15 @@ Close a feature with consistent release hygiene:
    - what changelog entry was added/updated
    - any follow-up command needed (`php artisan migrate`, `php artisan db:seed`)
 
+## Commit Strategy (Default + Optional)
+- Default: create a separate commit for changelog closure.
+- Optional: use `--amend` only when all conditions are true:
+  - the feature commit is the local `HEAD`
+  - the feature commit is not pushed/shared yet
+  - the user explicitly asks to fold changelog into the feature commit
+- If any condition is false or unknown, prefer a separate commit.
+- Always state which strategy was used.
+
 ## Quality Rules
 - Prefer concrete user value over implementation details.
 - Keep `summary` short (1 sentence).
