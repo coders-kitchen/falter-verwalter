@@ -1,0 +1,134 @@
+# Error - Internal Server Error
+
+Call to a member function getKey() on array
+
+PHP 8.5.3
+Laravel 12.36.1
+falter-verwalter-aa859357175e.herokuapp.com
+
+## Stack Trace
+
+0 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Collection.php:402
+1 - app/Livewire/SpeciesPlantManager.php:471
+2 - app/Livewire/SpeciesPlantManager.php:404
+3 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+4 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+5 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
+6 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+7 - vendor/livewire/livewire/src/Wrapped.php:23
+8 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:289
+9 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:249
+10 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:54
+11 - vendor/livewire/livewire/src/LivewireManager.php:73
+12 - vendor/livewire/volt/src/LivewireManager.php:23
+13 - resources/views/admin/species-plants.blade.php:5
+14 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+15 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+16 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+17 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+18 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+19 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+20 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+21 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+22 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+23 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
+24 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
+25 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
+26 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
+27 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+29 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+31 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+33 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+35 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+37 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+38 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+45 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+46 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+47 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+49 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+51 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+53 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+54 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+56 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+57 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+59 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+61 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+63 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+65 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+72 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+73 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+74 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+75 - public/index.php:20
+
+## Request
+
+GET /admin/species/28/speciesPlants
+
+## Headers
+
+* **x-request-start**: 1772391100219
+* **x-request-id**: 4f3e9633-138c-f7fe-5b94-d8335cacc81c
+* **x-forwarded-proto**: https
+* **x-forwarded-port**: 443
+* **x-forwarded-for**: 87.149.198.71
+* **via**: 1.1 heroku-router
+* **server**: Heroku
+* **sec-fetch-site**: same-origin
+* **sec-fetch-mode**: navigate
+* **sec-fetch-dest**: document
+* **referer**: https://falter-verwalter-aa859357175e.herokuapp.com/admin/species
+* **priority**: u=0, i
+* **cookie**: XSRF-TOKEN=eyJpdiI6IitHNmh2UVJBSExXaExLcVNPTER4MGc9PSIsInZhbHVlIjoiNjdQNmd3TStLWURGUllvZHA2dUZQUzRPN2NJdDFmalRDU0ZJci9Kd1duaTk0Y2pqRmt4SHdyVmJwUnNQNnJmWElCK2JsNkc4ZlhHazFRRGZxQ2IwK1ZNdjJzU0tsbGFTd01Ka0Nxd0NZMHR0QXBiN1ZmakdEREg4QzdhQmNVOEgiLCJtYWMiOiJkNDJhZWMxM2NiYWIwNjhkNGM2OWQ1N2QyYThjYzFiZTFiMjZjZmQxOGVjYzI2ZjYzN2E2NTNiNTgxYTRkYjc2IiwidGFnIjoiIn0%3D; laravel-session=eyJpdiI6ImVJQXlnTXFwRnNjUXYzRGVoRDFwSlE9PSIsInZhbHVlIjoiTWQwM08zc3RDcUpLVjBtMEdxOGY5YXVpa0VjMVhlRVJCT2hqc3FLek5kSkN5bDlVNW5aN2dsWlhGZ3FRRUk5NmRIVDlXakRiRlF3N0E5dGtRcU00U2U1UHFHTG92NW1Pdlo1dXA3K3A2OWY4d3Q3eHg4cTRlL1ZNWEkxK3ZOYjEiLCJtYWMiOiIyYmYzZmM1ZDFmNDBhOWU5MmM5NTk2MmU4ZmY0YjhjYjE3NzI0MjY3OTJjNTE4OTcxZmU0MDAxOGY4NTU4NTFlIiwidGFnIjoiIn0%3D
+* **accept-language**: de-DE,de;q=0.9
+* **accept-encoding**: gzip, deflate, br, zstd
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15
+* **host**: falter-verwalter-aa859357175e.herokuapp.com
+
+## Route Context
+
+controller: Closure
+route name: admin.speciesPlants.index
+middleware: web, auth
+
+## Route Parameters
+
+{
+    "species": "28"
+}
+
+## Database Queries
+
+* mysql - select * from `sessions` where `id` = 'm5UPBngGbOgJr4mh8v3mPl2y49SEtu0YcM890VWt' limit 1 (5.86 ms)
+* mysql - select * from `users` where `id` = 2 limit 1 (1.5 ms)
+* mysql - select * from `species` where `species`.`id` = '28' limit 1 (1.37 ms)
+* mysql - select * from `species_plant` where `species_id` = 28 (1.35 ms)
+* mysql - select * from `species_genus` where `species_id` = 28 (1.34 ms)
+* mysql - select * from `genera` where `genera`.`id` in (66, 67) (1.42 ms)
+* mysql - select * from `subfamilies` where `subfamilies`.`id` in (34) (1.22 ms)
+* mysql - select * from `families` where `families`.`id` in (40) (1.19 ms)

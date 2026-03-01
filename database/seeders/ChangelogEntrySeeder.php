@@ -143,8 +143,8 @@ class ChangelogEntrySeeder extends Seeder
             [
                 'version' => '2026.02.24.2',
                 'title' => 'Gattungszuordnungen (sp.) zusaetzlich zu Arten',
-                'summary' => 'Zuordnungen koennen nun auf Pflanzenart- oder Gattungsebene erfolgen.',
-                'details' => "Public: Arteninformationen beruecksichtigen jetzt auch Gattungsbeziehungen (sp.).\nAdmin: Multi-Select-Zuordnung fuer Gattungen im gleichen Workflow wie bei Pflanzenarten.\nQuelle: features/feature_species_genus_assignment.md",
+                'summary' => 'Pflanzenbeziehungen koennen jetzt fachlich korrekt auf Arten- und Gattungsebene gepflegt und genutzt werden.',
+                'details' => "Public: Finder, Pflanzendetails und Artdetails beruecksichtigen nun auch primaere Gattungsbeziehungen als (sp.).\nAdmin: Pflanzenzuordnungen lassen sich im gleichen Bulk-Workflow wahlweise fuer konkrete Pflanzenarten oder ganze Pflanzengattungen pflegen.\nQuelle: features/feature_species_genus_assignment.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-24T21:37:05+01:00',
                 'is_active' => true,

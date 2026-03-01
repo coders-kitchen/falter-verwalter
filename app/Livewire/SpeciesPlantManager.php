@@ -467,8 +467,8 @@ class SpeciesPlantManager extends Component
                 ];
             });
 
-        $allRows = $plantRows
-            ->merge($genusRows)
+        $allRows = collect($plantRows->all())
+            ->merge($genusRows->all())
             ->sortByDesc(function (array $row) {
                 return $row['updated_at']?->getTimestamp() ?? 0;
             })
