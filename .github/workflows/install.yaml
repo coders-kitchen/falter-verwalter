@@ -21,12 +21,12 @@ jobs:
         run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
       # Optional: Frontend build
-      # - name: Setup Node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: "20"
-      # - run: npm ci
-      # - run: npm run build
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run build
 
       # Optional: Laravel caches (nur sinnvoll, wenn env konsistent ist)
       # - run: php artisan config:cache
@@ -35,12 +35,12 @@ jobs:
 
       - name: Deploy via SFTP/FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:                      
+        with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.DEPLOY_PATH }}
-          protocol: sftp   # je nach Account / wenn unterstützt
+          protocol: ftps   # je nach Account / wenn unterstützt
           local-dir: ./          
           exclude: |
             **/.git*
