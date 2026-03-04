@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.DEPLOY_PATH }}
-          protocol: ftps   # je nach Account / wenn unterstützt
+          protocol: ftp   # je nach Account / wenn unterstützt
           local-dir: ./          
           exclude: |
             **/.git*
