@@ -2,7 +2,7 @@ name: Deploy to netcup Webhosting
 
 on:
   registry_package:
-    types: [released]
+    types: [published]
 
 jobs:
   deploy:
@@ -35,12 +35,11 @@ jobs:
 
       - name: Deploy via SFTP/FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          env:
-            server: ${{ secrets.FTP_SERVER }}
-            username: ${{ secrets.FTP_USERNAME }}
-            password: ${{ secrets.FTP_PASSWORD }}
-            server-dir: ${{ secrets.DEPLOY_PATH }}
+        with:                      
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.DEPLOY_PATH }}
           protocol: sftp   # je nach Account / wenn unterstützt
           local-dir: ./          
           exclude: |
