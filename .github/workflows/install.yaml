@@ -1,8 +1,8 @@
 name: Deploy to netcup Webhosting
 
 on:
-  registry_package:
-    types: [published]
+  release:
+    types: [released]
 
 jobs:
   deploy:
