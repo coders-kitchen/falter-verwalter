@@ -160,6 +160,16 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.04.1',
+                'title' => 'Phagie-Stufen in Pflanzen- und Gattungszuordnungen',
+                'summary' => 'Pflanzenbeziehungen koennen je Lebensstadium nun auch nach Phagie-Stufe klassifiziert werden.',
+                'details' => "Public: Keine direkte Aenderung im Finder oder in oeffentlichen Detailansichten.\nAdmin: In Pflanzen- und Gattungszuordnungen koennen fuer Adulte und Raupen jetzt die Stufen Unbekannt, Monophag, Oligophag oder Polyphag gepflegt werden.\nQuelle: features/feature_species_phagy_levels.md",
+                'audience' => 'admin',
+                'published_at' => '2026-03-04T12:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

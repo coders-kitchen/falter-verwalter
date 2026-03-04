@@ -106,7 +106,7 @@ class Plant extends Model
     public function speciesAsHostPlant(): BelongsToMany
     {
         return $this->belongsToMany(Species::class, 'species_plant', 'plant_id', 'species_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
             ->withTimestamps();
     }
 

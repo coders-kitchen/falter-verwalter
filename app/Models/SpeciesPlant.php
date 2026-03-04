@@ -12,6 +12,10 @@ class SpeciesPlant extends Model
 
     public const PREFERENCE_PRIMARY = 'primaer';
     public const PREFERENCE_SECONDARY = 'sekundaer';
+    public const PHAGY_UNKNOWN = 'unbekannt';
+    public const PHAGY_MONOPHAG = 'monophag';
+    public const PHAGY_OLIGOPHAG = 'oligophag';
+    public const PHAGY_POLYPHAG = 'polyphag';
 
     protected $table = 'species_plant';
 
@@ -22,6 +26,8 @@ class SpeciesPlant extends Model
         'is_larval_host',
         'adult_preference',
         'larval_preference',
+        'adult_phagy_level',
+        'larval_phagy_level',
     ];
 
     protected $casts = [

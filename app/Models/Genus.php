@@ -40,7 +40,7 @@ class Genus extends Model
     public function assignedSpecies(): BelongsToMany
     {
         return $this->belongsToMany(Species::class, 'species_genus', 'genus_id', 'species_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
             ->withTimestamps();
     }
 

@@ -51,7 +51,7 @@
                                 <th>Typ</th>
                                 <th>Name</th>
                                 <th>Nutzung</th>
-                                <th>Präferenz</th>
+                                <th>Details</th>
                                 <th>Aktionen</th>
                             </tr>
                         </thead>
@@ -86,13 +86,15 @@
                                             @if($row['is_nectar'])
                                                 <div>
                                                     <span class="font-medium">Adulte:</span>
-                                                    {{ $row['adult_preference'] === 'sekundaer' ? 'Sekundär' : ($row['adult_preference'] === 'primaer' ? 'Primär' : 'nicht gesetzt') }}
+                                                    {{ $row['adult_preference_label'] }}
+                                                    · {{ $row['adult_phagy_level_label'] }}
                                                 </div>
                                             @endif
                                             @if($row['is_larval_host'])
                                                 <div>
                                                     <span class="font-medium">Raupe:</span>
-                                                    {{ $row['larval_preference'] === 'sekundaer' ? 'Sekundär' : ($row['larval_preference'] === 'primaer' ? 'Primär' : 'nicht gesetzt') }}
+                                                    {{ $row['larval_preference_label'] }}
+                                                    · {{ $row['larval_phagy_level_label'] }}
                                                 </div>
                                             @endif
                                         </div>
@@ -169,12 +171,23 @@
                     </div>
 
                     @if($form['is_nectar'])
-                        <div class="form-control">
-                            <label class="label"><span class="label-text">Präferenz (Adulte)</span></label>
-                            <select class="select select-bordered" wire:model.live="form.adult_preference">
-                                <option value="primaer">Primär</option>
-                                <option value="sekundaer">Sekundär</option>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Präferenz (Adulte)</span></label>
+                                <select class="select select-bordered" wire:model.live="form.adult_preference">
+                                    <option value="primaer">Primär</option>
+                                    <option value="sekundaer">Sekundär</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Phagie-Stufe (Adulte)</span></label>
+                                <select class="select select-bordered" wire:model.live="form.adult_phagy_level">
+                                    <option value="unbekannt">Unbekannt</option>
+                                    <option value="monophag">Monophag</option>
+                                    <option value="oligophag">Oligophag</option>
+                                    <option value="polyphag">Polyphag</option>
+                                </select>
+                            </div>
                         </div>
                     @endif
 
@@ -186,12 +199,23 @@
                     </div>
 
                     @if($form['is_larval_host'])
-                        <div class="form-control">
-                            <label class="label"><span class="label-text">Präferenz (Raupe)</span></label>
-                            <select class="select select-bordered" wire:model.live="form.larval_preference">
-                                <option value="primaer">Primär</option>
-                                <option value="sekundaer">Sekundär</option>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Präferenz (Raupe)</span></label>
+                                <select class="select select-bordered" wire:model.live="form.larval_preference">
+                                    <option value="primaer">Primär</option>
+                                    <option value="sekundaer">Sekundär</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Phagie-Stufe (Raupe)</span></label>
+                                <select class="select select-bordered" wire:model.live="form.larval_phagy_level">
+                                    <option value="unbekannt">Unbekannt</option>
+                                    <option value="monophag">Monophag</option>
+                                    <option value="oligophag">Oligophag</option>
+                                    <option value="polyphag">Polyphag</option>
+                                </select>
+                            </div>
                         </div>
                     @endif
 
@@ -202,6 +226,12 @@
                         <span class="text-error text-sm">{{ $message }}</span>
                     @enderror
                     @error('form.larval_preference')
+                        <span class="text-error text-sm">{{ $message }}</span>
+                    @enderror
+                    @error('form.adult_phagy_level')
+                        <span class="text-error text-sm">{{ $message }}</span>
+                    @enderror
+                    @error('form.larval_phagy_level')
                         <span class="text-error text-sm">{{ $message }}</span>
                     @enderror
 

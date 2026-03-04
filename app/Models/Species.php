@@ -63,14 +63,14 @@ class Species extends Model
     public function plants(): BelongsToMany
     {
         return $this->belongsToMany(Plant::class, 'species_plant', 'species_id', 'plant_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
             ->withTimestamps();
     }
 
     public function plantGenera(): BelongsToMany
     {
         return $this->belongsToMany(Genus::class, 'species_genus', 'species_id', 'genus_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
             ->withTimestamps();
     }
 
