@@ -60,6 +60,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         return view('admin.species');
     })->name('species.index');
 
+    Route::get('tags', function () {
+        return view('admin.tags');
+    })->name('tags.index');
+
     Route::get('families', function () {
         return redirect()->route('admin.families.butterflies');
     })->name('families.index');

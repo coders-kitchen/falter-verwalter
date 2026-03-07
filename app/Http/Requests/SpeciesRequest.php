@@ -34,6 +34,8 @@ class SpeciesRequest extends FormRequest
             'distribution_area_ids.*' => 'exists:distribution_areas,id',
             'habitat_ids' => 'nullable|array',
             'habitat_ids.*' => 'exists:habitats,id',
+            'tag_ids' => 'nullable|array',
+            'tag_ids.*' => 'exists:tags,id',
             'host_plant_ids' => 'nullable|array',
             'host_plant_ids.*' => 'exists:plants,id',
         ];

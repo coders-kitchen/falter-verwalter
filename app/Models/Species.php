@@ -138,4 +138,9 @@ class Species extends Model
     {
         return $this->larvalHostPlants();
     }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'species_tag', 'species_id', 'tag_id');
+    }
 }

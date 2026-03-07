@@ -16,6 +16,9 @@ class SpeciesDetail extends Component
             'genus.subfamily.family',
             'genus.tribe',
             'habitats',
+            'tags' => function ($query) {
+                $query->orderBy('name');
+            },
             'generations' => function ($query) {
                 $query->orderBy('generation_number');
             },

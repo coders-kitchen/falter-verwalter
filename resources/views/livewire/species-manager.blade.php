@@ -24,6 +24,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Gattung</th>
+                    <th>Tags</th>
                     <th>Größe</th>
                     <th>Generationen</th>
                     <th>Aktionen</th>
@@ -34,6 +35,15 @@
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td>{{ $item->genus->name ?? '—' }}</td>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                @forelse($item->tags as $tag)
+                                    <span class="badge badge-outline badge-sm">{{ $tag->name }}</span>
+                                @empty
+                                    <span class="text-xs text-base-content/60">—</span>
+                                @endforelse
+                            </div>
+                        </td>
                         <td>
                             <span class="badge badge-lg">{{ $item->size_category }}</span>
                         </td>
@@ -74,7 +84,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-8 text-gray-500">
+                        <td colspan="6" class="text-center py-8 text-gray-500">
                             Keine Arten gefunden
                         </td>
                     </tr>
@@ -224,6 +234,51 @@
                         @error('form.special_features')
                             <span class="text-error text-sm mt-1">{{ $message }}</span>
                         @enderror
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Tags</span>
+                        </label>
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2">
+                                @forelse($selectedTags as $tag)
+                                    <button
+                                        type="button"
+                                        class="badge badge-neutral gap-2"
+                                        wire:click="removeTag({{ $tag->id }})"
+                                        title="Tag entfernen"
+                                    >
+                                        {{ $tag->name }} <span>✕</span>
+                                    </button>
+                                @empty
+                                    <span class="text-xs text-base-content/60">Noch keine Tags ausgewählt.</span>
+                                @endforelse
+                            </div>
+                            <input
+                                type="text"
+                                wire:model.live.debounce.200ms="tagSearch"
+                                class="input input-bordered"
+                                placeholder="Tag suchen..."
+                            >
+
+                            @if($suggestedTags->count() > 0)
+                                <div class="border border-base-300 rounded-lg max-h-44 overflow-y-auto">
+                                    @foreach($suggestedTags as $tag)
+                                        <button
+                                            type="button"
+                                            class="w-full text-left px-3 py-2 hover:bg-base-200 border-b border-base-300 last:border-b-0"
+                                            wire:click="addTag({{ $tag->id }})"
+                                        >
+                                            <span class="font-medium">{{ $tag->name }}</span>
+                                            @if(!empty($tag->description))
+                                                <span class="text-xs text-base-content/70 block">{{ $tag->description }}</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     
                     <!-- Habitats Multi-Select -->

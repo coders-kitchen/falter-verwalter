@@ -85,6 +85,17 @@
                         <label class="font-semibold text-sm opacity-75">Besondere Merkmale</label>
                         <p class="text-lg">{{ $species->special_features ?: 'keine genaue Angabe' }}</p>
                     </div>
+
+                    <div class="md:col-span-2">
+                        <label class="font-semibold text-sm opacity-75">Tags</label>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            @forelse($species->tags as $tag)
+                                <span class="badge badge-outline">{{ $tag->name }}</span>
+                            @empty
+                                <span class="text-sm text-base-content/60">Keine Tags gesetzt</span>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

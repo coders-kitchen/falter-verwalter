@@ -45,6 +45,14 @@ class SpeciesResource extends JsonResource
             'protection_status' => $this->protection_status,
             'distribution_areas' => $this->whenLoaded('distributionAreas', DistributionAreaResource::collection($this->distributionAreas)),
             'habitats' => $this->whenLoaded('habitats', HabitatResource::collection($this->habitats)),
+            'tags' => $this->whenLoaded('tags', function () {
+                return $this->tags->map(fn ($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                    'description' => $tag->description,
+                ]);
+            }),
             'plants' => $this->whenLoaded('plants', function () {
                 return $this->plants->map(function ($plant) {
                     return [

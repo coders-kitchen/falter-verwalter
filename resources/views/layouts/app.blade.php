@@ -80,6 +80,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="{{ route('admin.tags.index') }}" @class(['active' => request()->routeIs('admin.tags.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Tags verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Tags verwalten</span>
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="{{ route('admin.families.butterflies') }}" @class(['active' => request()->routeIs('admin.families.butterflies') || request()->routeIs('admin.subfamilies.*') || request()->routeIs('admin.tribes.*') || request()->routeIs('admin.genera.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Schmetterlingsfamilien verwalten">
                                         <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Familien (Schmetterlinge)</span>
                                     </a>

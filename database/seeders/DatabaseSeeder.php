@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             LifeFormSeeder::class,
             DistributionAreaSeeder::class,
             ThreatCategorySeeder::class,
+            TagSeeder::class,
             PlantFamilyAndPlantDemoSeeder::class,
             ChangelogEntrySeeder::class,
         ]);
