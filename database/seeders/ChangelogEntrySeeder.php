@@ -14,7 +14,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2025.11.02.1',
                 'title' => 'Projektgrundlage: Admin-Basisdaten spezifiziert',
                 'summary' => 'Grundlage fuer den strukturierten Aufbau und die Pflege der Falter- und Pflanzendaten wurde definiert.',
-                'details' => "Admin: Spezifikation fuer Admin-Bereich und Datenpflege vorbereitet.\nQuelle: specs/001-admin-basis-daten/spec.md",
+                'details_public' => null,
+                'details_admin' => "Spezifikation fuer Admin-Bereich und Datenpflege vorbereitet.\nQuelle: specs/001-admin-basis-daten/spec.md",
                 'audience' => 'admin',
                 'published_at' => '2025-11-02T17:17:01+01:00',
                 'is_active' => true,
@@ -24,7 +25,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2025.11.02.2',
                 'title' => 'Regionales Gefaehrdungsmodell neu konzipiert',
                 'summary' => 'Verbreitungsgebiet und Gefaehrdungsstatus wurden als getrennte fachliche Ebenen definiert.',
-                'details' => "Public: Grundlage fuer differenziertere regionale Darstellungen geschaffen.\nAdmin: Pflegeprozess fuer Regionen und Gefaehrdungsstatus fachlich getrennt.\nQuelle: specs/002-endangered-regions-model/spec.md",
+                'details_public' => "Grundlage fuer differenziertere regionale Darstellungen geschaffen.\nQuelle: specs/002-endangered-regions-model/spec.md",
+                'details_admin' => "Pflegeprozess fuer Regionen und Gefaehrdungsstatus fachlich getrennt.\nQuelle: specs/002-endangered-regions-model/spec.md",
                 'audience' => 'both',
                 'published_at' => '2025-11-02T17:17:01+01:00',
                 'is_active' => true,
@@ -34,7 +36,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.1',
                 'title' => 'Oekologische Zeigerwerte mit X und ? erweitert',
                 'summary' => 'Pflanzenwerte koennen nun auch als indifferent (X) oder ungeklaert (?) erfasst werden.',
-                'details' => "Public: Pflanzeninformationen koennen praeziser eingeordnet und gelesen werden.\nAdmin: Erfassungslogik fuer Zeigerwerte um zusaetzliche Zustandswerte erweitert.\nQuelle: features/feature_indicator_state_x_unknown.md",
+                'details_public' => "Pflanzeninformationen koennen praeziser eingeordnet und gelesen werden.\nQuelle: features/feature_indicator_state_x_unknown.md",
+                'details_admin' => "Erfassungslogik fuer Zeigerwerte um zusaetzliche Zustandswerte erweitert.\nQuelle: features/feature_indicator_state_x_unknown.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T16:02:41+01:00',
                 'is_active' => true,
@@ -44,7 +47,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.2',
                 'title' => 'Schwermetallresistenz bei Pflanzen ergaenzt',
                 'summary' => 'Pflanzen enthalten nun einen zusaetzlichen Hinweis zur Schwermetallresistenz.',
-                'details' => "Public: Weitere Pflanzeneigenschaft fuer die Einordnung verfuegbar.\nAdmin: Neuer Pflegewert fuer Schwermetallresistenz eingefuehrt.\nQuelle: features/feature_heavy_metal_resistance.md",
+                'details_public' => "Weitere Pflanzeneigenschaft fuer die Einordnung verfuegbar.\nQuelle: features/feature_heavy_metal_resistance.md",
+                'details_admin' => "Neuer Pflegewert fuer Schwermetallresistenz eingefuehrt.\nQuelle: features/feature_heavy_metal_resistance.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T16:02:41+01:00',
                 'is_active' => true,
@@ -54,7 +58,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.3',
                 'title' => 'Gefaehrdungskategorie direkt an Pflanzen',
                 'summary' => 'Pflanzen koennen direkt mit einer Gefaehrdungskategorie erfasst werden.',
-                'details' => "Public: Pflanzendetails koennen Gefaehrdung besser widerspiegeln.\nAdmin: Direkte Kategorienpflege an Pflanzeneintraegen ermoeglicht.\nQuelle: features/feature_plant_threat_category.md",
+                'details_public' => "Pflanzendetails koennen Gefaehrdung besser widerspiegeln.\nQuelle: features/feature_plant_threat_category.md",
+                'details_admin' => "Direkte Kategorienpflege an Pflanzeneintraegen ermoeglicht.\nQuelle: features/feature_plant_threat_category.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T16:10:08+01:00',
                 'is_active' => true,
@@ -64,7 +69,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.4',
                 'title' => 'Salbei-Indikator fuer Arten eingefuehrt',
                 'summary' => 'Arten koennen mit einem Hinweis zur Salbei-Nutzung versehen werden.',
-                'details' => "Public: Zusatzeigenschaft an Artdetails sichtbar.\nAdmin: Neues Feld zur Erfassung der Salbei-Nutzung verfuegbar.\nQuelle: features/feature_species_sage_feeding_indicator.md",
+                'details_public' => "Zusatzeigenschaft an Artdetails sichtbar.\nQuelle: features/feature_species_sage_feeding_indicator.md",
+                'details_admin' => "Neues Feld zur Erfassung der Salbei-Nutzung verfuegbar.\nQuelle: features/feature_species_sage_feeding_indicator.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T16:17:14+01:00',
                 'is_active' => true,
@@ -74,7 +80,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.5',
                 'title' => 'Pflanzenzuordnung von Generation auf Art verschoben',
                 'summary' => 'Futter- und Nektarpflanzen werden nun zentral pro Art statt pro Generation gepflegt.',
-                'details' => "Public: Treffer und Artdetails basieren auf stabileren Pflanzenbeziehungen.\nAdmin: Zuordnungspflege wurde auf Artniveau zentralisiert.\nQuelle: features/feature_species_plant_assignment.md",
+                'details_public' => "Treffer und Artdetails basieren auf stabileren Pflanzenbeziehungen.\nQuelle: features/feature_species_plant_assignment.md",
+                'details_admin' => "Zuordnungspflege wurde auf Artniveau zentralisiert.\nQuelle: features/feature_species_plant_assignment.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T16:41:12+01:00',
                 'is_active' => true,
@@ -84,7 +91,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.6',
                 'title' => 'Generationen werden automatisch nummeriert',
                 'summary' => 'Generationen erhalten ihre Nummerierung nun automatisch.',
-                'details' => "Admin: Manuelle Nummernvergabe in der Pflege entfiel, Ableitungen erfolgen automatisch.\nQuelle: features/feature_auto_generation_numbering.md",
+                'details_public' => null,
+                'details_admin' => "Manuelle Nummernvergabe in der Pflege entfiel, Ableitungen erfolgen automatisch.\nQuelle: features/feature_auto_generation_numbering.md",
                 'audience' => 'admin',
                 'published_at' => '2026-02-15T16:50:48+01:00',
                 'is_active' => true,
@@ -94,7 +102,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.7',
                 'title' => 'Bulk-Zuordnung fuer Art-Pflanzen verbessert',
                 'summary' => 'Zuordnungen grosser Pflanzenmengen wurden im Admin-Workflow deutlich vereinfacht.',
-                'details' => "Admin: Mehrfachauswahl und effizientere Bearbeitung fuer grosse Datenmengen.\nQuelle: features/feature_species_plant_bulk_assignment.md",
+                'details_public' => null,
+                'details_admin' => "Mehrfachauswahl und effizientere Bearbeitung fuer grosse Datenmengen.\nQuelle: features/feature_species_plant_bulk_assignment.md",
                 'audience' => 'admin',
                 'published_at' => '2026-02-15T17:30:46+01:00',
                 'is_active' => true,
@@ -104,7 +113,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.8',
                 'title' => 'Taxonomie auf normierte Hierarchie umgestellt',
                 'summary' => 'Die taxonomische Struktur wurde vereinheitlicht und ueber alle Bereiche konsistenter gemacht.',
-                'details' => "Public: Taxonomiepfade und Filter koennen konsistenter dargestellt werden.\nAdmin: Hierarchische Pflege von Familien, Unterfamilien, Triben und Gattungen strukturiert.\nQuelle: features/feature_taxonomy_normalization.md",
+                'details_public' => "Taxonomiepfade und Filter koennen konsistenter dargestellt werden.\nQuelle: features/feature_taxonomy_normalization.md",
+                'details_admin' => "Hierarchische Pflege von Familien, Unterfamilien, Triben und Gattungen strukturiert.\nQuelle: features/feature_taxonomy_normalization.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-15T18:07:19+01:00',
                 'is_active' => true,
@@ -114,7 +124,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.9',
                 'title' => 'Oeffentliche Pflanzensuche ausgebaut',
                 'summary' => 'Die Pflanzensuche im Butterfly-Finder wurde fuer grosse Datenbestaende verbessert.',
-                'details' => "Public: Erweiterte Such- und Filteroptionen im Finder verfuegbar.\nAdmin: Keine direkte Pflegeaenderung, aber bessere Nutzbarkeit der gepflegten Daten.\nQuelle: features/feature_public_plant_filtering.md",
+                'details_public' => "Erweiterte Such- und Filteroptionen im Finder verfuegbar.\nQuelle: features/feature_public_plant_filtering.md",
+                'details_admin' => "Keine direkte Pflegeaenderung, aber bessere Nutzbarkeit der gepflegten Daten.\nQuelle: features/feature_public_plant_filtering.md",
                 'audience' => 'public',
                 'published_at' => '2026-02-15T19:01:16+01:00',
                 'is_active' => true,
@@ -124,7 +135,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.15.10',
                 'title' => 'Regionale Karte auf GeoJSON und Leaflet umgestellt',
                 'summary' => 'Die Verbreitungskarte zeigt Regionen jetzt als interaktive Flaechen statt Blockraster.',
-                'details' => "Public: Deutlich praezisere und interaktive Kartendarstellung.\nAdmin: Grundlage fuer bessere Qualitaetskontrolle regionaler Daten.\nQuelle: features/feature_regional_map_geojson_leaflet.md",
+                'details_public' => "Deutlich praezisere und interaktive Kartendarstellung.\nQuelle: features/feature_regional_map_geojson_leaflet.md",
+                'details_admin' => "Grundlage fuer bessere Qualitaetskontrolle regionaler Daten.\nQuelle: features/feature_regional_map_geojson_leaflet.md",
                 'audience' => 'public',
                 'published_at' => '2026-02-15T19:41:50+01:00',
                 'is_active' => true,
@@ -134,7 +146,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.24.1',
                 'title' => 'Primaer- und Sekundaer-Praeferenz je Lebensstadium',
                 'summary' => 'Pflanzenbeziehungen koennen je Raupe und Falter als primaer oder sekundaer unterschieden werden.',
-                'details' => "Public: Suchtreffer werden staerker auf fachlich relevante primaere Beziehungen fokussiert.\nAdmin: Neue Praeferenzpflege je Lebensstadium in der Zuordnung verfuegbar.\nQuelle: features/feature_species_plant_primary_secondary_preference.md",
+                'details_public' => "Suchtreffer werden staerker auf fachlich relevante primaere Beziehungen fokussiert.\nQuelle: features/feature_species_plant_primary_secondary_preference.md",
+                'details_admin' => "Neue Praeferenzpflege je Lebensstadium in der Zuordnung verfuegbar.\nQuelle: features/feature_species_plant_primary_secondary_preference.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-24T21:07:32+01:00',
                 'is_active' => true,
@@ -144,7 +157,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.24.2',
                 'title' => 'Gattungszuordnungen (sp.) zusaetzlich zu Arten',
                 'summary' => 'Pflanzenbeziehungen koennen jetzt fachlich korrekt auf Arten- und Gattungsebene gepflegt und genutzt werden.',
-                'details' => "Public: Finder, Pflanzendetails und Artdetails beruecksichtigen nun auch primaere Gattungsbeziehungen als (sp.).\nAdmin: Pflanzenzuordnungen lassen sich im gleichen Bulk-Workflow wahlweise fuer konkrete Pflanzenarten oder ganze Pflanzengattungen pflegen.\nQuelle: features/feature_species_genus_assignment.md",
+                'details_public' => "Finder, Pflanzendetails und Artdetails beruecksichtigen nun auch primaere Gattungsbeziehungen als (sp.).\nQuelle: features/feature_species_genus_assignment.md",
+                'details_admin' => "Pflanzenzuordnungen lassen sich im gleichen Bulk-Workflow wahlweise fuer konkrete Pflanzenarten oder ganze Pflanzengattungen pflegen.\nQuelle: features/feature_species_genus_assignment.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-24T21:37:05+01:00',
                 'is_active' => true,
@@ -154,7 +168,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.02.24.3',
                 'title' => 'Changelog fuer Public und Admin eingefuehrt',
                 'summary' => 'Neue \"Was ist neu\"-Ansicht fuer Nutzer und ein dedizierter Changelog-Bereich fuer Admins sind jetzt verfuegbar.',
-                'details' => "Public: Neuer Menuepunkt \"Was ist neu\" mit veroeffentlichten, nutzerrelevanten Updates.\nAdmin: Eigener Changelog-Manager plus einmaliges Update-Modal nach Login mit optionalen GitHub-Commit-Links.\nQuelle: features/feature_changelog.md",
+                'details_public' => "Neuer Menuepunkt \"Was ist neu\" mit veroeffentlichten, nutzerrelevanten Updates.\nQuelle: features/feature_changelog.md",
+                'details_admin' => "Eigener Changelog-Manager plus einmaliges Update-Modal nach Login mit optionalen GitHub-Commit-Links.\nQuelle: features/feature_changelog.md",
                 'audience' => 'both',
                 'published_at' => '2026-02-24T22:30:00+01:00',
                 'is_active' => true,
@@ -164,7 +179,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.03.04.1',
                 'title' => 'Phagie-Stufen in Pflanzen- und Gattungszuordnungen',
                 'summary' => 'Pflanzenbeziehungen koennen je Lebensstadium nun auch nach Phagie-Stufe klassifiziert werden.',
-                'details' => "Public: Keine direkte Aenderung im Finder oder in oeffentlichen Detailansichten.\nAdmin: In Pflanzen- und Gattungszuordnungen koennen fuer Adulte und Raupen jetzt die Stufen Unbekannt, Monophag, Oligophag oder Polyphag gepflegt werden.\nQuelle: features/feature_species_phagy_levels.md",
+                'details_public' => "Keine direkte Aenderung im Finder oder in oeffentlichen Detailansichten.\nQuelle: features/feature_species_phagy_levels.md",
+                'details_admin' => "In Pflanzen- und Gattungszuordnungen koennen fuer Adulte und Raupen jetzt die Stufen Unbekannt, Monophag, Oligophag oder Polyphag gepflegt werden.\nQuelle: features/feature_species_phagy_levels.md",
                 'audience' => 'admin',
                 'published_at' => '2026-03-04T12:00:00+01:00',
                 'is_active' => true,
@@ -174,7 +190,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.03.07.1',
                 'title' => 'Phagie als Arteigenschaft korrigiert',
                 'summary' => 'Die Phagie-Einstufung wird nun korrekt je Art statt je Pflanzen- oder Gattungszuordnung gefuehrt.',
-                'details' => "Public: Artdetails zeigen die Phagie-Stufe der Art getrennt fuer Adulte und Raupen.\nAdmin: Phagie wird zentral an der Art gepflegt; bestehende Werte wurden mit Prioritaet Polyphag > Oligophag > Monophag > Unbekannt migriert.\nQuelle: features/feature_species_phagy_levels.md",
+                'details_public' => "Artdetails zeigen die Phagie-Stufe der Art getrennt fuer Adulte und Raupen.\nQuelle: features/feature_species_phagy_levels.md",
+                'details_admin' => "Phagie wird zentral an der Art gepflegt; bestehende Werte wurden mit Prioritaet Polyphag > Oligophag > Monophag > Unbekannt migriert.\nQuelle: features/feature_species_phagy_levels.md",
                 'audience' => 'both',
                 'published_at' => '2026-03-07T12:00:00+01:00',
                 'is_active' => true,
@@ -184,7 +201,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.03.07.2',
                 'title' => 'Lebensart wurde in Wuchsform umbenannt',
                 'summary' => 'Die Begrifflichkeit wurde vereinheitlicht und heisst nun durchgaengig Wuchsform.',
-                'details' => "Public: Keine direkte Aenderung in oeffentlichen Ansichten.\nAdmin: Texte, Labels und Validierungshinweise wurden von Lebensart/Lebensarten auf Wuchsform/Wuchsformen umgestellt.\nQuelle: Terminologie-Update im Admin-Bereich",
+                'details_public' => "Keine direkte Aenderung in oeffentlichen Ansichten.\nQuelle: Terminologie-Update im Admin-Bereich",
+                'details_admin' => "Texte, Labels und Validierungshinweise wurden von Lebensart/Lebensarten auf Wuchsform/Wuchsformen umgestellt.\nQuelle: Terminologie-Update im Admin-Bereich",
                 'audience' => 'admin',
                 'published_at' => '2026-03-07T12:30:00+01:00',
                 'is_active' => true,
@@ -194,7 +212,8 @@ class ChangelogEntrySeeder extends Seeder
                 'version' => '2026.03.07.3',
                 'title' => 'Changelog-Details fuer Public und Admin getrennt',
                 'summary' => 'Changelog-Eintraege koennen Details jetzt getrennt fuer Public und Admin speichern.',
-                'details' => "Public: Oeffentliche Changelog-Details koennen gezielter und sauberer getrennt dargestellt werden.\nAdmin: Changelog-Pflege nutzt getrennte Felder fuer Public/Admin-Details; bestehende Eintraege wurden kompatibel uebernommen.\nQuelle: Datenmodell-Update changelog_entries (details_public/details_admin)",
+                'details_public' => "Oeffentliche Changelog-Details koennen gezielter und sauberer getrennt dargestellt werden.\nQuelle: Datenmodell-Update changelog_entries (details_public/details_admin)",
+                'details_admin' => "Changelog-Pflege nutzt getrennte Felder fuer Public/Admin-Details; bestehende Eintraege wurden kompatibel uebernommen.\nQuelle: Datenmodell-Update changelog_entries (details_public/details_admin)",
                 'audience' => 'both',
                 'published_at' => '2026-03-07T13:00:00+01:00',
                 'is_active' => true,
@@ -213,67 +232,12 @@ class ChangelogEntrySeeder extends Seeder
 
     private function normalizeEntry(array $entry): array
     {
-        $detailsPublic = $entry['details_public'] ?? null;
-        $detailsAdmin = $entry['details_admin'] ?? null;
-        $legacyDetails = (string) ($entry['details'] ?? '');
-
-        if ($detailsPublic === null || $detailsAdmin === null) {
-            [$fallbackPublic, $fallbackAdmin] = $this->splitLegacyDetails($legacyDetails);
-            $detailsPublic = $detailsPublic ?? $fallbackPublic;
-            $detailsAdmin = $detailsAdmin ?? $fallbackAdmin;
-        }
-
-        $legacy = trim($legacyDetails);
-
-        if ($legacy === '') {
-            $legacy = $this->buildLegacyDetails($detailsPublic, $detailsAdmin) ?? '';
-        }
-
-        $entry['details'] = $legacy === '' ? null : $legacy;
+        $detailsPublic = trim((string) ($entry['details_public'] ?? '')) ?: null;
+        $detailsAdmin = trim((string) ($entry['details_admin'] ?? '')) ?: null;
+        $entry['details'] = null;
         $entry['details_public'] = $detailsPublic;
         $entry['details_admin'] = $detailsAdmin;
 
         return $entry;
-    }
-
-    private function splitLegacyDetails(string $details): array
-    {
-        $details = trim($details);
-        if ($details === '') {
-            return [null, null];
-        }
-
-        $publicPart = null;
-        $adminPart = null;
-
-        if (preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', $details, $match)) {
-            $publicPart = trim((string) ($match[1] ?? '')) ?: null;
-        }
-
-        if (preg_match('/Admin:\\s*(.+?)(?:\\nPublic:|\\nQuelle:|$)/s', $details, $match)) {
-            $adminPart = trim((string) ($match[1] ?? '')) ?: null;
-        }
-
-        return [$publicPart, $adminPart];
-    }
-
-    private function buildLegacyDetails(?string $detailsPublic, ?string $detailsAdmin): ?string
-    {
-        $public = trim((string) ($detailsPublic ?? '')) ?: null;
-        $admin = trim((string) ($detailsAdmin ?? '')) ?: null;
-
-        if ($public === null && $admin === null) {
-            return null;
-        }
-
-        $lines = [];
-        if ($public !== null) {
-            $lines[] = 'Public: ' . $public;
-        }
-        if ($admin !== null) {
-            $lines[] = 'Admin: ' . $admin;
-        }
-
-        return implode("\n", $lines);
     }
 }
