@@ -58,4 +58,4 @@ jobs:
             features/**
             1_error_reports/**
             *.md
-          dry-run: true
+          dry-run: ${{ vars.DRY_MODE }}
