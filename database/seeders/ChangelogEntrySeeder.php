@@ -180,6 +180,16 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.07.2',
+                'title' => 'Lebensart wurde in Wuchsform umbenannt',
+                'summary' => 'Die Begrifflichkeit wurde vereinheitlicht und heisst nun durchgaengig Wuchsform.',
+                'details' => "Public: Keine direkte Aenderung in oeffentlichen Ansichten.\nAdmin: Texte, Labels und Validierungshinweise wurden von Lebensart/Lebensarten auf Wuchsform/Wuchsformen umgestellt.\nQuelle: Terminologie-Update im Admin-Bereich",
+                'audience' => 'admin',
+                'published_at' => '2026-03-07T12:30:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {
