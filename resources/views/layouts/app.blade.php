@@ -125,8 +125,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Lebensarten verwalten">
-                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Lebensarten verwalten</span>
+                                    <a href="{{ route('admin.life-forms.index') }}" @class(['active' => request()->routeIs('admin.life-forms.*'), 'block py-1 px-3 rounded hover:bg-base-300 transition-colors']) title="Wuchsformen verwalten">
+                                        <span class="sidebar-link-text transition-opacity duration-300" style="opacity: 1;">Wuchsformen verwalten</span>
                                     </a>
                                 </li>
                             </ul>

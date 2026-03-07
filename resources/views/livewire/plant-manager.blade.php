@@ -21,7 +21,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Wissenschaftlicher Name</th>
-                    <th>Lebensart</th>
+                    <th>Wuchsform</th>
                     <th>Höhe von (cm)</th>
                     <th>Höhe bis (cm)</th>
                     <th>Aktionen</th>
@@ -111,10 +111,10 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-semibold">Lebensart *</span>
+                                <span class="label-text font-semibold">Wuchsform *</span>
                             </label>
                             <select wire:model="form.life_form_id" class="select select-bordered @error('form.life_form_id') select-error @enderror">
-                                <option value="">— Wählen Sie eine Lebensart —</option>
+                                <option value="">— Wählen Sie eine Wuchsform —</option>
                                 @foreach($lifeForms as $lf)
                                     <option value="{{ $lf->id }}">{{ $lf->name }}</option>
                                 @endforeach

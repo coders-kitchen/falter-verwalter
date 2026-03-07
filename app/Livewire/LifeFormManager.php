@@ -31,7 +31,7 @@ class LifeFormManager extends Component
         return [
             'form.name.required' => 'Bitte einen Namen eingeben.',
             'form.name.max' => 'Der Name darf maximal 255 Zeichen lang sein.',
-            'form.name.unique' => 'Diese Lebensart existiert bereits.',
+            'form.name.unique' => 'Diese Wuchsform existiert bereits.',
             'form.examples.json' => 'Beispiele müssen gültiges JSON sein.',
         ];
     }

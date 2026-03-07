@@ -67,7 +67,7 @@
             <div class="card bg-base-200 shadow-lg">
                 <div class="card-body">
                     <h2 class="card-title text-2xl">🌱</h2>
-                    <p class="text-sm text-gray-600">Lebensarten</p>
+                    <p class="text-sm text-gray-600">Wuchsformen</p>
                     <div class="text-3xl font-bold">{{ \App\Models\LifeForm::count() }}</div>
                     <div class="card-actions justify-end mt-4">
                         <a href="{{ route('admin.life-forms.index') }}" class="btn btn-sm btn-primary">Verwalten</a>

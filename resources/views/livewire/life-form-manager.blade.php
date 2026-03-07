@@ -1,8 +1,8 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center flex-wrap gap-4">
-        <h2 class="text-3xl font-bold">🌱 Lebensarten</h2>
+        <h2 class="text-3xl font-bold">🌱 Wuchsformen</h2>
         <button wire:click="openCreateModal" class="btn btn-primary">
-            + Neue Lebensart
+            + Neue Wuchsform
         </button>
     </div>
 
@@ -10,7 +10,7 @@
         <input
             wire:model.live="search"
             type="text"
-            placeholder="Suche nach Lebensart..."
+            placeholder="Suche nach Wuchsform..."
             class="input input-bordered w-full"
         />
     </div>
@@ -48,7 +48,7 @@
                 @empty
                     <tr>
                         <td colspan="3" class="text-center py-8 text-gray-500">
-                            Keine Lebensarten gefunden
+                            Keine Wuchsformen gefunden
                         </td>
                     </tr>
                 @endforelse
@@ -66,7 +66,7 @@
         <div class="fixed inset-0 bg-black/25 flex items-center justify-center z-50">
             <div class="modal-box w-11/12 max-w-2xl max-h-96 overflow-y-auto">
                 <h3 class="text-lg font-bold mb-4">
-                    {{ $lifeForm ? 'Lebensart bearbeiten' : 'Neue Lebensart' }}
+                    {{ $lifeForm ? 'Wuchsform bearbeiten' : 'Neue Wuchsform' }}
                 </h3>
 
                 <form wire:submit="save" class="space-y-4">
@@ -92,7 +92,7 @@
                         <textarea
                             wire:model="form.description"
                             class="textarea textarea-bordered"
-                            placeholder="Kurze Beschreibung der Lebensart"
+                            placeholder="Kurze Beschreibung der Wuchsform"
                             rows="3"
                         ></textarea>
                     </div>

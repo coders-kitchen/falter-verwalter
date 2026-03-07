@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Lebensarten')
+@section('title', 'Wuchsformen')
 
 @section('content')
     @livewire('LifeFormManager')

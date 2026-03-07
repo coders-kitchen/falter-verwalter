@@ -59,8 +59,8 @@ class PlantRequest extends FormRequest
     {
         return [
             'name.required' => 'Der Pflanzenname ist erforderlich.',
-            'life_form_id.required' => 'Die Lebensart ist erforderlich.',
-            'life_form_id.exists' => 'Die ausgewählte Lebensart existiert nicht.',
+            'life_form_id.required' => 'Die Wuchsform ist erforderlich.',
+            'life_form_id.exists' => 'Die ausgewählte Wuchsform existiert nicht.',
             'light_number.max' => 'Die Lichtzahl darf 9 nicht überschreiten.',
             'temperature_number.max' => 'Die Temperaturzahl darf 9 nicht überschreiten.',
         ];
