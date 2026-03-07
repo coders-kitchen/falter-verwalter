@@ -1,0 +1,59 @@
+name: Deploy to netcup Webhosting (manually)
+
+#on: workflow_dispatch
+on: workflow_dispatch
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer
+
+      - name: Install Composer deps (prod)
+        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+      # Optional: Frontend build
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run build
+
+      # Optional: Laravel caches (nur sinnvoll, wenn env konsistent ist)
+      # - run: php artisan config:cache
+      # - run: php artisan route:cache
+      # - run: php artisan view:cache
+
+      - name: Deploy via SFTP/FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.DEPLOY_PATH }}
+          security: loose
+          protocol: ftps   # je nach Account / wenn unterstützt
+          local-dir: ./          
+          exclude: |
+            .git*
+            .git/**
+            .github/**
+            node_modules/**
+            tests/**
+            .env*
+            .specify/**
+            skills/**
+            spec/**
+            features/**
+            1_error_reports/**
+            *.md
+          dry-run: ${{ vars.DRY_MODE }}
