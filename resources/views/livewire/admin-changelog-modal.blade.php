@@ -19,20 +19,20 @@
 
                         @php
                             $details = trim((string) ($entry->details ?? ''));
-                            $publicPart = null;
-                            $adminPart = null;
+                            $publicPart = trim((string) ($entry->details_public ?? '')) ?: null;
+                            $adminPart = trim((string) ($entry->details_admin ?? '')) ?: null;
                             $sourcePart = null;
 
-                            if (preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', $details, $match)) {
-                                $publicPart = trim($match[1]);
+                            if ($publicPart === null && preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', $details, $match)) {
+                                $publicPart = trim((string) ($match[1] ?? '')) ?: null;
                             }
 
-                            if (preg_match('/Admin:\\s*(.+?)(?:\\nPublic:|\\nQuelle:|$)/s', $details, $match)) {
-                                $adminPart = trim($match[1]);
+                            if ($adminPart === null && preg_match('/Admin:\\s*(.+?)(?:\\nPublic:|\\nQuelle:|$)/s', $details, $match)) {
+                                $adminPart = trim((string) ($match[1] ?? '')) ?: null;
                             }
 
                             if (preg_match('/Quelle:\\s*(.+)$/s', $details, $match)) {
-                                $sourcePart = trim($match[1]);
+                                $sourcePart = trim((string) ($match[1] ?? '')) ?: null;
                             }
                         @endphp
 

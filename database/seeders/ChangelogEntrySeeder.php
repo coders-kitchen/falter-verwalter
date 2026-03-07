@@ -190,13 +190,90 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.07.3',
+                'title' => 'Changelog-Details fuer Public und Admin getrennt',
+                'summary' => 'Changelog-Eintraege koennen Details jetzt getrennt fuer Public und Admin speichern.',
+                'details' => "Public: Oeffentliche Changelog-Details koennen gezielter und sauberer getrennt dargestellt werden.\nAdmin: Changelog-Pflege nutzt getrennte Felder fuer Public/Admin-Details; bestehende Eintraege wurden kompatibel uebernommen.\nQuelle: Datenmodell-Update changelog_entries (details_public/details_admin)",
+                'audience' => 'both',
+                'published_at' => '2026-03-07T13:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {
+            $entry = $this->normalizeEntry($entry);
             ChangelogEntry::updateOrCreate(
                 ['version' => $entry['version']],
                 $entry
             );
         }
+    }
+
+    private function normalizeEntry(array $entry): array
+    {
+        $detailsPublic = $entry['details_public'] ?? null;
+        $detailsAdmin = $entry['details_admin'] ?? null;
+        $legacyDetails = (string) ($entry['details'] ?? '');
+
+        if ($detailsPublic === null || $detailsAdmin === null) {
+            [$fallbackPublic, $fallbackAdmin] = $this->splitLegacyDetails($legacyDetails);
+            $detailsPublic = $detailsPublic ?? $fallbackPublic;
+            $detailsAdmin = $detailsAdmin ?? $fallbackAdmin;
+        }
+
+        $legacy = trim($legacyDetails);
+
+        if ($legacy === '') {
+            $legacy = $this->buildLegacyDetails($detailsPublic, $detailsAdmin) ?? '';
+        }
+
+        $entry['details'] = $legacy === '' ? null : $legacy;
+        $entry['details_public'] = $detailsPublic;
+        $entry['details_admin'] = $detailsAdmin;
+
+        return $entry;
+    }
+
+    private function splitLegacyDetails(string $details): array
+    {
+        $details = trim($details);
+        if ($details === '') {
+            return [null, null];
+        }
+
+        $publicPart = null;
+        $adminPart = null;
+
+        if (preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', $details, $match)) {
+            $publicPart = trim((string) ($match[1] ?? '')) ?: null;
+        }
+
+        if (preg_match('/Admin:\\s*(.+?)(?:\\nPublic:|\\nQuelle:|$)/s', $details, $match)) {
+            $adminPart = trim((string) ($match[1] ?? '')) ?: null;
+        }
+
+        return [$publicPart, $adminPart];
+    }
+
+    private function buildLegacyDetails(?string $detailsPublic, ?string $detailsAdmin): ?string
+    {
+        $public = trim((string) ($detailsPublic ?? '')) ?: null;
+        $admin = trim((string) ($detailsAdmin ?? '')) ?: null;
+
+        if ($public === null && $admin === null) {
+            return null;
+        }
+
+        $lines = [];
+        if ($public !== null) {
+            $lines[] = 'Public: ' . $public;
+        }
+        if ($admin !== null) {
+            $lines[] = 'Admin: ' . $admin;
+        }
+
+        return implode("\n", $lines);
     }
 }

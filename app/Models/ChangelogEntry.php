@@ -15,6 +15,8 @@ class ChangelogEntry extends Model
         'title',
         'summary',
         'details',
+        'details_public',
+        'details_admin',
         'audience',
         'published_at',
         'is_active',

@@ -21,7 +21,8 @@ class ChangelogManager extends Component
         'version' => '',
         'title' => '',
         'summary' => '',
-        'details' => '',
+        'details_public' => '',
+        'details_admin' => '',
         'audience' => 'both',
         'published_at' => '',
         'is_active' => true,
@@ -38,7 +39,8 @@ class ChangelogManager extends Component
             'form.version' => 'required|string|max:50|unique:changelog_entries,version,' . $entryId,
             'form.title' => 'required|string|max:255',
             'form.summary' => 'required|string',
-            'form.details' => 'nullable|string',
+            'form.details_public' => 'nullable|string',
+            'form.details_admin' => 'nullable|string',
             'form.audience' => 'required|in:public,admin,both',
             'form.published_at' => 'required|date',
             'form.is_active' => 'boolean',
@@ -83,7 +85,8 @@ class ChangelogManager extends Component
             'version' => '',
             'title' => '',
             'summary' => '',
-            'details' => '',
+            'details_public' => '',
+            'details_admin' => '',
             'audience' => 'both',
             'published_at' => now()->format('Y-m-d\\TH:i'),
             'is_active' => true,
@@ -109,11 +112,14 @@ class ChangelogManager extends Component
             $refs = [['url' => '', 'label' => '']];
         }
 
+        [$fallbackPublic, $fallbackAdmin] = $this->extractLegacyDetails((string) ($entry->details ?? ''));
+
         $this->form = [
             'version' => $entry->version,
             'title' => $entry->title,
             'summary' => $entry->summary,
-            'details' => $entry->details ?? '',
+            'details_public' => $entry->details_public ?? $fallbackPublic ?? '',
+            'details_admin' => $entry->details_admin ?? $fallbackAdmin ?? '',
             'audience' => $entry->audience,
             'published_at' => optional($entry->published_at)->format('Y-m-d\\TH:i') ?? now()->format('Y-m-d\\TH:i'),
             'is_active' => (bool) $entry->is_active,
@@ -168,12 +174,14 @@ class ChangelogManager extends Component
             'version' => trim($this->form['version']),
             'title' => trim($this->form['title']),
             'summary' => trim($this->form['summary']),
-            'details' => trim((string) $this->form['details']) ?: null,
+            'details_public' => trim((string) ($this->form['details_public'] ?? '')) ?: null,
+            'details_admin' => trim((string) ($this->form['details_admin'] ?? '')) ?: null,
             'audience' => $this->form['audience'],
             'published_at' => $this->form['published_at'],
             'is_active' => (bool) $this->form['is_active'],
             'commit_refs' => $commitRefs,
         ];
+        $payload['details'] = $this->buildLegacyDetails($payload['details_public'], $payload['details_admin']);
 
         if ($this->entry) {
             $this->entry->update($payload);
@@ -222,5 +230,46 @@ class ChangelogManager extends Component
         return view('livewire.changelog-manager', [
             'items' => $query->paginate(25),
         ]);
+    }
+
+    private function extractLegacyDetails(string $details): array
+    {
+        $details = trim($details);
+        if ($details === '') {
+            return [null, null];
+        }
+
+        $publicPart = null;
+        $adminPart = null;
+
+        if (preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', $details, $match)) {
+            $publicPart = trim((string) ($match[1] ?? '')) ?: null;
+        }
+
+        if (preg_match('/Admin:\\s*(.+?)(?:\\nPublic:|\\nQuelle:|$)/s', $details, $match)) {
+            $adminPart = trim((string) ($match[1] ?? '')) ?: null;
+        }
+
+        return [$publicPart, $adminPart];
+    }
+
+    private function buildLegacyDetails(?string $detailsPublic, ?string $detailsAdmin): ?string
+    {
+        $public = trim((string) ($detailsPublic ?? '')) ?: null;
+        $admin = trim((string) ($detailsAdmin ?? '')) ?: null;
+
+        if ($public === null && $admin === null) {
+            return null;
+        }
+
+        $lines = [];
+        if ($public !== null) {
+            $lines[] = 'Public: ' . $public;
+        }
+        if ($admin !== null) {
+            $lines[] = 'Admin: ' . $admin;
+        }
+
+        return implode("\n", $lines);
     }
 }

@@ -53,9 +53,8 @@
                             <div class="font-semibold">{{ $item->title }}</div>
                             <div class="text-xs text-base-content/70">{{ \Illuminate\Support\Str::limit($item->summary, 100) }}</div>
                             @php
-                                $details = (string) ($item->details ?? '');
-                                $hasPublicPart = str_contains($details, 'Public:') || in_array($item->audience, ['public', 'both'], true);
-                                $hasAdminPart = str_contains($details, 'Admin:') || in_array($item->audience, ['admin', 'both'], true);
+                                $hasPublicPart = !empty($item->details_public) || in_array($item->audience, ['public', 'both'], true);
+                                $hasAdminPart = !empty($item->details_admin) || in_array($item->audience, ['admin', 'both'], true);
                             @endphp
                             <div class="flex flex-wrap gap-1 mt-2">
                                 @if($hasPublicPart)
@@ -160,11 +159,14 @@
                         @error('form.summary')<span class="text-error text-sm">{{ $message }}</span>@enderror
                     </div>
 
-                    <div class="form-control">
-                        <label class="label"><span class="label-text">Details (optional)</span></label>
-                        <textarea wire:model="form.details" rows="5" class="textarea textarea-bordered"></textarea>
-                        <div class="label">
-                            <span class="label-text-alt text-base-content/70">Tipp: Mit `Public:` und `Admin:` kannst du die Bereiche optisch getrennt darstellen.</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label"><span class="label-text">Details Public (optional)</span></label>
+                            <textarea wire:model="form.details_public" rows="5" class="textarea textarea-bordered"></textarea>
+                        </div>
+                        <div class="form-control">
+                            <label class="label"><span class="label-text">Details Admin (optional)</span></label>
+                            <textarea wire:model="form.details_admin" rows="5" class="textarea textarea-bordered"></textarea>
                         </div>
                     </div>
 

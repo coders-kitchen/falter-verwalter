@@ -24,10 +24,20 @@
 
                     <p class="leading-relaxed">{{ $entry->summary }}</p>
 
-                    @if(!empty($entry->details))
+                    @php
+                        $publicDetails = trim((string) ($entry->details_public ?? ''));
+                        if ($publicDetails === '' && !empty($entry->details)) {
+                            if (preg_match('/Public:\\s*(.+?)(?:\\nAdmin:|\\nQuelle:|$)/s', (string) $entry->details, $match)) {
+                                $publicDetails = trim((string) ($match[1] ?? ''));
+                            } else {
+                                $publicDetails = trim((string) $entry->details);
+                            }
+                        }
+                    @endphp
+                    @if($publicDetails !== '')
                         <details class="mt-2">
                             <summary class="cursor-pointer font-medium">Details</summary>
-                            <p class="mt-2 text-base-content/80 whitespace-pre-line">{{ $entry->details }}</p>
+                            <p class="mt-2 text-base-content/80 whitespace-pre-line">{{ $publicDetails }}</p>
                         </details>
                     @endif
                 </div>
