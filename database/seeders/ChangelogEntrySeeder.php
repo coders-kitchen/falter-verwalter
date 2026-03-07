@@ -219,6 +219,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.07.4',
+                'title' => 'Kuratiertes Tag-System fuer Falter eingefuehrt',
+                'summary' => 'Falterarten koennen jetzt mit kuratierten Tags gepflegt und in den Artdetails angezeigt werden.',
+                'details_public' => "Artdetails zeigen gesetzte Tags zusaetzlich zu den bestehenden Merkmalen an.",
+                'details_admin' => "Neue Tag-Verwaltung mit kuratierten, aktivierbaren Tags sowie Tag-Auswahl in der Artenpflege (inkl. Suchvorschlaegen und Validierung auf aktive Tags).",
+                'audience' => 'both',
+                'published_at' => '2026-03-07T14:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {
