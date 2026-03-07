@@ -34,6 +34,8 @@ class SpeciesResource extends JsonResource
             'gender_differences' => $this->gender_differences,
             'generations_per_year' => $this->generations_per_year,
             'hibernation_stage' => $this->hibernation_stage,
+            'adult_phagy_level' => $this->adult_phagy_level,
+            'larval_phagy_level' => $this->larval_phagy_level,
             'pupal_duration_days' => $this->pupal_duration_days,
             'red_list_status' => [
                 'de' => $this->red_list_status_de,
@@ -52,8 +54,6 @@ class SpeciesResource extends JsonResource
                         'is_larval_host' => (bool) ($plant->pivot->is_larval_host ?? false),
                         'adult_preference' => $plant->pivot->adult_preference,
                         'larval_preference' => $plant->pivot->larval_preference,
-                        'adult_phagy_level' => $plant->pivot->adult_phagy_level,
-                        'larval_phagy_level' => $plant->pivot->larval_phagy_level,
                     ];
                 });
             }),

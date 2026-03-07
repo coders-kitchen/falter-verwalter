@@ -19,6 +19,8 @@ class SpeciesPlantManager extends Component
 
     public int $species_id;
     public Species $species;
+    public string $speciesAdultPhagyLevel = '';
+    public string $speciesLarvalPhagyLevel = '';
 
     public string $assignedSearch = '';
     public string $assignedFilter = 'all';
@@ -33,8 +35,6 @@ class SpeciesPlantManager extends Component
         'is_larval_host' => false,
         'adult_preference' => null,
         'larval_preference' => null,
-        'adult_phagy_level' => null,
-        'larval_phagy_level' => null,
     ];
 
     public string $addSearch = '';
@@ -46,8 +46,8 @@ class SpeciesPlantManager extends Component
         'form.is_larval_host' => 'boolean',
         'form.adult_preference' => 'nullable|in:primaer,sekundaer',
         'form.larval_preference' => 'nullable|in:primaer,sekundaer',
-        'form.adult_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
-        'form.larval_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
+        'speciesAdultPhagyLevel' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
+        'speciesLarvalPhagyLevel' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
         'assignmentType' => 'in:plant,genus',
     ];
 
@@ -58,8 +58,8 @@ class SpeciesPlantManager extends Component
             'form.is_larval_host.boolean' => 'Der Wert für Futterpflanze ist ungültig.',
             'form.adult_preference.in' => 'Die Präferenz für adulte Falter ist ungültig.',
             'form.larval_preference.in' => 'Die Präferenz für Raupen ist ungültig.',
-            'form.adult_phagy_level.in' => 'Die Phagie-Stufe für adulte Falter ist ungültig.',
-            'form.larval_phagy_level.in' => 'Die Phagie-Stufe für Raupen ist ungültig.',
+            'speciesAdultPhagyLevel.in' => 'Die Phagie-Stufe für adulte Falter ist ungültig.',
+            'speciesLarvalPhagyLevel.in' => 'Die Phagie-Stufe für Raupen ist ungültig.',
             'assignmentType.in' => 'Der Zuordnungstyp ist ungültig.',
         ];
     }
@@ -71,8 +71,8 @@ class SpeciesPlantManager extends Component
             'form.is_larval_host' => 'Futterpflanze',
             'form.adult_preference' => 'Präferenz (Adulte)',
             'form.larval_preference' => 'Präferenz (Raupe)',
-            'form.adult_phagy_level' => 'Phagie-Stufe (Adulte)',
-            'form.larval_phagy_level' => 'Phagie-Stufe (Raupe)',
+            'speciesAdultPhagyLevel' => 'Phagie-Stufe (Adulte)',
+            'speciesLarvalPhagyLevel' => 'Phagie-Stufe (Raupe)',
             'assignmentType' => 'Zuordnungstyp',
         ];
     }
@@ -81,6 +81,8 @@ class SpeciesPlantManager extends Component
     {
         $this->species_id = (int) $speciesId;
         $this->species = Species::findOrFail($speciesId);
+        $this->speciesAdultPhagyLevel = (string) ($this->species->adult_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN);
+        $this->speciesLarvalPhagyLevel = (string) ($this->species->larval_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN);
     }
 
     public function updatedAssignedSearch(): void
@@ -130,8 +132,6 @@ class SpeciesPlantManager extends Component
             'is_larval_host' => false,
             'adult_preference' => null,
             'larval_preference' => null,
-            'adult_phagy_level' => null,
-            'larval_phagy_level' => null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -159,12 +159,6 @@ class SpeciesPlantManager extends Component
             'larval_preference' => $speciesPlant->is_larval_host
                 ? ($speciesPlant->larval_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
                 : null,
-            'adult_phagy_level' => $speciesPlant->is_nectar
-                ? ($speciesPlant->adult_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN)
-                : null,
-            'larval_phagy_level' => $speciesPlant->is_larval_host
-                ? ($speciesPlant->larval_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN)
-                : null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -191,12 +185,6 @@ class SpeciesPlantManager extends Component
             'larval_preference' => $speciesGenus->is_larval_host
                 ? ($speciesGenus->larval_preference ?? SpeciesPlant::PREFERENCE_PRIMARY)
                 : null,
-            'adult_phagy_level' => $speciesGenus->is_nectar
-                ? ($speciesGenus->adult_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN)
-                : null,
-            'larval_phagy_level' => $speciesGenus->is_larval_host
-                ? ($speciesGenus->larval_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN)
-                : null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -216,8 +204,6 @@ class SpeciesPlantManager extends Component
             'is_larval_host' => false,
             'adult_preference' => null,
             'larval_preference' => null,
-            'adult_phagy_level' => null,
-            'larval_phagy_level' => null,
         ];
         $this->addSearch = '';
         $this->addSelectedPlantIds = [];
@@ -266,16 +252,11 @@ class SpeciesPlantManager extends Component
     {
         if (!(bool) $value) {
             $this->form['adult_preference'] = null;
-            $this->form['adult_phagy_level'] = null;
             return;
         }
 
         if ($this->form['adult_preference'] === null || $this->form['adult_preference'] === '') {
             $this->form['adult_preference'] = SpeciesPlant::PREFERENCE_PRIMARY;
-        }
-
-        if ($this->form['adult_phagy_level'] === null || $this->form['adult_phagy_level'] === '') {
-            $this->form['adult_phagy_level'] = SpeciesPlant::PHAGY_UNKNOWN;
         }
     }
 
@@ -283,16 +264,11 @@ class SpeciesPlantManager extends Component
     {
         if (!(bool) $value) {
             $this->form['larval_preference'] = null;
-            $this->form['larval_phagy_level'] = null;
             return;
         }
 
         if ($this->form['larval_preference'] === null || $this->form['larval_preference'] === '') {
             $this->form['larval_preference'] = SpeciesPlant::PREFERENCE_PRIMARY;
-        }
-
-        if ($this->form['larval_phagy_level'] === null || $this->form['larval_phagy_level'] === '') {
-            $this->form['larval_phagy_level'] = SpeciesPlant::PHAGY_UNKNOWN;
         }
     }
 
@@ -313,22 +289,12 @@ class SpeciesPlantManager extends Component
             ? ($this->normalizePreference($this->form['larval_preference']) ?? SpeciesPlant::PREFERENCE_PRIMARY)
             : null;
 
-        $adultPhagyLevel = (bool) $this->form['is_nectar']
-            ? ($this->normalizePhagyLevel($this->form['adult_phagy_level']) ?? SpeciesPlant::PHAGY_UNKNOWN)
-            : null;
-
-        $larvalPhagyLevel = (bool) $this->form['is_larval_host']
-            ? ($this->normalizePhagyLevel($this->form['larval_phagy_level']) ?? SpeciesPlant::PHAGY_UNKNOWN)
-            : null;
-
         if ($this->speciesPlant) {
             $this->speciesPlant->update([
                 'is_nectar' => (bool) $this->form['is_nectar'],
                 'is_larval_host' => (bool) $this->form['is_larval_host'],
                 'adult_preference' => $adultPreference,
                 'larval_preference' => $larvalPreference,
-                'adult_phagy_level' => $adultPhagyLevel,
-                'larval_phagy_level' => $larvalPhagyLevel,
             ]);
 
             $this->dispatch('notify', message: 'Pflanzenzuordnung aktualisiert.');
@@ -342,8 +308,6 @@ class SpeciesPlantManager extends Component
                 'is_larval_host' => (bool) $this->form['is_larval_host'],
                 'adult_preference' => $adultPreference,
                 'larval_preference' => $larvalPreference,
-                'adult_phagy_level' => $adultPhagyLevel,
-                'larval_phagy_level' => $larvalPhagyLevel,
             ]);
 
             $this->dispatch('notify', message: 'Gattungszuordnung aktualisiert.');
@@ -370,8 +334,6 @@ class SpeciesPlantManager extends Component
                     'is_larval_host' => (bool) $this->form['is_larval_host'],
                     'adult_preference' => $adultPreference,
                     'larval_preference' => $larvalPreference,
-                    'adult_phagy_level' => $adultPhagyLevel,
-                    'larval_phagy_level' => $larvalPhagyLevel,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -381,7 +343,7 @@ class SpeciesPlantManager extends Component
                 SpeciesGenus::upsert(
                     $rows,
                     ['species_id', 'genus_id'],
-                    ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level', 'updated_at']
+                    ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'updated_at']
                 );
             });
 
@@ -407,8 +369,6 @@ class SpeciesPlantManager extends Component
                 'is_larval_host' => (bool) $this->form['is_larval_host'],
                 'adult_preference' => $adultPreference,
                 'larval_preference' => $larvalPreference,
-                'adult_phagy_level' => $adultPhagyLevel,
-                'larval_phagy_level' => $larvalPhagyLevel,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -418,13 +378,30 @@ class SpeciesPlantManager extends Component
             SpeciesPlant::upsert(
                 $rows,
                 ['species_id', 'plant_id'],
-                ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level', 'updated_at']
+                ['is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'updated_at']
             );
         });
 
         $this->dispatch('notify', message: count($rows) . ' Pflanzen zugeordnet.');
         $this->closeModal();
         $this->resetPage('assignedPage');
+    }
+
+    public function saveSpeciesPhagy(): void
+    {
+        $this->validateOnly('speciesAdultPhagyLevel');
+        $this->validateOnly('speciesLarvalPhagyLevel');
+
+        $this->species->update([
+            'adult_phagy_level' => $this->normalizePhagyLevel($this->speciesAdultPhagyLevel) ?? SpeciesPlant::PHAGY_UNKNOWN,
+            'larval_phagy_level' => $this->normalizePhagyLevel($this->speciesLarvalPhagyLevel) ?? SpeciesPlant::PHAGY_UNKNOWN,
+        ]);
+
+        $this->species->refresh();
+        $this->speciesAdultPhagyLevel = (string) ($this->species->adult_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN);
+        $this->speciesLarvalPhagyLevel = (string) ($this->species->larval_phagy_level ?? SpeciesPlant::PHAGY_UNKNOWN);
+
+        $this->dispatch('notify', message: 'Phagie-Stufen der Art aktualisiert.');
     }
 
     public function deletePlant(SpeciesPlant $speciesPlant): void
@@ -496,12 +473,8 @@ class SpeciesPlantManager extends Component
                     'is_larval_host' => (bool) $row->is_larval_host,
                     'adult_preference' => $row->adult_preference,
                     'larval_preference' => $row->larval_preference,
-                    'adult_phagy_level' => $row->adult_phagy_level,
-                    'larval_phagy_level' => $row->larval_phagy_level,
                     'adult_preference_label' => $this->preferenceLabel($row->adult_preference),
                     'larval_preference_label' => $this->preferenceLabel($row->larval_preference),
-                    'adult_phagy_level_label' => $this->phagyLevelLabel($row->adult_phagy_level),
-                    'larval_phagy_level_label' => $this->phagyLevelLabel($row->larval_phagy_level),
                     'updated_at' => $row->updated_at,
                 ];
             });
@@ -519,12 +492,8 @@ class SpeciesPlantManager extends Component
                     'is_larval_host' => (bool) $row->is_larval_host,
                     'adult_preference' => $row->adult_preference,
                     'larval_preference' => $row->larval_preference,
-                    'adult_phagy_level' => $row->adult_phagy_level,
-                    'larval_phagy_level' => $row->larval_phagy_level,
                     'adult_preference_label' => $this->preferenceLabel($row->adult_preference),
                     'larval_preference_label' => $this->preferenceLabel($row->larval_preference),
-                    'adult_phagy_level_label' => $this->phagyLevelLabel($row->adult_phagy_level),
-                    'larval_phagy_level_label' => $this->phagyLevelLabel($row->larval_phagy_level),
                     'updated_at' => $row->updated_at,
                 ];
             });
@@ -699,14 +668,4 @@ class SpeciesPlantManager extends Component
         };
     }
 
-    private function phagyLevelLabel(?string $value): string
-    {
-        return match ($value) {
-            SpeciesPlant::PHAGY_MONOPHAG => 'Monophag',
-            SpeciesPlant::PHAGY_OLIGOPHAG => 'Oligophag',
-            SpeciesPlant::PHAGY_POLYPHAG => 'Polyphag',
-            SpeciesPlant::PHAGY_UNKNOWN => 'Unbekannt',
-            default => 'nicht gesetzt',
-        };
-    }
 }

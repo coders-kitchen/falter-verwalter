@@ -19,8 +19,6 @@ class SpeciesGenus extends Model
         'is_larval_host',
         'adult_preference',
         'larval_preference',
-        'adult_phagy_level',
-        'larval_phagy_level',
     ];
 
     protected $casts = [

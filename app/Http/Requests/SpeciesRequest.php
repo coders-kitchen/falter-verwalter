@@ -23,6 +23,8 @@ class SpeciesRequest extends FormRequest
             'special_features' => 'nullable|string|max:255',
             'gender_differences' => 'nullable|string',
             'hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
+            'adult_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
+            'larval_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
             'pupal_duration_days' => 'nullable|integer|min:0',
             'red_list_status_de' => 'nullable|string|max:255',
             'red_list_status_eu' => 'nullable|string|max:255',

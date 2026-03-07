@@ -67,7 +67,7 @@ function createSpeciesPlantManagerFixture(): array
     return compact('user', 'species', 'genus', 'plant');
 }
 
-test('species plant manager saves phagy levels for plant and genus assignments', function () {
+test('species plant manager saves preferences for plant and genus assignments', function () {
     $fixture = createSpeciesPlantManagerFixture();
 
     $this->actingAs($fixture['user']);
@@ -76,7 +76,6 @@ test('species plant manager saves phagy levels for plant and genus assignments',
         ->call('openCreateModal')
         ->set('form.is_nectar', true)
         ->set('form.adult_preference', SpeciesPlant::PREFERENCE_SECONDARY)
-        ->set('form.adult_phagy_level', SpeciesPlant::PHAGY_MONOPHAG)
         ->set('addSelectedPlantIds', [$fixture['plant']->id])
         ->call('save')
         ->assertHasNoErrors();
@@ -85,8 +84,6 @@ test('species plant manager saves phagy levels for plant and genus assignments',
         'species_id' => $fixture['species']->id,
         'plant_id' => $fixture['plant']->id,
         'adult_preference' => SpeciesPlant::PREFERENCE_SECONDARY,
-        'adult_phagy_level' => SpeciesPlant::PHAGY_MONOPHAG,
-        'larval_phagy_level' => null,
     ]);
 
     Livewire::test(SpeciesPlantManager::class, ['speciesId' => $fixture['species']->id])
@@ -94,7 +91,6 @@ test('species plant manager saves phagy levels for plant and genus assignments',
         ->set('assignmentType', 'genus')
         ->set('form.is_larval_host', true)
         ->set('form.larval_preference', SpeciesPlant::PREFERENCE_PRIMARY)
-        ->set('form.larval_phagy_level', SpeciesPlant::PHAGY_OLIGOPHAG)
         ->set('addSelectedGenusIds', [$fixture['genus']->id])
         ->call('save')
         ->assertHasNoErrors();
@@ -103,15 +99,36 @@ test('species plant manager saves phagy levels for plant and genus assignments',
         'species_id' => $fixture['species']->id,
         'genus_id' => $fixture['genus']->id,
         'larval_preference' => SpeciesPlant::PREFERENCE_PRIMARY,
-        'larval_phagy_level' => SpeciesPlant::PHAGY_OLIGOPHAG,
-        'adult_phagy_level' => null,
     ]);
 });
 
-test('species plant manager page renders phagy labels for mixed assignments', function () {
+test('species plant manager saves phagy on species level', function () {
     $fixture = createSpeciesPlantManagerFixture();
 
     $this->actingAs($fixture['user']);
+
+    Livewire::test(SpeciesPlantManager::class, ['speciesId' => $fixture['species']->id])
+        ->set('speciesAdultPhagyLevel', SpeciesPlant::PHAGY_POLYPHAG)
+        ->set('speciesLarvalPhagyLevel', SpeciesPlant::PHAGY_OLIGOPHAG)
+        ->call('saveSpeciesPhagy')
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('species', [
+        'id' => $fixture['species']->id,
+        'adult_phagy_level' => SpeciesPlant::PHAGY_POLYPHAG,
+        'larval_phagy_level' => SpeciesPlant::PHAGY_OLIGOPHAG,
+    ]);
+});
+
+test('species plant manager page renders species-level phagy and preferences', function () {
+    $fixture = createSpeciesPlantManagerFixture();
+
+    $this->actingAs($fixture['user']);
+
+    $fixture['species']->update([
+        'adult_phagy_level' => SpeciesPlant::PHAGY_MONOPHAG,
+        'larval_phagy_level' => SpeciesPlant::PHAGY_POLYPHAG,
+    ]);
 
     SpeciesPlant::create([
         'species_id' => $fixture['species']->id,
@@ -120,8 +137,6 @@ test('species plant manager page renders phagy labels for mixed assignments', fu
         'is_larval_host' => false,
         'adult_preference' => SpeciesPlant::PREFERENCE_PRIMARY,
         'larval_preference' => null,
-        'adult_phagy_level' => SpeciesPlant::PHAGY_MONOPHAG,
-        'larval_phagy_level' => null,
     ]);
 
     SpeciesGenus::create([
@@ -131,8 +146,6 @@ test('species plant manager page renders phagy labels for mixed assignments', fu
         'is_larval_host' => true,
         'adult_preference' => null,
         'larval_preference' => SpeciesPlant::PREFERENCE_PRIMARY,
-        'adult_phagy_level' => null,
-        'larval_phagy_level' => SpeciesPlant::PHAGY_POLYPHAG,
     ]);
 
     $response = $this->get(route('admin.speciesPlants.index', $fixture['species']));
@@ -140,6 +153,7 @@ test('species plant manager page renders phagy labels for mixed assignments', fu
     $response->assertOk();
     $response->assertSee('Wiesen-Flockenblume');
     $response->assertSee('Centaurea (sp.)');
+    $response->assertSee('Phagie der Art');
     $response->assertSee('Monophag');
     $response->assertSee('Polyphag');
 });

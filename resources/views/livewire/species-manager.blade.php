@@ -177,6 +177,40 @@
                         </select>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Phagie-Stufe (Adulte)</span>
+                            </label>
+                            <select wire:model="form.adult_phagy_level" class="select select-bordered @error('form.adult_phagy_level') select-error @enderror">
+                                <option value="">— Keine Auswahl —</option>
+                                <option value="unbekannt">Unbekannt</option>
+                                <option value="monophag">Monophag</option>
+                                <option value="oligophag">Oligophag</option>
+                                <option value="polyphag">Polyphag</option>
+                            </select>
+                            @error('form.adult_phagy_level')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Phagie-Stufe (Raupe)</span>
+                            </label>
+                            <select wire:model="form.larval_phagy_level" class="select select-bordered @error('form.larval_phagy_level') select-error @enderror">
+                                <option value="">— Keine Auswahl —</option>
+                                <option value="unbekannt">Unbekannt</option>
+                                <option value="monophag">Monophag</option>
+                                <option value="oligophag">Oligophag</option>
+                                <option value="polyphag">Polyphag</option>
+                            </select>
+                            @error('form.larval_phagy_level')
+                                <span class="text-error text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold">Besondere Merkmale</span>

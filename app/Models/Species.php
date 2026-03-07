@@ -24,6 +24,8 @@ class Species extends Model
         'gender_differences',
         'generations_per_year',
         'hibernation_stage',
+        'adult_phagy_level',
+        'larval_phagy_level',
         'pupal_duration_days',
         'red_list_status_de',
         'red_list_status_eu',
@@ -63,14 +65,14 @@ class Species extends Model
     public function plants(): BelongsToMany
     {
         return $this->belongsToMany(Plant::class, 'species_plant', 'species_id', 'plant_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
             ->withTimestamps();
     }
 
     public function plantGenera(): BelongsToMany
     {
         return $this->belongsToMany(Genus::class, 'species_genus', 'species_id', 'genus_id')
-            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference', 'adult_phagy_level', 'larval_phagy_level')
+            ->withPivot('is_nectar', 'is_larval_host', 'adult_preference', 'larval_preference')
             ->withTimestamps();
     }
 

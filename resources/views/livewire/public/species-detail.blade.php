@@ -138,6 +138,30 @@
             <div class="space-y-6">
                 <h3 class="text-2xl font-bold mb-4">Pflanzliche Verbindungen</h3>
 
+                @php
+                    $adultPhagyLabel = match ($species->adult_phagy_level) {
+                        'polyphag' => 'Polyphag',
+                        'oligophag' => 'Oligophag',
+                        'monophag' => 'Monophag',
+                        default => 'Unbekannt',
+                    };
+                    $larvalPhagyLabel = match ($species->larval_phagy_level) {
+                        'polyphag' => 'Polyphag',
+                        'oligophag' => 'Oligophag',
+                        'monophag' => 'Monophag',
+                        default => 'Unbekannt',
+                    };
+                @endphp
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="alert">
+                        <span><strong>Phagie (Adulte):</strong> {{ $adultPhagyLabel }}</span>
+                    </div>
+                    <div class="alert">
+                        <span><strong>Phagie (Raupe):</strong> {{ $larvalPhagyLabel }}</span>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h4 class="text-xl font-bold mb-4">🌺 Nektarpflanzen</h4>

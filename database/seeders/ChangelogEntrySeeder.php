@@ -170,6 +170,16 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.07.1',
+                'title' => 'Phagie als Arteigenschaft korrigiert',
+                'summary' => 'Die Phagie-Einstufung wird nun korrekt je Art statt je Pflanzen- oder Gattungszuordnung gefuehrt.',
+                'details' => "Public: Artdetails zeigen die Phagie-Stufe der Art getrennt fuer Adulte und Raupen.\nAdmin: Phagie wird zentral an der Art gepflegt; bestehende Werte wurden mit Prioritaet Polyphag > Oligophag > Monophag > Unbekannt migriert.\nQuelle: features/feature_species_phagy_levels.md",
+                'audience' => 'both',
+                'published_at' => '2026-03-07T12:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Species;
 use App\Models\Genus;
 use App\Models\Habitat;
+use App\Models\SpeciesPlant;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,6 +22,8 @@ class SpeciesManager extends Component
         'genus_id' => '',
         'size_category' => '',
         'hibernation_stage' => '',
+        'adult_phagy_level' => '',
+        'larval_phagy_level' => '',
         'special_features' => '',
         'habitat_ids' => []
     ];
@@ -31,6 +34,8 @@ class SpeciesManager extends Component
         'form.genus_id' => 'required|exists:genera,id',
         'form.size_category' => 'required|in:XS,S,M,L,XL',
         'form.hibernation_stage' => 'nullable|in:egg,larva,pupa,adult',
+        'form.adult_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
+        'form.larval_phagy_level' => 'nullable|in:unbekannt,monophag,oligophag,polyphag',
         'form.special_features' => 'nullable|string|max:255',
         'form.habitat_ids' => 'nullable|array',
         'form.habitat_ids.*' => 'integer|exists:habitats,id',
@@ -46,6 +51,8 @@ class SpeciesManager extends Component
             'form.size_category.required' => 'Bitte eine Größenkategorie auswählen.',
             'form.size_category.in' => 'Die Größenkategorie ist ungültig.',
             'form.hibernation_stage.in' => 'Das Überwinterungsstadium ist ungültig.',
+            'form.adult_phagy_level.in' => 'Die Phagie-Stufe (Adulte) ist ungültig.',
+            'form.larval_phagy_level.in' => 'Die Phagie-Stufe (Raupe) ist ungültig.',
             'form.special_features.max' => 'Die besonderen Merkmale dürfen maximal 255 Zeichen lang sein.',
             'form.habitat_ids.*.exists' => 'Mindestens ein ausgewählter Lebensraum ist ungültig.',
         ];
@@ -59,6 +66,8 @@ class SpeciesManager extends Component
             'form.genus_id' => 'Gattung',
             'form.size_category' => 'Größenkategorie',
             'form.hibernation_stage' => 'Überwinterungsstadium',
+            'form.adult_phagy_level' => 'Phagie-Stufe (Adulte)',
+            'form.larval_phagy_level' => 'Phagie-Stufe (Raupe)',
             'form.special_features' => 'Besondere Merkmale',
             'form.habitat_ids' => 'Lebensräume',
         ];
@@ -136,7 +145,16 @@ class SpeciesManager extends Component
     public function openEditModal(Species $species)
     {
         $this->species = $species;
-        $this->form = $species->only('name', 'scientific_name', 'genus_id', 'size_category', 'hibernation_stage', 'special_features');
+        $this->form = $species->only(
+            'name',
+            'scientific_name',
+            'genus_id',
+            'size_category',
+            'hibernation_stage',
+            'adult_phagy_level',
+            'larval_phagy_level',
+            'special_features'
+        );
 
         $this->form['habitat_ids'] = $species->habitats()->pluck('habitats.id')->toArray();
 
@@ -189,6 +207,8 @@ class SpeciesManager extends Component
             'genus_id' => '',
             'size_category' => '',
             'hibernation_stage' => '',
+            'adult_phagy_level' => SpeciesPlant::PHAGY_UNKNOWN,
+            'larval_phagy_level' => SpeciesPlant::PHAGY_UNKNOWN,
             'special_features' => '',
             'habitat_ids' => [],
         ];
