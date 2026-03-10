@@ -26,16 +26,32 @@
                     <th>Label</th>
                     <th>Beschreibung</th>
                     <th>Farbcode</th>
+                    <th>Nutzung</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($items as $item)
+                    @php
+                        $usageCount = (int) $item->species_count + (int) $item->plants_count;
+                        $usageTitle = trim(collect([
+                            $item->species_count > 0 ? $item->species_count . ' Arten' : null,
+                            $item->plants_count > 0 ? $item->plants_count . ' Pflanzen' : null,
+                        ])->filter()->implode(', '));
+                    @endphp
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->code }}</td>
                         <td>{{ $item->label }}</td>
                         <td class="text-sm">{{ $item->description ? substr($item->description, 0, 50) . '...' : '—' }}</td>
                         <td class="text-sm"><span class="badge badge-info badge-lg" style="background: {{ $item->color_code }};">{{ $item->color_code }}</span></td>
+                        <td>
+                            <span
+                                class="badge {{ $usageCount > 0 ? 'badge-primary' : 'badge-ghost' }}"
+                                @if($usageTitle !== '') title="{{ $usageTitle }}" @endif
+                            >
+                                {{ $usageCount }}
+                            </span>
+                        </td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -44,9 +60,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($usageCount > 0)
+                                    disabled
+                                    title="{{ $usageTitle }}"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>
@@ -54,7 +75,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-8 text-gray-500">
+                        <td colspan="6" class="text-center py-8 text-gray-500">
                             Keine Gefährdungskategorien gefunden
                         </td>
                     </tr>

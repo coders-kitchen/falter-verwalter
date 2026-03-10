@@ -22,15 +22,33 @@
                     <th>Name</th>
                     <th>Beschreibung</th>
                     <th>Übergeordneter Lebensraum</th>
+                    <th>Nutzung</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($items as $item)
+                    @php
+                        $usageCount = (int) $item->species_count + (int) $item->plants_count;
+                        $deleteBlocked = $usageCount > 0 || (int) $item->children_count > 0;
+                        $usageTitle = trim(collect([
+                            $item->species_count > 0 ? $item->species_count . ' Arten' : null,
+                            $item->plants_count > 0 ? $item->plants_count . ' Pflanzen' : null,
+                            $item->children_count > 0 ? $item->children_count . ' Unterlebensräume' : null,
+                        ])->filter()->implode(', '));
+                    @endphp
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td>{{ $item->description ?? '—' }}</td>
                         <td>{{ $item->parent->name ?? '—' }}</td>
+                        <td>
+                            <span
+                                class="badge {{ $usageCount > 0 ? 'badge-primary' : 'badge-ghost' }}"
+                                @if($usageTitle !== '') title="{{ $usageTitle }}" @endif
+                            >
+                                {{ $usageCount }}
+                            </span>
+                        </td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -39,9 +57,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($deleteBlocked)
+                                    disabled
+                                    title="{{ $usageTitle !== '' ? $usageTitle : 'Kann nicht gelöscht werden' }}"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>
@@ -49,7 +72,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center py-8 text-gray-500">
+                        <td colspan="5" class="text-center py-8 text-gray-500">
                             Keine Lebensräume gefunden
                         </td>
                     </tr>

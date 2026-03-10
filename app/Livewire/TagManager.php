@@ -103,6 +103,11 @@ class TagManager extends Component
 
     public function delete(Tag $tag): void
     {
+        if ($tag->species()->exists()) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Das Tag ist noch Arten zugeordnet.', type: 'error');
+            return;
+        }
+
         $tag->delete();
         $this->dispatch('notify', message: 'Tag gelöscht.');
         $this->resetPage();
@@ -110,12 +115,16 @@ class TagManager extends Component
 
     public function render()
     {
-        $query = Tag::query()->orderBy('name');
+        $query = Tag::query()
+            ->withCount('species')
+            ->orderBy('name');
 
         if (trim($this->search) !== '') {
             $search = '%' . trim($this->search) . '%';
-            $query->where('name', 'like', $search)
-                ->orWhere('description', 'like', $search);
+            $query->where(function ($subQuery) use ($search) {
+                $subQuery->where('name', 'like', $search)
+                    ->orWhere('description', 'like', $search);
+            });
         }
 
         return view('livewire.tag-manager', [

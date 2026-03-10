@@ -21,6 +21,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Code</th>
+                    <th>Nutzung</th>
                     <th>Geometrie</th>
                     <th>Beschreibung</th>
                     <th>Aktionen</th>
@@ -31,6 +32,11 @@
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td><code>{{ $item->code }}</code></td>
+                        <td>
+                            <span class="badge {{ $item->species_count > 0 ? 'badge-primary' : 'badge-ghost' }}">
+                                {{ $item->species_count }}
+                            </span>
+                        </td>
                         <td>
                             @if ($item->geojson_path)
                                 <span class="badge badge-success badge-sm">vorhanden</span>
@@ -47,9 +53,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($item->species_count > 0)
+                                    disabled
+                                    title="{{ $item->species_count }} Arten"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>
@@ -57,7 +68,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-8 text-gray-500">
+                        <td colspan="6" class="text-center py-8 text-gray-500">
                             Keine Verbreitungsgebiete gefunden
                         </td>
                     </tr>

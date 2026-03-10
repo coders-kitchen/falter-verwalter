@@ -241,6 +241,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.10.2',
+                'title' => 'Nutzungszaehler schuetzen Stammdaten vor Fehl-Loeschungen',
+                'summary' => 'Admin-Listen zeigen jetzt direkt, wie stark kritische Stammdaten verwendet werden, und sperren Loeschaktionen bei aktiver Nutzung.',
+                'details_public' => null,
+                'details_admin' => "Admin: Verbreitungsgebiete, Tags, Lebensraeume, Wuchsformen, Gefaehrdungskategorien und Familien zeigen jetzt Nutzungszaehler in der Liste; Loeschen ist bei aktiven Referenzen direkt in der UI deaktiviert.\nQuelle: features/feature_master_data_usage_counts.md",
+                'audience' => 'admin',
+                'published_at' => '2026-03-10T12:30:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

@@ -35,6 +35,12 @@
             </thead>
             <tbody>
                 @forelse($items as $item)
+                    @php
+                        $usageCount = $type === 'butterfly' ? (int) $item->species_count : (int) $item->plants_count;
+                        $usageTitle = $type === 'butterfly'
+                            ? ($item->species_count > 0 ? $item->species_count . ' Arten' : '')
+                            : ($item->plants_count > 0 ? $item->plants_count . ' Pflanzen' : '');
+                    @endphp
                     <tr class="hover">
                         <td>
                             <div class="font-semibold">{{ $item->name }}</div>
@@ -61,9 +67,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($usageCount > 0)
+                                    disabled
+                                    title="{{ $usageTitle }}"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>

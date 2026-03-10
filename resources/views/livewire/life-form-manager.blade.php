@@ -21,6 +21,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Beschreibung</th>
+                    <th>Nutzung</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -29,6 +30,11 @@
                     <tr class="hover">
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td>{{ $item->description ?? '—' }}</td>
+                        <td>
+                            <span class="badge {{ $item->plants_count > 0 ? 'badge-primary' : 'badge-ghost' }}">
+                                {{ $item->plants_count }}
+                            </span>
+                        </td>
                         <td class="space-x-2">
                             <button
                                 wire:click="openEditModal({{ $item->id }})"
@@ -37,9 +43,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($item->plants_count > 0)
+                                    disabled
+                                    title="{{ $item->plants_count }} Pflanzen"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>
@@ -47,7 +58,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="text-center py-8 text-gray-500">
+                        <td colspan="4" class="text-center py-8 text-gray-500">
                             Keine Wuchsformen gefunden
                         </td>
                     </tr>

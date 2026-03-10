@@ -46,11 +46,14 @@ class HabitatManager extends Component
 
     public function render()
     {
-        $query = Habitat::query();
+        $query = Habitat::query()
+            ->withCount(['children', 'species', 'plants']);
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%');
+            $query->where(function ($subQuery) {
+                $subQuery->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
+            });
         }
 
         $items = $query->with('parent')
@@ -110,6 +113,13 @@ class HabitatManager extends Component
 
     public function delete(Habitat $habitat)
     {
+        $habitat->loadCount(['children', 'species', 'plants']);
+
+        if ($habitat->children_count > 0 || $habitat->species_count > 0 || $habitat->plants_count > 0) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Der Lebensraum wird noch verwendet oder hat untergeordnete Lebensräume.', type: 'error');
+            return;
+        }
+
         $habitat->delete();
         $this->resetPage();
     }

@@ -15,6 +15,7 @@
                     <th>Name</th>
                     <th>Beschreibung</th>
                     <th>Status</th>
+                    <th>Nutzung</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -30,14 +31,28 @@
                                 <span class="badge">inaktiv</span>
                             @endif
                         </td>
+                        <td>
+                            <span class="badge {{ $item->species_count > 0 ? 'badge-primary' : 'badge-ghost' }}">
+                                {{ $item->species_count }}
+                            </span>
+                        </td>
                         <td class="space-x-2">
                             <button wire:click="openEditModal({{ $item->id }})" class="btn btn-xs btn-info">Bearbeiten</button>
-                            <button wire:click="delete({{ $item->id }})" wire:confirm="Wirklich löschen?" class="btn btn-xs btn-error">Löschen</button>
+                            <button
+                                @if($item->species_count > 0)
+                                    disabled
+                                    title="{{ $item->species_count }} Arten"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
+                            >Löschen</button>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center py-8 text-gray-500">Keine Tags gefunden</td>
+                        <td colspan="5" class="text-center py-8 text-gray-500">Keine Tags gefunden</td>
                     </tr>
                 @endforelse
             </tbody>

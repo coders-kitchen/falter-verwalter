@@ -47,11 +47,13 @@ class LifeFormManager extends Component
 
     public function render()
     {
-        $query = LifeForm::query();
+        $query = LifeForm::query()->withCount('plants');
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%');
+            $query->where(function ($subQuery) {
+                $subQuery->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
+            });
         }
 
         $items = $query->orderBy('name')
@@ -114,6 +116,11 @@ class LifeFormManager extends Component
 
     public function delete(LifeForm $lifeForm)
     {
+        if ($lifeForm->plants()->exists()) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Die Wuchsform wird noch von Pflanzen verwendet.', type: 'error');
+            return;
+        }
+
         $lifeForm->delete();
         $this->resetPage();
     }

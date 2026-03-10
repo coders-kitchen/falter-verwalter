@@ -62,7 +62,20 @@ class ThreatCategoryManager extends Component
 
     public function render()
     {
-        $query = ThreatCategory::orderBy('rank');
+        $query = ThreatCategory::query()
+            ->withCount([
+                'speciesDistributionAreas as species_count',
+                'plants',
+            ])
+            ->orderBy('rank');
+
+        if ($this->search) {
+            $query->where(function ($subQuery) {
+                $subQuery->where('code', 'like', '%' . $this->search . '%')
+                    ->orWhere('label', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
+            });
+        }
 
         return view('livewire.threat-category-manager', [
             'items' => $query->paginate(50)
@@ -109,6 +122,16 @@ class ThreatCategoryManager extends Component
 
     public function delete(ThreatCategory $threatCategory)
     {
+        $threatCategory->loadCount([
+            'speciesDistributionAreas as species_count',
+            'plants',
+        ]);
+
+        if ($threatCategory->species_count > 0 || $threatCategory->plants_count > 0) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Die Gefährdungskategorie wird noch verwendet.', type: 'error');
+            return;
+        }
+
         $threatCategory->delete();
         $this->dispatch('notify', message: 'Gefährdungsstatus gelöscht');
         $this->resetPage();

@@ -66,7 +66,8 @@ class DistributionAreaManager extends Component
     public function render()
     {
         $query = DistributionArea::query()
-            ->select(['id', 'name', 'code', 'description', 'geojson_path']);
+            ->select(['id', 'name', 'code', 'description', 'geojson_path'])
+            ->withCount('species');
 
         if ($this->search) {
             $query->where(function ($subQuery) {
@@ -143,6 +144,11 @@ class DistributionAreaManager extends Component
 
     public function delete(DistributionArea $distributionArea)
     {
+        if ($distributionArea->species()->exists()) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Das Verbreitungsgebiet ist noch Arten zugeordnet.', type: 'error');
+            return;
+        }
+
         $this->deleteGeoJsonFile($distributionArea->geojson_path);
         $distributionArea->delete();
         $this->resetPage();
