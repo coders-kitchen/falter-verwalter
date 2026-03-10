@@ -22,6 +22,36 @@
             <div class="collapse-content space-y-3">
                 <details class="collapse collapse-arrow bg-base-200 border border-base-300 rounded-lg">
                     <summary class="collapse-title text-sm font-semibold">
+                        Lebensraum
+                    </summary>
+                    <div class="collapse-content">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Lebensräume</span>
+                            </label>
+                            <select
+                                wire:model.live="filterHabitatIds"
+                                multiple
+                                size="6"
+                                class="select select-bordered w-full"
+                            >
+                                @foreach ($habitats as $habitat)
+                                    <option value="{{ $habitat->id }}">
+                                        {{ str_repeat('— ', $habitat->level ?? 0) }}{{ $habitat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label class="label">
+                                <span class="label-text-alt text-xs opacity-75">
+                                    Mehrere Lebensräume mit Ctrl/Cmd anwählen
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="collapse collapse-arrow bg-base-200 border border-base-300 rounded-lg">
+                    <summary class="collapse-title text-sm font-semibold">
                         Blühzeit & Größe
                     </summary>
                     <div class="collapse-content">

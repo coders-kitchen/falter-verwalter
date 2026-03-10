@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Public;
 
+use App\Models\Habitat;
 use App\Models\Plant;
 use App\Models\Species;
 use App\Models\SpeciesPlant;
@@ -15,6 +16,7 @@ class PlantButterflyFinder extends Component
     public $selectedPlantIds = [];
     public $showResults = false;
     public $plantSearch = '';
+    public $filterHabitatIds = [];
     public $filterBloomMonth = null;
     public $filterHeightMin = null;
     public $filterHeightMax = null;
@@ -31,6 +33,7 @@ class PlantButterflyFinder extends Component
     protected $queryString = [
         'selectedPlantIds',
         'plantSearch',
+        'filterHabitatIds',
         'filterBloomMonth',
         'filterHeightMin',
         'filterHeightMax',
@@ -62,6 +65,12 @@ class PlantButterflyFinder extends Component
 
     public function updatedPlantSearch(): void
     {
+        $this->resetPage();
+    }
+
+    public function updatedFilterHabitatIds(): void
+    {
+        $this->filterHabitatIds = array_values(array_map('intval', (array) $this->filterHabitatIds));
         $this->resetPage();
     }
 
@@ -172,6 +181,7 @@ class PlantButterflyFinder extends Component
     {
         $this->reset([
             'plantSearch',
+            'filterHabitatIds',
             'filterBloomMonth',
             'filterHeightMin',
             'filterHeightMax',
@@ -308,6 +318,12 @@ class PlantButterflyFinder extends Component
             $plantQuery->where('name', 'like', "%{$search}%");
         }
 
+        if (!empty($this->filterHabitatIds)) {
+            $plantQuery->whereHas('habitats', function ($query) {
+                $query->whereIn('habitats.id', $this->filterHabitatIds);
+            });
+        }
+
         if ($this->filterBloomMonth) {
             $month = (int) $this->filterBloomMonth;
             $plantQuery->whereNotNull('bloom_start_month')
@@ -364,6 +380,10 @@ class PlantButterflyFinder extends Component
             'plants' => $plants,
             'selectedPlants' => $selectedPlants,
             'paginatedSpecies' => $paginatedSpecies,
+            'habitats' => Habitat::query()
+                ->orderBy('level')
+                ->orderBy('name')
+                ->get(),
             'monthOptions' => [
                 1 => 'Januar',
                 2 => 'Februar',
