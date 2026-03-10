@@ -230,6 +230,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.10.1',
+                'title' => 'Pflanzensuche kann jetzt nach Lebensraeumen filtern',
+                'summary' => 'Die oeffentliche Pflanzensuche laesst sich jetzt zusaetzlich ueber passende Lebensraeume eingrenzen.',
+                'details_public' => "Public: Im Butterfly-Finder koennen normale Nutzer die Pflanzenauswahl jetzt ueber einen oder mehrere Lebensraeume filtern.\nQuelle: features/feature_public_plant_habitat_filter.md",
+                'details_admin' => "Admin: Keine direkte Pflegeaenderung, aber gepflegte Lebensraum-Zuordnungen wirken sich jetzt direkt auf die oeffentliche Pflanzensuche aus.\nQuelle: features/feature_public_plant_habitat_filter.md",
+                'audience' => 'public',
+                'published_at' => '2026-03-10T12:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {
