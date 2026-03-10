@@ -252,6 +252,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.10.3',
+                'title' => 'Pflanzen lassen sich bei Falter-Nutzung nicht mehr loeschen',
+                'summary' => 'Die Pflanzenverwaltung zeigt jetzt Falter-Bezuege an und sperrt Loeschaktionen fuer bereits verwendete Pflanzen.',
+                'details_public' => null,
+                'details_admin' => "Admin: Die Pflanzenliste zeigt jetzt pro Pflanze die Anzahl direkter Falter-Bezuege aus species_plant; bei aktiver Nutzung ist die Loeschaktion in der UI deaktiviert und serverseitig gesperrt.\nQuelle: features/feature_plant_delete_protection_by_usage.md",
+                'audience' => 'admin',
+                'published_at' => '2026-03-10T13:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

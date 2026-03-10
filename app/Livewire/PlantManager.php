@@ -127,11 +127,13 @@ class PlantManager extends Component
 
     public function render()
     {
-        $query = Plant::query();
+        $query = Plant::query()->withCount('speciesAsHostPlant');
 
         if ($this->search) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('scientific_name', 'like', '%' . $this->search . '%');
+            $query->where(function ($subQuery) {
+                $subQuery->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('scientific_name', 'like', '%' . $this->search . '%');
+            });
         }
 
         $items = $query->with('lifeForm', 'family', 'threatCategory')
@@ -279,6 +281,11 @@ class PlantManager extends Component
 
     public function delete(Plant $plant)
     {
+        if ($plant->speciesAsHostPlant()->exists()) {
+            $this->dispatch('notify', message: 'Kann nicht gelöscht werden: Die Pflanze wird noch von Falterarten verwendet.', type: 'error');
+            return;
+        }
+
         $plant->delete();
         $this->resetPage();
     }

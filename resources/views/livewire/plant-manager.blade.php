@@ -22,6 +22,7 @@
                     <th>Name</th>
                     <th>Wissenschaftlicher Name</th>
                     <th>Wuchsform</th>
+                    <th>Nutzung</th>
                     <th>Höhe von (cm)</th>
                     <th>Höhe bis (cm)</th>
                     <th>Aktionen</th>
@@ -33,6 +34,11 @@
                         <td class="font-semibold">{{ $item->name }}</td>
                         <td class="italic text-sm">{{ $item->scientific_name ?? '—' }}</td>
                         <td>{{ $item->lifeForm->name ?? '—' }}</td>
+                        <td>
+                            <span class="badge {{ $item->species_as_host_plant_count > 0 ? 'badge-primary' : 'badge-ghost' }}">
+                                {{ $item->species_as_host_plant_count }}
+                            </span>
+                        </td>
                         <td>{{ $item->plant_height_cm_from ?? '—' }}</td>
                         <td>{{ $item->plant_height_cm_until ?? '—' }}</td>
                         <td class="space-x-2">
@@ -43,9 +49,14 @@
                                 Bearbeiten
                             </button>
                             <button
-                                wire:click="delete({{ $item->id }})"
-                                wire:confirm="Wirklich löschen?"
-                                class="btn btn-xs btn-error"
+                                @if($item->species_as_host_plant_count > 0)
+                                    disabled
+                                    title="{{ $item->species_as_host_plant_count }} Falter-Bezüge"
+                                @else
+                                    wire:click="delete({{ $item->id }})"
+                                    wire:confirm="Wirklich löschen?"
+                                @endif
+                                class="btn btn-xs btn-error disabled:btn-disabled"
                             >
                                 Löschen
                             </button>
@@ -53,7 +64,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-8 text-gray-500">
+                        <td colspan="7" class="text-center py-8 text-gray-500">
                             Keine Pflanzen gefunden
                         </td>
                     </tr>
