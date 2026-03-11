@@ -263,6 +263,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.11.1',
+                'title' => 'Regionale Karteninteraktion reagiert jetzt ohne GeoJSON-Neuladen',
+                'summary' => 'Die Verbreitungskarte hebt Gebiete jetzt sofort hervor und laedt Geometrie- und Meta-Daten nur noch bei Bedarf nach.',
+                'details_public' => "Public: Die Verbreitungskarte reagiert bei Klicks auf Karte und Gebietsliste jetzt deutlich direkter; Geometrie und Detaildaten werden nur noch fuer das angewaehlte Gebiet nachgeladen.\nQuelle: features/feature_map_interaction_event_and_lazy_loading.md",
+                'details_admin' => "Admin: Keine direkte Pflegeaenderung; bestehende Verbreitungsgebiets-Geometrien werden jetzt ueber schlanke Map-Endpunkte und clientseitiges Caching ausgeliefert.\nQuelle: features/feature_map_interaction_event_and_lazy_loading.md",
+                'audience' => 'public',
+                'published_at' => '2026-03-11T12:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {
