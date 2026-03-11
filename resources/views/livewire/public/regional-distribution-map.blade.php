@@ -1,3 +1,16 @@
+@php
+    $componentId = 'regional-map-' . $this->getId();
+    $areasWithoutGeometry = collect($areaData)->filter(fn ($item) => !($item['geometry_available'] ?? false));
+    $mapConfig = [
+        'speciesId' => $speciesId,
+        'colorMode' => $colorMode,
+        'displayMode' => $displayMode,
+        'geometryUrlTemplate' => url('/api/map/areas/__CODE__/geometry'),
+        'metaUrlTemplate' => url('/api/map/areas/__CODE__/meta'),
+        'cacheTtlMs' => 86400000,
+    ];
+@endphp
+
 <div class="space-y-6">
     <div class="bg-base-200 p-4 rounded-lg space-y-4">
         @if ($colorMode === 'count')
@@ -37,7 +50,7 @@
             </p>
             <div wire:ignore class="rounded-lg overflow-hidden border border-base-300 bg-base-100">
                 <div
-                    id="regional-distribution-map-canvas"
+                    id="{{ $componentId }}-canvas"
                     class="w-full"
                     style="height: 680px; min-height: 480px;"
                 ></div>
@@ -46,13 +59,15 @@
 
         <aside class="xl:col-span-1 rounded-lg border border-base-300 bg-base-100 p-3">
             <h3 class="font-semibold mb-3">Gebiete</h3>
-            <div class="space-y-2 max-h-[680px] overflow-y-auto pr-1">
+            <div
+                id="{{ $componentId }}-area-list"
+                class="space-y-2 max-h-[680px] overflow-y-auto pr-1"
+            >
                 @foreach ($areaData as $data)
                     <button
                         type="button"
-                        wire:click="selectArea({{ $data['id'] }})"
-                        class="w-full text-left p-3 rounded border transition
-                            {{ $selectedArea === $data['id'] ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/30' }}"
+                        data-area-code="{{ $data['code'] }}"
+                        class="regional-map-area-button w-full text-left p-3 rounded border transition border-base-300 hover:border-base-content/30"
                     >
                         <div class="flex items-center justify-between gap-2">
                             <span class="font-medium">{{ $data['name'] }}</span>
@@ -80,10 +95,6 @@
         </aside>
     </div>
 
-    @php
-        $areasWithoutGeometry = collect($areaData)->filter(fn ($item) => !($item['geometry_available'] ?? false));
-    @endphp
-
     @if ($areasWithoutGeometry->count() > 0)
         <div class="alert alert-warning">
             <div>
@@ -100,12 +111,13 @@
         <div>
             <h3 class="font-bold">Über die Verbreitungsgebiete</h3>
             <div class="text-sm">
-                Dunklere Flächen bedeuten mehr Arten in einem Gebiet. Beim Klick auf eine Fläche erscheint die Detailzahl.
+                Dunklere Flächen bedeuten mehr Arten in einem Gebiet. Beim Klick auf eine Fläche erscheinen die Detaildaten ohne GeoJSON-Neuladen.
             </div>
         </div>
     </div>
 
-    <script id="regional-map-payload" type="application/json">@json($mapPayload)</script>
+    <script id="{{ $componentId }}-area-data" type="application/json">@json($areaData)</script>
+    <script id="{{ $componentId }}-config" type="application/json">@json($mapConfig)</script>
 
     @once
         <link
@@ -121,22 +133,44 @@
 
     <script>
         (function () {
-            const mapContainerId = 'regional-distribution-map-canvas';
+            const componentId = @json($componentId);
+            const mapContainerId = componentId + '-canvas';
+            const areaDataNodeId = componentId + '-area-data';
+            const configNodeId = componentId + '-config';
+            const listContainerId = componentId + '-area-list';
+            const selectedButtonClasses = ['border-primary', 'bg-primary/10'];
+            const geometryCachePrefix = 'regional-map-geometry:';
             let map = null;
-            let geoJsonLayer = null;
-            let selectedArea = @json($selectedArea);
+            let selectedAreaCode = null;
+            let metaAbortController = null;
+            const areaLayers = new Map();
+            const geometryRequests = new Map();
 
-            function readPayload() {
-                const node = document.getElementById('regional-map-payload');
+            function readJsonScript(nodeId, fallback) {
+                const node = document.getElementById(nodeId);
                 if (!node) {
-                    return { type: 'FeatureCollection', features: [] };
+                    return fallback;
                 }
 
                 try {
-                    return JSON.parse(node.textContent || '{}');
+                    return JSON.parse(node.textContent || '');
                 } catch {
-                    return { type: 'FeatureCollection', features: [] };
+                    return fallback;
                 }
+            }
+
+            function getAreaData() {
+                return readJsonScript(areaDataNodeId, []);
+            }
+
+            function getConfig() {
+                return readJsonScript(configNodeId, {});
+            }
+
+            function areaMap() {
+                return new Map(getAreaData().map(function (area) {
+                    return [area.code, area];
+                }));
             }
 
             function ensureMap() {
@@ -163,91 +197,345 @@
                 return map;
             }
 
-            function renderGeoJson(payload) {
+            function cacheKey(code) {
+                return geometryCachePrefix + code;
+            }
+
+            function readGeometryCache(code) {
+                try {
+                    const raw = window.localStorage.getItem(cacheKey(code));
+                    if (!raw) {
+                        return null;
+                    }
+
+                    const parsed = JSON.parse(raw);
+                    if (!parsed || parsed.expiresAt <= Date.now() || !parsed.geometry) {
+                        window.localStorage.removeItem(cacheKey(code));
+                        return null;
+                    }
+
+                    return parsed;
+                } catch {
+                    return null;
+                }
+            }
+
+            function writeGeometryCache(code, geometry, etag) {
+                const config = getConfig();
+                try {
+                    window.localStorage.setItem(cacheKey(code), JSON.stringify({
+                        geometry: geometry,
+                        etag: etag || null,
+                        expiresAt: Date.now() + (config.cacheTtlMs || 86400000),
+                    }));
+                } catch {
+                    // Ignore cache write failures.
+                }
+            }
+
+            async function fetchGeometry(code) {
+                const cached = readGeometryCache(code);
+                if (cached?.geometry) {
+                    return cached.geometry;
+                }
+
+                if (geometryRequests.has(code)) {
+                    return geometryRequests.get(code);
+                }
+
+                const config = getConfig();
+                const url = (config.geometryUrlTemplate || '').replace('__CODE__', encodeURIComponent(code));
+                const headers = {};
+                if (cached?.etag) {
+                    headers['If-None-Match'] = cached.etag;
+                }
+
+                const request = fetch(url, { headers: headers })
+                    .then(async function (response) {
+                        if (response.status === 304 && cached?.geometry) {
+                            return cached.geometry;
+                        }
+
+                        if (!response.ok) {
+                            throw new Error('Geometry request failed for ' + code);
+                        }
+
+                        const payload = await response.json();
+                        const geometry = payload?.data?.geometry || null;
+                        if (!geometry) {
+                            throw new Error('Missing geometry for ' + code);
+                        }
+
+                        writeGeometryCache(code, geometry, response.headers.get('ETag'));
+                        return geometry;
+                    })
+                    .finally(function () {
+                        geometryRequests.delete(code);
+                    });
+
+                geometryRequests.set(code, request);
+                return request;
+            }
+
+            function resolveAreaStyle(area) {
+                const isSelected = selectedAreaCode !== null && selectedAreaCode === area.code;
+
+                return {
+                    color: isSelected ? '#111827' : '#1f2937',
+                    weight: isSelected ? 3 : 1,
+                    fillColor: area.fill_color || '#e5e7eb',
+                    fillOpacity: isSelected ? 0.9 : 0.75,
+                };
+            }
+
+            function syncAreaButtonSelection() {
+                const list = document.getElementById(listContainerId);
+                if (!list) {
+                    return;
+                }
+
+                list.querySelectorAll('[data-area-code]').forEach(function (button) {
+                    const isSelected = button.getAttribute('data-area-code') === selectedAreaCode;
+                    selectedButtonClasses.forEach(function (className) {
+                        button.classList.toggle(className, isSelected);
+                    });
+                });
+            }
+
+            function updateLayerStyle(code) {
+                const area = areaMap().get(code);
+                const layer = areaLayers.get(code);
+                if (!area || !layer) {
+                    return;
+                }
+
+                layer.setStyle(resolveAreaStyle(area));
+            }
+
+            function updateAllLayerStyles() {
+                areaLayers.forEach(function (_, code) {
+                    updateLayerStyle(code);
+                });
+                syncAreaButtonSelection();
+            }
+
+            function buildPopupContent(area, meta) {
+                const lines = ['<strong>' + (area?.name || meta?.name || 'Unbekanntes Gebiet') + '</strong>'];
+                lines.push('Code: ' + (area?.code || meta?.code || '—'));
+
+                if (meta?.species) {
+                    if (meta.species.threat_status) {
+                        const threat = meta.species.threat_status;
+                        lines.push('Status: ' + threat.code + (threat.label ? ' (' + threat.label + ')' : ''));
+                    } else {
+                        lines.push('Status: keine artspezifischen Daten');
+                    }
+                } else if (typeof meta?.species_distribution_area_count === 'number') {
+                    lines.push('Anzahl: ' + meta.species_distribution_area_count);
+                } else if (typeof area?.count === 'number') {
+                    lines.push('Anzahl: ' + area.count);
+                }
+
+                return lines.join('<br>');
+            }
+
+            async function fetchMeta(code) {
+                const config = getConfig();
+                const url = new URL((config.metaUrlTemplate || '').replace('__CODE__', encodeURIComponent(code)), window.location.origin);
+                if (config.speciesId) {
+                    url.searchParams.set('species_id', String(config.speciesId));
+                }
+
+                if (metaAbortController) {
+                    metaAbortController.abort();
+                }
+
+                metaAbortController = new AbortController();
+                const response = await fetch(url.toString(), { signal: metaAbortController.signal });
+                if (!response.ok) {
+                    throw new Error('Meta request failed for ' + code);
+                }
+
+                const payload = await response.json();
+                return payload?.data || null;
+            }
+
+            async function openAreaDetails(code, options) {
+                const settings = options || {};
+                const area = areaMap().get(code);
+                if (!area) {
+                    return;
+                }
+
+                selectedAreaCode = code;
+                updateAllLayerStyles();
+
+                let layer = areaLayers.get(code);
+                if (!layer && area.geometry_available) {
+                    try {
+                        await ensureAreaLayer(area);
+                        layer = areaLayers.get(code);
+                    } catch {
+                        layer = null;
+                    }
+                }
+
+                if (layer) {
+                    if (settings.flyTo !== false) {
+                        const bounds = layer.getBounds();
+                        if (bounds.isValid()) {
+                            ensureMap()?.fitBounds(bounds.pad(0.15));
+                        }
+                    }
+
+                    layer.bindPopup(buildPopupContent(area, null)).openPopup();
+                }
+
+                try {
+                    const meta = await fetchMeta(code);
+                    if (selectedAreaCode !== code) {
+                        return;
+                    }
+
+                    if (layer) {
+                        layer.bindPopup(buildPopupContent(area, meta)).openPopup();
+                    }
+                } catch (error) {
+                    if (error?.name === 'AbortError') {
+                        return;
+                    }
+
+                    if (layer) {
+                        layer.bindPopup(buildPopupContent(area, null)).openPopup();
+                    }
+                }
+            }
+
+            async function ensureAreaLayer(area) {
+                if (!area.geometry_available || areaLayers.has(area.code)) {
+                    return;
+                }
+
                 const mapInstance = ensureMap();
                 if (!mapInstance) {
                     return;
                 }
 
-                if (geoJsonLayer) {
-                    geoJsonLayer.remove();
-                    geoJsonLayer = null;
-                }
+                const geometry = await fetchGeometry(area.code);
+                const feature = {
+                    type: 'Feature',
+                    geometry: geometry,
+                    properties: {
+                        code: area.code,
+                    },
+                };
 
-                if (!payload || !Array.isArray(payload.features) || payload.features.length === 0) {
+                const layer = L.geoJSON(feature, {
+                    style: function () {
+                        return resolveAreaStyle(area);
+                    },
+                    onEachFeature: function (_, featureLayer) {
+                        featureLayer.on('click', function () {
+                            openAreaDetails(area.code, { flyTo: false });
+                        });
+                    }
+                });
+
+                layer.addTo(mapInstance);
+                areaLayers.set(area.code, layer);
+            }
+
+            async function syncMapLayers() {
+                const areas = getAreaData();
+                const mapInstance = ensureMap();
+                if (!mapInstance) {
                     return;
                 }
 
-                geoJsonLayer = L.geoJSON(payload, {
-                    style: function (feature) {
-                        const featureId = feature?.properties?.id;
-                        const isSelected = selectedArea !== null && Number(selectedArea) === Number(featureId);
-                        return {
-                            color: isSelected ? '#111827' : '#1f2937',
-                            weight: isSelected ? 3 : 1,
-                            fillColor: feature?.properties?.color || '#e5e7eb',
-                            fillOpacity: isSelected ? 0.9 : 0.75,
-                        };
-                    },
-                    onEachFeature: function (feature, layer) {
-                        const name = feature?.properties?.name || 'Unbekanntes Gebiet';
-                        const code = feature?.properties?.code || '—';
-                        const count = feature?.properties?.count ?? 0;
-                        const threatCode = feature?.properties?.threat_code || null;
-                        const threatLabel = feature?.properties?.threat_label || null;
-                        let popup = '<strong>' + name + '</strong><br>Code: ' + code + '<br>Anzahl: ' + count;
-                        if (threatCode) {
-                            popup += '<br>Status: ' + threatCode + (threatLabel ? ' (' + threatLabel + ')' : '');
-                        }
-                        layer.bindPopup(popup);
-                    }
-                }).addTo(mapInstance);
+                await Promise.allSettled(areas.map(function (area) {
+                    return ensureAreaLayer(area);
+                }));
 
-                const bounds = geoJsonLayer.getBounds();
+                updateAllLayerStyles();
+
+                const group = L.featureGroup(Array.from(areaLayers.values()));
+                const bounds = group.getBounds();
                 if (bounds.isValid()) {
                     mapInstance.fitBounds(bounds.pad(0.15));
                 }
             }
 
-            function boot() {
-                const payload = readPayload();
-                renderGeoJson(payload);
+            function attachAreaListHandler() {
+                const list = document.getElementById(listContainerId);
+                if (!list || list.dataset.bound === 'true') {
+                    return;
+                }
+
+                list.dataset.bound = 'true';
+                list.addEventListener('click', function (event) {
+                    const button = event.target.closest('[data-area-code]');
+                    if (!button) {
+                        return;
+                    }
+
+                    openAreaDetails(button.getAttribute('data-area-code'));
+                });
             }
 
-            function bootWhenReady(attemptsLeft = 20) {
+            function showLeafletUnavailable() {
                 const container = document.getElementById(mapContainerId);
                 if (!container) {
-                    return;
-                }
-
-                if (typeof L !== 'undefined') {
-                    boot();
-                    setTimeout(function () {
-                        if (map) {
-                            map.invalidateSize();
-                        }
-                    }, 50);
-                    return;
-                }
-
-                if (attemptsLeft > 0) {
-                    setTimeout(function () {
-                        bootWhenReady(attemptsLeft - 1);
-                    }, 100);
                     return;
                 }
 
                 container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:1rem;color:#6b7280;">Karte konnte nicht geladen werden (Leaflet nicht verfügbar).</div>';
             }
 
+            function boot() {
+                attachAreaListHandler();
+                if (typeof L === 'undefined') {
+                    showLeafletUnavailable();
+                    return;
+                }
+
+                syncMapLayers().then(function () {
+                    setTimeout(function () {
+                        if (map) {
+                            map.invalidateSize();
+                        }
+                    }, 50);
+                });
+            }
+
+            function bootWhenReady(attemptsLeft) {
+                const remaining = typeof attemptsLeft === 'number' ? attemptsLeft : 20;
+                if (typeof L !== 'undefined') {
+                    boot();
+                    return;
+                }
+
+                if (remaining <= 0) {
+                    showLeafletUnavailable();
+                    return;
+                }
+
+                setTimeout(function () {
+                    bootWhenReady(remaining - 1);
+                }, 100);
+            }
+
             bootWhenReady();
             document.addEventListener('DOMContentLoaded', boot);
-            window.addEventListener('load', bootWhenReady);
+            window.addEventListener('load', function () {
+                bootWhenReady();
+            });
             document.addEventListener('livewire:navigated', boot);
             window.addEventListener('regional-map-data-updated', function (event) {
-                const payload = event?.detail?.payload;
-                selectedArea = event?.detail?.selectedArea ?? null;
-                renderGeoJson(payload);
+                if (event?.detail?.speciesId !== getConfig().speciesId) {
+                    return;
+                }
+
+                syncMapLayers();
             });
         })();
     </script>
