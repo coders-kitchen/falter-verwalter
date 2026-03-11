@@ -42,6 +42,11 @@ Route::get('/map', function () {
     return view('public.map');
 })->name('map.index');
 
+Route::prefix('api/map')->group(function () {
+    Route::get('areas/{code}/meta', [\App\Http\Controllers\PublicMapAreaController::class, 'meta']);
+    Route::get('areas/{code}/geometry', [\App\Http\Controllers\PublicMapAreaController::class, 'geometry']);
+});
+
 Route::get('/changelog', function () {
     if (auth()->check()) {
         return redirect('/admin/changelog');

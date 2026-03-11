@@ -3,9 +3,7 @@
 namespace App\Livewire\Public;
 
 use App\Models\DistributionArea;
-use App\Models\Species;
 use App\Models\SpeciesDistributionArea;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class RegionalDistributionMap extends Component
@@ -14,12 +12,7 @@ class RegionalDistributionMap extends Component
     public $displayMode = 'all'; // 'all' or 'endangered'
     public $colorMode = 'count'; // 'count' or 'threat'
     public $areaData = [];
-    public $selectedArea = null;
     public $maxCount = 0;
-    public $mapPayload = [
-        'type' => 'FeatureCollection',
-        'features' => [],
-    ];
 
     public function mount($species = null, string $displayMode = 'all', string $colorMode = 'count')
     {
@@ -36,12 +29,6 @@ class RegionalDistributionMap extends Component
         $this->dispatchMapUpdate();
     }
 
-    public function selectArea($areaId)
-    {
-        $this->selectedArea = $this->selectedArea === $areaId ? null : $areaId;
-        $this->dispatchMapUpdate();
-    }
-
     public function aggregateRegionData()
     {
         $areas = DistributionArea::query()
@@ -53,50 +40,28 @@ class RegionalDistributionMap extends Component
 
         $this->areaData = [];
         $this->maxCount = 0;
-        $features = [];
 
         foreach ($areas as $area) {
             $count = (int) ($countsByAreaId[$area->id] ?? 0);
-            $geometry = $this->resolveAreaGeometry($area);
             $threat = $threatByAreaId[$area->id] ?? null;
             $featureColor = $this->resolveFeatureColor($count, $threat);
 
-            $this->areaData[$area->id] = [
+            $this->areaData[] = [
                 'name' => $area->name,
                 'count' => $count,
                 'id' => $area->id,
                 'code' => $area->code,
-                'geometry_available' => is_array($geometry),
+                'geometry_available' => !empty($area->geojson_path),
                 'threat_code' => $threat['code'] ?? null,
                 'threat_label' => $threat['label'] ?? null,
                 'threat_color' => $threat['color_code'] ?? null,
+                'fill_color' => $featureColor,
             ];
 
             if ($count > $this->maxCount) {
                 $this->maxCount = $count;
             }
-
-            if (is_array($geometry) && in_array($geometry['type'] ?? null, ['Polygon', 'MultiPolygon'], true)) {
-                $features[] = [
-                    'type' => 'Feature',
-                    'geometry' => $geometry,
-                    'properties' => [
-                        'id' => $area->id,
-                        'name' => $area->name,
-                        'code' => $area->code,
-                        'count' => $count,
-                        'color' => $featureColor,
-                        'threat_code' => $threat['code'] ?? null,
-                        'threat_label' => $threat['label'] ?? null,
-                    ],
-                ];
-            }
         }
-
-        $this->mapPayload = [
-            'type' => 'FeatureCollection',
-            'features' => $features,
-        ];
     }
 
     private function loadCountsByAreaId(): array
@@ -153,52 +118,6 @@ class RegionalDistributionMap extends Component
         return $this->getColorHex($count);
     }
 
-    private function resolveAreaGeometry(DistributionArea $area): ?array
-    {
-        if ($area->geojson_path && Storage::disk('public')->exists($area->geojson_path)) {
-            $raw = Storage::disk('public')->get($area->geojson_path);
-            $decoded = json_decode($raw, true);
-            if (is_array($decoded)) {
-                return $this->extractGeometryFromGeoJson($decoded);
-            }
-        }
-
-        return null;
-    }
-
-    private function extractGeometryFromGeoJson(array $decoded): ?array
-    {
-        $type = $decoded['type'] ?? null;
-
-        if ($type === 'Feature') {
-            $geometry = $decoded['geometry'] ?? null;
-            return is_array($geometry) ? $this->extractGeometryFromGeoJson($geometry) : null;
-        }
-
-        if ($type === 'FeatureCollection') {
-            $features = $decoded['features'] ?? null;
-            if (!is_array($features) || count($features) === 0 || !is_array($features[0])) {
-                return null;
-            }
-
-            return $this->extractGeometryFromGeoJson($features[0]);
-        }
-
-        if (!in_array($type, ['Polygon', 'MultiPolygon'], true)) {
-            return null;
-        }
-
-        $coordinates = $decoded['coordinates'] ?? null;
-        if (!is_array($coordinates) || count($coordinates) === 0) {
-            return null;
-        }
-
-        return [
-            'type' => $type,
-            'coordinates' => $coordinates,
-        ];
-    }
-
     public function getColorIntensity($count)
     {
         if ($this->maxCount === 0) {
@@ -250,9 +169,10 @@ class RegionalDistributionMap extends Component
     {
         $this->dispatch(
             'regional-map-data-updated',
-            payload: $this->mapPayload,
-            selectedArea: $this->selectedArea,
-            displayMode: $this->displayMode
+            areaData: $this->areaData,
+            displayMode: $this->displayMode,
+            colorMode: $this->colorMode,
+            speciesId: $this->species?->id
         );
     }
 
@@ -262,7 +182,7 @@ class RegionalDistributionMap extends Component
             'areaData' => $this->areaData,
             'displayMode' => $this->displayMode,
             'colorMode' => $this->colorMode,
-            'mapPayload' => $this->mapPayload,
+            'speciesId' => $this->species?->id,
         ]);
     }
 }
