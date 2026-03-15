@@ -1,0 +1,3290 @@
+{
+    "generated_at": "2026-03-15T08:11:13+00:00",
+    "source": {
+        "models_dir": "app/Models",
+        "migrations_dir": "database/migrations"
+    },
+    "tables": [
+        {
+            "name": "cache",
+            "columns": {
+                "expiration": {
+                    "name": "expiration",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "key": {
+                    "name": "key",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "value": {
+                    "name": "value",
+                    "type": "mediumText",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [],
+            "model": null,
+            "sources": [
+                "2026_02_18_140000_create_cache_tables.php"
+            ]
+        },
+        {
+            "name": "cache_locks",
+            "columns": {
+                "expiration": {
+                    "name": "expiration",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "key": {
+                    "name": "key",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "owner": {
+                    "name": "owner",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [],
+            "model": null,
+            "sources": [
+                "2026_02_18_140000_create_cache_tables.php"
+            ]
+        },
+        {
+            "name": "changelog_entries",
+            "columns": {
+                "audience": {
+                    "name": "audience",
+                    "type": "enum(public, admin, both)",
+                    "nullable": false,
+                    "default": "both",
+                    "references": null
+                },
+                "commit_refs": {
+                    "name": "commit_refs",
+                    "type": "json",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "details": {
+                    "name": "details",
+                    "type": "longText",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "details_admin": {
+                    "name": "details_admin",
+                    "type": "longText",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "details_public": {
+                    "name": "details_public",
+                    "type": "longText",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_active": {
+                    "name": "is_active",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "true",
+                    "references": null
+                },
+                "published_at": {
+                    "name": "published_at",
+                    "type": "timestamp",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "summary": {
+                    "name": "summary",
+                    "type": "text",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "title": {
+                    "name": "title",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "version": {
+                    "name": "version",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "version"
+                    ],
+                    "signature": "unique:version"
+                }
+            ],
+            "model": "ChangelogEntry",
+            "sources": [
+                "2026_02_24_220000_create_changelog_entries_table.php",
+                "2026_03_07_130000_add_split_details_to_changelog_entries_table.php"
+            ]
+        },
+        {
+            "name": "distribution_areas",
+            "columns": {
+                "code": {
+                    "name": "code",
+                    "type": "string(120)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "geojson_path": {
+                    "name": "geojson_path",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "unique:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "index:code"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "unique:code"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "geojson_path"
+                    ],
+                    "signature": "index:geojson_path"
+                }
+            ],
+            "model": "DistributionArea",
+            "sources": [
+                "2025_11_02_000002_create_distribution_areas_table.php",
+                "2026_02_16_002000_add_code_and_geometry_to_distribution_areas_table.php",
+                "2026_02_16_003000_add_geojson_path_to_distribution_areas_table.php",
+                "2026_02_16_004000_drop_geometry_geojson_from_distribution_areas_table.php"
+            ]
+        },
+        {
+            "name": "families",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "genus": {
+                    "name": "genus",
+                    "type": "string(100)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string(100)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "subfamily": {
+                    "name": "subfamily",
+                    "type": "string(100)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "tribe": {
+                    "name": "tribe",
+                    "type": "string(100)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "type": {
+                    "name": "type",
+                    "type": "enum(butterfly, plant)",
+                    "nullable": false,
+                    "default": "butterfly",
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "type"
+                    ],
+                    "signature": "index:type"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "name",
+                        "subfamily",
+                        "genus",
+                        "tribe",
+                        "type"
+                    ],
+                    "signature": "unique:name,subfamily,genus,tribe,type"
+                }
+            ],
+            "model": "Family",
+            "sources": [
+                "2025_11_02_000004_create_families_table.php"
+            ]
+        },
+        {
+            "name": "genera",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string(100)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "subfamily_id": {
+                    "name": "subfamily_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "subfamilies.id"
+                },
+                "tribe_id": {
+                    "name": "tribe_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "tribes.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "subfamily_id",
+                        "tribe_id",
+                        "name"
+                    ],
+                    "signature": "unique:subfamily_id,tribe_id,name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                }
+            ],
+            "model": "Genus",
+            "sources": [
+                "2026_02_16_001200_create_taxonomy_hierarchy_tables.php"
+            ]
+        },
+        {
+            "name": "generations",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "flight_end_month": {
+                    "name": "flight_end_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "flight_start_month": {
+                    "name": "flight_start_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "generation_number": {
+                    "name": "generation_number",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "host_plants": {
+                    "name": "host_plants",
+                    "type": "json",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "larva_end_month": {
+                    "name": "larva_end_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "larva_start_month": {
+                    "name": "larva_start_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "larval_host_plants": {
+                    "name": "larval_host_plants",
+                    "type": "json",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "nectar_plants": {
+                    "name": "nectar_plants",
+                    "type": "json",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "index",
+                    "columns": [
+                        "species_id",
+                        "generation_number"
+                    ],
+                    "signature": "index:species_id,generation_number"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "generation_number"
+                    ],
+                    "signature": "unique:species_id,generation_number"
+                }
+            ],
+            "model": "Generation",
+            "sources": [
+                "2025_11_02_135000_create_generations_table.php",
+                "2025_11_02_135100_update_generations_separate_plant_types.php"
+            ]
+        },
+        {
+            "name": "habitats",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "level": {
+                    "name": "level",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": "1",
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "parent_id": {
+                    "name": "parent_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "habitats.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "index",
+                    "columns": [
+                        "parent_id",
+                        "level"
+                    ],
+                    "signature": "index:parent_id,level"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "user_id",
+                        "name",
+                        "parent_id"
+                    ],
+                    "signature": "unique:user_id,name,parent_id"
+                }
+            ],
+            "model": "Habitat",
+            "sources": [
+                "2025_11_02_000003_create_habitats_table.php"
+            ]
+        },
+        {
+            "name": "life_forms",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "examples": {
+                    "name": "examples",
+                    "type": "json",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "unique:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                }
+            ],
+            "model": "LifeForm",
+            "sources": [
+                "2025_11_02_000001_create_life_forms_table.php"
+            ]
+        },
+        {
+            "name": "plant_habitat",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "habitat_id": {
+                    "name": "habitat_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "habitats.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "plant_id": {
+                    "name": "plant_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "plants.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "plant_id",
+                        "habitat_id"
+                    ],
+                    "signature": "unique:plant_id,habitat_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2025_11_02_000007_create_pivot_tables.php"
+            ]
+        },
+        {
+            "name": "plants",
+            "columns": {
+                "bloom_color": {
+                    "name": "bloom_color",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "bloom_end_month": {
+                    "name": "bloom_end_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "bloom_start_month": {
+                    "name": "bloom_start_month",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "continentality_number": {
+                    "name": "continentality_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "continentality_number_state": {
+                    "name": "continentality_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "family_genus": {
+                    "name": "family_genus",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "family_id": {
+                    "name": "family_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "families.id"
+                },
+                "genus_id": {
+                    "name": "genus_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "genera.id"
+                },
+                "heavy_metal_resistance": {
+                    "name": "heavy_metal_resistance",
+                    "type": "string",
+                    "nullable": false,
+                    "default": "nicht schwermetallresistent",
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_invasive": {
+                    "name": "is_invasive",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "is_native": {
+                    "name": "is_native",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "life_form_id": {
+                    "name": "life_form_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "life_forms.id"
+                },
+                "lifespan": {
+                    "name": "lifespan",
+                    "type": "enum(annual, biennial, perennial)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "light_number": {
+                    "name": "light_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "light_number_state": {
+                    "name": "light_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "location": {
+                    "name": "location",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "moisture_number": {
+                    "name": "moisture_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "moisture_number_state": {
+                    "name": "moisture_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "moisture_variation": {
+                    "name": "moisture_variation",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "moisture_variation_state": {
+                    "name": "moisture_variation_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "nitrogen_number": {
+                    "name": "nitrogen_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "nitrogen_number_state": {
+                    "name": "nitrogen_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "persistence_organs": {
+                    "name": "persistence_organs",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "plant_height_cm_from": {
+                    "name": "plant_height_cm_from",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "plant_height_cm_until": {
+                    "name": "plant_height_cm_until",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "reaction_number": {
+                    "name": "reaction_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "reaction_number_state": {
+                    "name": "reaction_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "salt_number": {
+                    "name": "salt_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "salt_number_state": {
+                    "name": "salt_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "scientific_name": {
+                    "name": "scientific_name",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "temperature_number": {
+                    "name": "temperature_number",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "temperature_number_state": {
+                    "name": "temperature_number_state",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": "numeric",
+                    "references": null
+                },
+                "threat_category_id": {
+                    "name": "threat_category_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "threat_categories.id"
+                },
+                "threat_status": {
+                    "name": "threat_status",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "index",
+                    "columns": [
+                        "life_form_id",
+                        "name"
+                    ],
+                    "signature": "index:life_form_id,name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "is_native"
+                    ],
+                    "signature": "index:is_native"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "is_invasive"
+                    ],
+                    "signature": "index:is_invasive"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "family_id"
+                    ],
+                    "signature": "index:family_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "genus_id"
+                    ],
+                    "signature": "index:genus_id"
+                }
+            ],
+            "model": "Plant",
+            "sources": [
+                "2025_11_02_000005_create_plants_table.php",
+                "2025_11_02_140001_add_family_id_to_plants.php",
+                "2026_02_15_210000_change_plant_heigth_to_range.php",
+                "2026_02_15_210100_change_plant_bloom_month_range.php",
+                "2026_02_15_210200_change_plant_add_salt_number.php",
+                "2026_02_15_220000_drop_legacy_plant_columns.php",
+                "2026_02_15_230000_add_indicator_states_to_plants_table.php",
+                "2026_02_15_231000_add_heavy_metal_resistance_to_plants_table.php",
+                "2026_02_15_232000_add_threat_category_id_to_plants_table.php",
+                "2026_02_16_001200_create_taxonomy_hierarchy_tables.php"
+            ]
+        },
+        {
+            "name": "regions",
+            "columns": {
+                "code": {
+                    "name": "code",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string(255)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "unique:code"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "index:code"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2025_11_02_170000_create_regions_table.php"
+            ]
+        },
+        {
+            "name": "sessions",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "ip_address": {
+                    "name": "ip_address",
+                    "type": "string(45)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "last_activity": {
+                    "name": "last_activity",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "payload": {
+                    "name": "payload",
+                    "type": "longText",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "user_agent": {
+                    "name": "user_agent",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [],
+            "model": null,
+            "sources": [
+                "2025_11_02_113649_create_sessions_table.php"
+            ]
+        },
+        {
+            "name": "species",
+            "columns": {
+                "abundance_trend": {
+                    "name": "abundance_trend",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "adult_phagy_level": {
+                    "name": "adult_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "color_description": {
+                    "name": "color_description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "family_id": {
+                    "name": "family_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "families.id"
+                },
+                "gender_differences": {
+                    "name": "gender_differences",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "generations_per_year": {
+                    "name": "generations_per_year",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "genus_id": {
+                    "name": "genus_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "genera.id"
+                },
+                "hibernation_stage": {
+                    "name": "hibernation_stage",
+                    "type": "enum(egg, larva, pupa, adult)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "larval_phagy_level": {
+                    "name": "larval_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "protection_status": {
+                    "name": "protection_status",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "pupal_duration_days": {
+                    "name": "pupal_duration_days",
+                    "type": "integer",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "red_list_status_de": {
+                    "name": "red_list_status_de",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "red_list_status_eu": {
+                    "name": "red_list_status_eu",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "scientific_name": {
+                    "name": "scientific_name",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "size_category": {
+                    "name": "size_category",
+                    "type": "enum(XS, S, M, L, XL)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "special_features": {
+                    "name": "special_features",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "index",
+                    "columns": [
+                        "family_id",
+                        "size_category"
+                    ],
+                    "signature": "index:family_id,size_category"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "genus_id"
+                    ],
+                    "signature": "index:genus_id"
+                }
+            ],
+            "model": "Species",
+            "sources": [
+                "2025_11_02_000006_create_species_table.php",
+                "2026_02_15_233000_add_sage_feeding_indicator_to_species_table.php",
+                "2026_02_16_001200_create_taxonomy_hierarchy_tables.php",
+                "2026_02_18_120000_update_species_special_features_and_drop_sage_indicator.php",
+                "2026_03_07_120000_move_phagy_levels_to_species_table.php"
+            ]
+        },
+        {
+            "name": "species_distribution",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "distribution_area_id": {
+                    "name": "distribution_area_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "distribution_areas.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "distribution_area_id"
+                    ],
+                    "signature": "unique:species_id,distribution_area_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2025_11_02_000007_create_pivot_tables.php"
+            ]
+        },
+        {
+            "name": "species_distribution_areas",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "distribution_area_id": {
+                    "name": "distribution_area_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "distribution_areas.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "status": {
+                    "name": "status",
+                    "type": "enum(heimisch, ausgestorben, neobiotisch)",
+                    "nullable": false,
+                    "default": "heimisch",
+                    "references": null
+                },
+                "threat_category_id": {
+                    "name": "threat_category_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "threat_categories.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "distribution_area_id"
+                    ],
+                    "signature": "unique:species_id,distribution_area_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "species_id",
+                        "status"
+                    ],
+                    "signature": "index:species_id,status"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "distribution_area_id"
+                    ],
+                    "signature": "index:distribution_area_id"
+                }
+            ],
+            "model": "SpeciesDistributionArea",
+            "sources": [
+                "2026_02_08_180100_create_species_distribution_area_table.php",
+                "2026_02_08_180400_update_species_distribution_area_table.php"
+            ]
+        },
+        {
+            "name": "species_endagered_status",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "distribution_area_id": {
+                    "name": "distribution_area_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "distribution_areas.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "threat_category_id": {
+                    "name": "threat_category_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "threat_categories.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "distribution_area_id"
+                    ],
+                    "signature": "unique:species_id,distribution_area_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "species_id",
+                        "threat_category_id"
+                    ],
+                    "signature": "index:species_id,threat_category_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "distribution_area_id"
+                    ],
+                    "signature": "index:distribution_area_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2026_02_08_180300_create_species_endagered_status_table.php"
+            ]
+        },
+        {
+            "name": "species_genus",
+            "columns": {
+                "adult_phagy_level": {
+                    "name": "adult_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "adult_preference": {
+                    "name": "adult_preference",
+                    "type": "enum(primaer, sekundaer)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "genus_id": {
+                    "name": "genus_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "genera.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_larval_host": {
+                    "name": "is_larval_host",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "is_nectar": {
+                    "name": "is_nectar",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "larval_phagy_level": {
+                    "name": "larval_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "larval_preference": {
+                    "name": "larval_preference",
+                    "type": "enum(primaer, sekundaer)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "genus_id"
+                    ],
+                    "signature": "unique:species_id,genus_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "species_id"
+                    ],
+                    "signature": "index:species_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "genus_id"
+                    ],
+                    "signature": "index:genus_id"
+                }
+            ],
+            "model": "SpeciesGenus",
+            "sources": [
+                "2026_02_24_110000_create_species_genus_table.php",
+                "2026_03_04_120000_add_phagy_levels_to_species_plant_and_species_genus_tables.php"
+            ]
+        },
+        {
+            "name": "species_habitat",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "habitat_id": {
+                    "name": "habitat_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "habitats.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "habitat_id"
+                    ],
+                    "signature": "unique:species_id,habitat_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2025_11_02_000007_create_pivot_tables.php"
+            ]
+        },
+        {
+            "name": "species_plant",
+            "columns": {
+                "adult_phagy_level": {
+                    "name": "adult_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "adult_preference": {
+                    "name": "adult_preference",
+                    "type": "enum(primaer, sekundaer)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_larval_host": {
+                    "name": "is_larval_host",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "is_nectar": {
+                    "name": "is_nectar",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "false",
+                    "references": null
+                },
+                "larval_phagy_level": {
+                    "name": "larval_phagy_level",
+                    "type": "enum(unbekannt, monophag, oligophag, polyphag)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "larval_preference": {
+                    "name": "larval_preference",
+                    "type": "enum(primaer, sekundaer)",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "plant_id": {
+                    "name": "plant_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "plants.id"
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "plant_id"
+                    ],
+                    "signature": "unique:species_id,plant_id"
+                }
+            ],
+            "model": "SpeciesPlant",
+            "sources": [
+                "2025_11_02_000007_create_pivot_tables.php",
+                "2026_02_15_234000_refactor_species_plant_to_flags_and_migrate_generation_data.php",
+                "2026_02_24_100000_add_stage_preferences_to_species_plant_table.php",
+                "2026_03_04_120000_add_phagy_levels_to_species_plant_and_species_genus_tables.php"
+            ]
+        },
+        {
+            "name": "species_region",
+            "columns": {
+                "conservation_status": {
+                    "name": "conservation_status",
+                    "type": "enum(nicht_gef\u00e4hrdet, gef\u00e4hrdet)",
+                    "nullable": false,
+                    "default": "nicht_gef\u00e4hrdet",
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "region_id": {
+                    "name": "region_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "regions.id"
+                },
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "region_id"
+                    ],
+                    "signature": "unique:species_id,region_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "species_id",
+                        "conservation_status"
+                    ],
+                    "signature": "index:species_id,conservation_status"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "region_id"
+                    ],
+                    "signature": "index:region_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2025_11_02_170100_create_species_region_table.php"
+            ]
+        },
+        {
+            "name": "species_tag",
+            "columns": {
+                "species_id": {
+                    "name": "species_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "species.id"
+                },
+                "tag_id": {
+                    "name": "tag_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "tags.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "species_id",
+                        "tag_id"
+                    ],
+                    "signature": "unique:species_id,tag_id"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "tag_id",
+                        "species_id"
+                    ],
+                    "signature": "index:tag_id,species_id"
+                }
+            ],
+            "model": null,
+            "sources": [
+                "2026_03_07_140000_create_tags_and_species_tag_tables.php"
+            ]
+        },
+        {
+            "name": "subfamilies",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "family_id": {
+                    "name": "family_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "families.id"
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string(100)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "family_id",
+                        "name"
+                    ],
+                    "signature": "unique:family_id,name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                }
+            ],
+            "model": "Subfamily",
+            "sources": [
+                "2026_02_16_001200_create_taxonomy_hierarchy_tables.php"
+            ]
+        },
+        {
+            "name": "tags",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_active": {
+                    "name": "is_active",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "true",
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "slug": {
+                    "name": "slug",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "unique:name"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "slug"
+                    ],
+                    "signature": "unique:slug"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "is_active"
+                    ],
+                    "signature": "index:is_active"
+                }
+            ],
+            "model": "Tag",
+            "sources": [
+                "2026_03_07_140000_create_tags_and_species_tag_tables.php"
+            ]
+        },
+        {
+            "name": "threat_categories",
+            "columns": {
+                "code": {
+                    "name": "code",
+                    "type": "string(10)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "color_code": {
+                    "name": "color_code",
+                    "type": "string(7)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "label": {
+                    "name": "label",
+                    "type": "string(40)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "rank": {
+                    "name": "rank",
+                    "type": "integer",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "threat_categories_rank_unique": {
+                    "name": "threat_categories_rank_unique",
+                    "type": "dropUnique",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "users.id"
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "unique:code"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "label"
+                    ],
+                    "signature": "unique:label"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "rank"
+                    ],
+                    "signature": "unique:rank"
+                },
+                {
+                    "type": "unique",
+                    "columns": [
+                        "code",
+                        "label"
+                    ],
+                    "signature": "unique:code,label"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "user_id"
+                    ],
+                    "signature": "index:user_id"
+                }
+            ],
+            "model": "ThreatCategory",
+            "sources": [
+                "2026_02_08_180200_create_threat_category_table.php",
+                "2026_02_09_190000_update_threat_category_table.php",
+                "2026_02_13_200000_fix_threat_category_table.php"
+            ]
+        },
+        {
+            "name": "tribes",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string(100)",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "subfamily_id": {
+                    "name": "subfamily_id",
+                    "type": "foreignId",
+                    "nullable": false,
+                    "default": null,
+                    "references": "subfamilies.id"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "subfamily_id",
+                        "name"
+                    ],
+                    "signature": "unique:subfamily_id,name"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "name"
+                    ],
+                    "signature": "index:name"
+                }
+            ],
+            "model": "Tribe",
+            "sources": [
+                "2026_02_16_001200_create_taxonomy_hierarchy_tables.php"
+            ]
+        },
+        {
+            "name": "users",
+            "columns": {
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "email": {
+                    "name": "email",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "email_verified_at": {
+                    "name": "email_verified_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "is_active": {
+                    "name": "is_active",
+                    "type": "boolean",
+                    "nullable": false,
+                    "default": "true",
+                    "references": null
+                },
+                "last_login_at": {
+                    "name": "last_login_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "last_seen_changelog_version": {
+                    "name": "last_seen_changelog_version",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "password": {
+                    "name": "password",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "remember_token": {
+                    "name": "remember_token",
+                    "type": "string",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "role": {
+                    "name": "role",
+                    "type": "enum(admin, viewer)",
+                    "nullable": false,
+                    "default": "viewer",
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "email"
+                    ],
+                    "signature": "unique:email"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "email"
+                    ],
+                    "signature": "index:email"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "role"
+                    ],
+                    "signature": "index:role"
+                }
+            ],
+            "model": "User",
+            "sources": [
+                "2025_11_02_000000_create_users_table.php",
+                "2026_02_24_220100_add_last_seen_changelog_version_to_users_table.php"
+            ]
+        }
+    ],
+    "models": [
+        {
+            "class": "ChangelogEntry",
+            "table": "changelog_entries",
+            "file": "app/Models/ChangelogEntry.php",
+            "fillable": [
+                "version",
+                "title",
+                "summary",
+                "details",
+                "details_public",
+                "details_admin",
+                "audience",
+                "published_at",
+                "is_active",
+                "commit_refs"
+            ],
+            "casts": {
+                "published_at": "datetime",
+                "is_active": "boolean",
+                "commit_refs": "array"
+            },
+            "relations": []
+        },
+        {
+            "class": "DistributionArea",
+            "table": "distribution_areas",
+            "file": "app/Models/DistributionArea.php",
+            "fillable": [
+                "user_id",
+                "name",
+                "code",
+                "description",
+                "geojson_path"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsToMany",
+                    "target": "Species",
+                    "table": "species_distribution_areas",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": [
+                        "status",
+                        "threat_category_id",
+                        "user_id"
+                    ]
+                }
+            ]
+        },
+        {
+            "class": "Family",
+            "table": "families",
+            "file": "app/Models/Family.php",
+            "fillable": [
+                "user_id",
+                "name",
+                "subfamily",
+                "genus",
+                "tribe",
+                "type",
+                "description"
+            ],
+            "casts": {
+                "type": "string"
+            },
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "hasMany",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plants",
+                    "type": "hasMany",
+                    "target": "Plant",
+                    "table": null,
+                    "foreign_key": "family_id",
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "subfamilies",
+                    "type": "hasMany",
+                    "target": "Subfamily",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Generation",
+            "table": "generations",
+            "file": "app/Models/Generation.php",
+            "fillable": [
+                "user_id",
+                "species_id",
+                "generation_number",
+                "larva_start_month",
+                "larva_end_month",
+                "flight_start_month",
+                "flight_end_month",
+                "host_plants",
+                "nectar_plants",
+                "larval_host_plants",
+                "description"
+            ],
+            "casts": {
+                "generation_number": "integer",
+                "larva_start_month": "integer",
+                "larva_end_month": "integer",
+                "flight_start_month": "integer",
+                "flight_end_month": "integer",
+                "host_plants": "array",
+                "nectar_plants": "array",
+                "larval_host_plants": "array"
+            },
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsTo",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Genus",
+            "table": "genera",
+            "file": "app/Models/Genus.php",
+            "fillable": [
+                "subfamily_id",
+                "tribe_id",
+                "name"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "subfamily",
+                    "type": "belongsTo",
+                    "target": "Subfamily",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "tribe",
+                    "type": "belongsTo",
+                    "target": "Tribe",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "species",
+                    "type": "hasMany",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plants",
+                    "type": "hasMany",
+                    "target": "Plant",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "assignedSpecies",
+                    "type": "belongsToMany",
+                    "target": "Species",
+                    "table": "species_genus",
+                    "foreign_key": "genus_id",
+                    "related_key": "species_id",
+                    "pivot": [
+                        "is_nectar",
+                        "is_larval_host",
+                        "adult_preference",
+                        "larval_preference"
+                    ]
+                }
+            ]
+        },
+        {
+            "class": "Habitat",
+            "table": "habitats",
+            "file": "app/Models/Habitat.php",
+            "fillable": [
+                "user_id",
+                "parent_id",
+                "name",
+                "description",
+                "level"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "parent",
+                    "type": "belongsTo",
+                    "target": "Habitat",
+                    "table": null,
+                    "foreign_key": "parent_id",
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "children",
+                    "type": "hasMany",
+                    "target": "Habitat",
+                    "table": null,
+                    "foreign_key": "parent_id",
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "species",
+                    "type": "belongsToMany",
+                    "target": "Species",
+                    "table": "species_habitat",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plants",
+                    "type": "belongsToMany",
+                    "target": "Plant",
+                    "table": "plant_habitat",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "LifeForm",
+            "table": "life_forms",
+            "file": "app/Models/LifeForm.php",
+            "fillable": [
+                "user_id",
+                "name",
+                "description",
+                "examples"
+            ],
+            "casts": {
+                "examples": "json"
+            },
+            "relations": [
+                {
+                    "method": "plants",
+                    "type": "hasMany",
+                    "target": "Plant",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Plant",
+            "table": "plants",
+            "file": "app/Models/Plant.php",
+            "fillable": [
+                "user_id",
+                "life_form_id",
+                "family_id",
+                "genus_id",
+                "threat_category_id",
+                "name",
+                "scientific_name",
+                "family_genus",
+                "light_number",
+                "light_number_state",
+                "salt_number",
+                "salt_number_state",
+                "temperature_number",
+                "temperature_number_state",
+                "continentality_number",
+                "continentality_number_state",
+                "reaction_number",
+                "reaction_number_state",
+                "moisture_number",
+                "moisture_number_state",
+                "moisture_variation",
+                "moisture_variation_state",
+                "nitrogen_number",
+                "nitrogen_number_state",
+                "bloom_start_month",
+                "bloom_end_month",
+                "bloom_color",
+                "plant_height_cm_from",
+                "plant_height_cm_until",
+                "lifespan",
+                "location",
+                "is_native",
+                "is_invasive",
+                "threat_status",
+                "heavy_metal_resistance",
+                "persistence_organs"
+            ],
+            "casts": {
+                "is_native": "boolean",
+                "is_invasive": "boolean"
+            },
+            "relations": [
+                {
+                    "method": "lifeForm",
+                    "type": "belongsTo",
+                    "target": "LifeForm",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "family",
+                    "type": "belongsTo",
+                    "target": "Family",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "genus",
+                    "type": "belongsTo",
+                    "target": "Genus",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "threatCategory",
+                    "type": "belongsTo",
+                    "target": "ThreatCategory",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "habitats",
+                    "type": "belongsToMany",
+                    "target": "Habitat",
+                    "table": "plant_habitat",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "speciesAsHostPlant",
+                    "type": "belongsToMany",
+                    "target": "Species",
+                    "table": "species_plant",
+                    "foreign_key": "plant_id",
+                    "related_key": "species_id",
+                    "pivot": [
+                        "is_nectar",
+                        "is_larval_host",
+                        "adult_preference",
+                        "larval_preference"
+                    ]
+                }
+            ]
+        },
+        {
+            "class": "Species",
+            "table": "species",
+            "file": "app/Models/Species.php",
+            "fillable": [
+                "user_id",
+                "family_id",
+                "genus_id",
+                "name",
+                "scientific_name",
+                "size_category",
+                "color_description",
+                "special_features",
+                "gender_differences",
+                "generations_per_year",
+                "hibernation_stage",
+                "adult_phagy_level",
+                "larval_phagy_level",
+                "pupal_duration_days",
+                "red_list_status_de",
+                "red_list_status_eu",
+                "abundance_trend",
+                "protection_status"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "family",
+                    "type": "belongsTo",
+                    "target": "Family",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "genus",
+                    "type": "belongsTo",
+                    "target": "Genus",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "generations",
+                    "type": "hasMany",
+                    "target": "Generation",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "distributionAreas",
+                    "type": "belongsToMany",
+                    "target": "DistributionArea",
+                    "table": "species_distribution_areas",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": [
+                        "status",
+                        "threat_category_id",
+                        "user_id"
+                    ]
+                },
+                {
+                    "method": "habitats",
+                    "type": "belongsToMany",
+                    "target": "Habitat",
+                    "table": "species_habitat",
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plants",
+                    "type": "belongsToMany",
+                    "target": "Plant",
+                    "table": "species_plant",
+                    "foreign_key": "species_id",
+                    "related_key": "plant_id",
+                    "pivot": [
+                        "is_nectar",
+                        "is_larval_host",
+                        "adult_preference",
+                        "larval_preference"
+                    ]
+                },
+                {
+                    "method": "plantGenera",
+                    "type": "belongsToMany",
+                    "target": "Genus",
+                    "table": "species_genus",
+                    "foreign_key": "species_id",
+                    "related_key": "genus_id",
+                    "pivot": [
+                        "is_nectar",
+                        "is_larval_host",
+                        "adult_preference",
+                        "larval_preference"
+                    ]
+                },
+                {
+                    "method": "tags",
+                    "type": "belongsToMany",
+                    "target": "Tag",
+                    "table": "species_tag",
+                    "foreign_key": "species_id",
+                    "related_key": "tag_id",
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "SpeciesDistributionArea",
+            "table": "species_distribution_areas",
+            "file": "app/Models/SpeciesDistributionArea.php",
+            "fillable": [
+                "species_id",
+                "distribution_area_id",
+                "status",
+                "threat_category_id",
+                "user_id"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsTo",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "distributionArea",
+                    "type": "belongsTo",
+                    "target": "DistributionArea",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "threatCategory",
+                    "type": "belongsTo",
+                    "target": "ThreatCategory",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "SpeciesGenus",
+            "table": "species_genus",
+            "file": "app/Models/SpeciesGenus.php",
+            "fillable": [
+                "species_id",
+                "genus_id",
+                "is_nectar",
+                "is_larval_host",
+                "adult_preference",
+                "larval_preference"
+            ],
+            "casts": {
+                "is_nectar": "boolean",
+                "is_larval_host": "boolean"
+            },
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsTo",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "genus",
+                    "type": "belongsTo",
+                    "target": "Genus",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "SpeciesPlant",
+            "table": "species_plant",
+            "file": "app/Models/SpeciesPlant.php",
+            "fillable": [
+                "species_id",
+                "plant_id",
+                "is_nectar",
+                "is_larval_host",
+                "adult_preference",
+                "larval_preference"
+            ],
+            "casts": {
+                "is_nectar": "boolean",
+                "is_larval_host": "boolean"
+            },
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsTo",
+                    "target": "Species",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plant",
+                    "type": "belongsTo",
+                    "target": "Plant",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Subfamily",
+            "table": "subfamilies",
+            "file": "app/Models/Subfamily.php",
+            "fillable": [
+                "family_id",
+                "name"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "family",
+                    "type": "belongsTo",
+                    "target": "Family",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "tribes",
+                    "type": "hasMany",
+                    "target": "Tribe",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "genera",
+                    "type": "hasMany",
+                    "target": "Genus",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Tag",
+            "table": "tags",
+            "file": "app/Models/Tag.php",
+            "fillable": [
+                "name",
+                "slug",
+                "description",
+                "is_active"
+            ],
+            "casts": {
+                "is_active": "boolean"
+            },
+            "relations": [
+                {
+                    "method": "species",
+                    "type": "belongsToMany",
+                    "target": "Species",
+                    "table": "species_tag",
+                    "foreign_key": "tag_id",
+                    "related_key": "species_id",
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "ThreatCategory",
+            "table": "threat_categories",
+            "file": "app/Models/ThreatCategory.php",
+            "fillable": [
+                "code",
+                "label",
+                "description",
+                "rank",
+                "color_code",
+                "user_id"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "speciesDistributionAreas",
+                    "type": "hasMany",
+                    "target": "SpeciesDistributionArea",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "plants",
+                    "type": "hasMany",
+                    "target": "Plant",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "Tribe",
+            "table": "tribes",
+            "file": "app/Models/Tribe.php",
+            "fillable": [
+                "subfamily_id",
+                "name"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "subfamily",
+                    "type": "belongsTo",
+                    "target": "Subfamily",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                },
+                {
+                    "method": "genera",
+                    "type": "hasMany",
+                    "target": "Genus",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
+                }
+            ]
+        },
+        {
+            "class": "User",
+            "table": "users",
+            "file": "app/Models/User.php",
+            "fillable": [
+                "name",
+                "email",
+                "password",
+                "role",
+                "is_active",
+                "last_seen_changelog_version"
+            ],
+            "casts": {
+                "email_verified_at": "datetime",
+                "is_active": "boolean",
+                "last_seen_changelog_version": "string"
+            },
+            "relations": []
+        }
+    ]
+}
