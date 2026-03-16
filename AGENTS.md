@@ -11,7 +11,8 @@ Only open migrations or Eloquent models directly when the generated context seem
 | schema.md    | describes the schema in markdown |
 | schema.json  | describes the schema in JSON |
 
-## Skills
+## Repo Skills
+This section defines the repository-specific skill rules for this project.
 A skill is a set of local instructions to follow that is stored in a `SKILL.md` file.
 
 ### Available skills
