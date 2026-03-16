@@ -1,3 +1,16 @@
+## Context
+
+### Data Model
+
+Use the generated files in `docs/context/data-model` as the default entry point for understanding the current data model.
+Only open migrations or Eloquent models directly when the generated context seems stale, incomplete, or inconsistent.
+
+| file | description |
+| ---- | ----------- |
+| relations.md | describes relations between data-model elements |
+| schema.md    | describes the schema in markdown |
+| schema.json  | describes the schema in JSON |
+
 ## Skills
 A skill is a set of local instructions to follow that is stored in a `SKILL.md` file.
 
