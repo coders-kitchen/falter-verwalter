@@ -1,6 +1,6 @@
 # Data Model Relations
 
-- Generated at: 2026-03-15T08:11:13+00:00
+- Generated at: 2026-03-18T21:15:50+00:00
 - Source: Eloquent relation methods in `app/Models`
 
 ## `ChangelogEntry`
@@ -18,11 +18,22 @@
 
 - Table: `distribution_areas`
 - File: `app/Models/DistributionArea.php`
-- Fillable: `user_id`, `name`, `code`, `description`, `geojson_path`
+- Fillable: `user_id`, `distribution_area_level_id`, `name`, `code`, `description`, `geojson_path`
 
 | Method | Relation | Target | Details |
 | --- | --- | --- | --- |
+| `level` | `belongsTo` | `DistributionAreaLevel` | `fk=distribution_area_level_id` |
 | `species` | `belongsToMany` | `Species` | `table=species_distribution_areas; pivot=status,threat_category_id,user_id` |
+
+## `DistributionAreaLevel`
+
+- Table: `distribution_area_levels`
+- File: `app/Models/DistributionAreaLevel.php`
+- Fillable: `name`, `code`, `sort_order`, `map_role`, `description`
+
+| Method | Relation | Target | Details |
+| --- | --- | --- | --- |
+| `distributionAreas` | `hasMany` | `DistributionArea` |  |
 
 ## `Family`
 

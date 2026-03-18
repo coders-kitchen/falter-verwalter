@@ -14,7 +14,8 @@ class PublicMapAreaController extends Controller
     public function meta(Request $request, string $code): JsonResponse
     {
         $area = DistributionArea::query()
-            ->select(['id', 'name', 'code'])
+            ->with('level:id,name,code,sort_order,map_role')
+            ->select(['id', 'distribution_area_level_id', 'name', 'code'])
             ->where('code', $code)
             ->first();
 
@@ -46,6 +47,13 @@ class PublicMapAreaController extends Controller
                 'data' => [
                     'code' => $area->code,
                     'name' => $area->name,
+                    'level' => $area->level ? [
+                        'id' => $area->level->id,
+                        'name' => $area->level->name,
+                        'code' => $area->level->code,
+                        'sort_order' => $area->level->sort_order,
+                        'map_role' => $area->level->map_role,
+                    ] : null,
                     'species' => $mapping ? [
                         'id' => $species->id,
                         'threat_status' => $mapping->threatCategory ? [
@@ -62,6 +70,13 @@ class PublicMapAreaController extends Controller
             'data' => [
                 'code' => $area->code,
                 'name' => $area->name,
+                'level' => $area->level ? [
+                    'id' => $area->level->id,
+                    'name' => $area->level->name,
+                    'code' => $area->level->code,
+                    'sort_order' => $area->level->sort_order,
+                    'map_role' => $area->level->map_role,
+                ] : null,
                 'species_distribution_area_count' => SpeciesDistributionArea::query()
                     ->where('distribution_area_id', $area->id)
                     ->count(),

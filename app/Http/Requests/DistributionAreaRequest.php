@@ -16,6 +16,7 @@ class DistributionAreaRequest extends FormRequest
         $distributionAreaId = $this->distribution_area?->id ?? 'NULL';
 
         return [
+            'distribution_area_level_id' => 'required|exists:distribution_area_levels,id',
             'name' => 'required|string|max:255|unique:distribution_areas,name,' . $distributionAreaId,
             'code' => 'required|string|max:120|alpha_dash|unique:distribution_areas,code,' . $distributionAreaId,
             'description' => 'nullable|string',
@@ -26,6 +27,8 @@ class DistributionAreaRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'distribution_area_level_id.required' => 'Die Ebene ist erforderlich.',
+            'distribution_area_level_id.exists' => 'Die ausgewaehlte Ebene ist ungueltig.',
             'name.required' => 'Der Name ist erforderlich.',
             'name.unique' => 'Dieses Verbreitungsgebiet existiert bereits.',
             'code.required' => 'Der Code ist erforderlich.',

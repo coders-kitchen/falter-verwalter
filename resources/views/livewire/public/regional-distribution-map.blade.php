@@ -1,6 +1,11 @@
 @php
     $componentId = 'regional-map-' . $this->getId();
     $areasWithoutGeometry = collect($areaData)->filter(fn ($item) => !($item['geometry_available'] ?? false));
+    $groupedAreas = collect($areaData)->groupBy('level_map_role');
+    $roleLabels = [
+        'background' => 'Hintergrund-Layer',
+        'detail' => 'Detail-Layer',
+    ];
     $mapConfig = [
         'speciesId' => $speciesId,
         'colorMode' => $colorMode,
@@ -63,33 +68,45 @@
                 id="{{ $componentId }}-area-list"
                 class="space-y-2 max-h-[680px] overflow-y-auto pr-1"
             >
-                @foreach ($areaData as $data)
-                    <button
-                        type="button"
-                        data-area-code="{{ $data['code'] }}"
-                        class="regional-map-area-button w-full text-left p-3 rounded border transition border-base-300 hover:border-base-content/30"
-                    >
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="font-medium">{{ $data['name'] }}</span>
-                            <span class="badge badge-neutral">{{ $data['count'] }}</span>
+                @foreach ($groupedAreas as $role => $roleAreas)
+                    <div class="pt-2 first:pt-0">
+                        <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-2">
+                            {{ $roleLabels[$role] ?? ucfirst((string) $role) }}
                         </div>
-                        <div class="text-xs opacity-70 mt-1">
-                            <code>{{ $data['code'] ?? '—' }}</code>
-                            @if (!$data['geometry_available'])
-                                <span class="ml-2 text-warning">kein GeoJSON</span>
-                            @endif
-                        </div>
-                        @if ($colorMode === 'threat' && $data['threat_code'])
-                            <div class="text-xs mt-2">
-                                <span
-                                    class="badge badge-sm text-base-100"
-                                    style="background-color: {{ $data['threat_color'] ?? '#6b7280' }};"
+                        <div class="space-y-2">
+                            @foreach ($roleAreas as $data)
+                                <button
+                                    type="button"
+                                    data-area-code="{{ $data['code'] }}"
+                                    class="regional-map-area-button w-full text-left p-3 rounded border transition border-base-300 hover:border-base-content/30"
                                 >
-                                    {{ $data['threat_code'] }}{{ $data['threat_label'] ? ' - ' . $data['threat_label'] : '' }}
-                                </span>
-                            </div>
-                        @endif
-                    </button>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-medium">{{ $data['name'] }}</span>
+                                        <span class="badge badge-neutral">{{ $data['count'] }}</span>
+                                    </div>
+                                    <div class="text-xs opacity-70 mt-1">
+                                        <code>{{ $data['code'] ?? '—' }}</code>
+                                        @if ($data['level_name'])
+                                            <span class="ml-2">{{ $data['level_name'] }}</span>
+                                        @endif
+                                        @if (!$data['geometry_available'])
+                                            <span class="ml-2 text-warning">kein GeoJSON</span>
+                                        @endif
+                                    </div>
+                                    @if ($colorMode === 'threat' && $data['threat_code'])
+                                        <div class="text-xs mt-2">
+                                            <span
+                                                class="badge badge-sm text-base-100"
+                                                style="background-color: {{ $data['threat_color'] ?? '#6b7280' }};"
+                                            >
+                                                {{ $data['threat_code'] }}{{ $data['threat_label'] ? ' - ' . $data['threat_label'] : '' }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
                 @endforeach
             </div>
         </aside>
@@ -190,6 +207,11 @@
                         minZoom: 5,
                         attribution: '&copy; OpenStreetMap-Mitwirkende',
                     }).addTo(map);
+
+                    map.createPane('backgroundAreas');
+                    map.getPane('backgroundAreas').style.zIndex = '410';
+                    map.createPane('detailAreas');
+                    map.getPane('detailAreas').style.zIndex = '430';
 
                     map.setView([51.2, 10.4], 6);
                 }
@@ -322,6 +344,9 @@
             function buildPopupContent(area, meta) {
                 const lines = ['<strong>' + (area?.name || meta?.name || 'Unbekanntes Gebiet') + '</strong>'];
                 lines.push('Code: ' + (area?.code || meta?.code || '—'));
+                if (meta?.level?.name || area?.level_name) {
+                    lines.push('Ebene: ' + (meta?.level?.name || area?.level_name));
+                }
 
                 if (meta?.species) {
                     if (meta.species.threat_status) {
@@ -431,6 +456,7 @@
                 };
 
                 const layer = L.geoJSON(feature, {
+                    pane: area.level_map_role === 'background' ? 'backgroundAreas' : 'detailAreas',
                     style: function () {
                         return resolveAreaStyle(area);
                     },

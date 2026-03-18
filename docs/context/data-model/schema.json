@@ -1,5 +1,5 @@
 {
-    "generated_at": "2026-03-15T08:11:13+00:00",
+    "generated_at": "2026-03-18T21:15:50+00:00",
     "source": {
         "models_dir": "app/Models",
         "migrations_dir": "database/migrations"
@@ -178,6 +178,88 @@
             ]
         },
         {
+            "name": "distribution_area_levels",
+            "columns": {
+                "code": {
+                    "name": "code",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "description": {
+                    "name": "description",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                },
+                "id": {
+                    "name": "id",
+                    "type": "bigint",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "map_role": {
+                    "name": "map_role",
+                    "type": "string(32)",
+                    "nullable": false,
+                    "default": "detail",
+                    "references": null
+                },
+                "name": {
+                    "name": "name",
+                    "type": "string",
+                    "nullable": false,
+                    "default": null,
+                    "references": null
+                },
+                "sort_order": {
+                    "name": "sort_order",
+                    "type": "unsignedInteger",
+                    "nullable": false,
+                    "default": "100",
+                    "references": null
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp",
+                    "nullable": true,
+                    "default": null,
+                    "references": null
+                }
+            },
+            "indexes": [
+                {
+                    "type": "unique",
+                    "columns": [
+                        "code"
+                    ],
+                    "signature": "unique:code"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "map_role",
+                        "sort_order"
+                    ],
+                    "signature": "index:map_role,sort_order"
+                }
+            ],
+            "model": "DistributionAreaLevel",
+            "sources": [
+                "2026_03_18_100000_create_distribution_area_levels_table.php"
+            ]
+        },
+        {
             "name": "distribution_areas",
             "columns": {
                 "code": {
@@ -200,6 +282,13 @@
                     "nullable": true,
                     "default": null,
                     "references": null
+                },
+                "distribution_area_level_id": {
+                    "name": "distribution_area_level_id",
+                    "type": "foreignId",
+                    "nullable": true,
+                    "default": null,
+                    "references": "distribution_area_levels.id"
                 },
                 "geojson_path": {
                     "name": "geojson_path",
@@ -279,6 +368,14 @@
                         "geojson_path"
                     ],
                     "signature": "index:geojson_path"
+                },
+                {
+                    "type": "index",
+                    "columns": [
+                        "distribution_area_level_id",
+                        "name"
+                    ],
+                    "signature": "index:distribution_area_level_id,name"
                 }
             ],
             "model": "DistributionArea",
@@ -286,7 +383,8 @@
                 "2025_11_02_000002_create_distribution_areas_table.php",
                 "2026_02_16_002000_add_code_and_geometry_to_distribution_areas_table.php",
                 "2026_02_16_003000_add_geojson_path_to_distribution_areas_table.php",
-                "2026_02_16_004000_drop_geometry_geojson_from_distribution_areas_table.php"
+                "2026_02_16_004000_drop_geometry_geojson_from_distribution_areas_table.php",
+                "2026_03_18_100000_create_distribution_area_levels_table.php"
             ]
         },
         {
@@ -2555,6 +2653,7 @@
             "file": "app/Models/DistributionArea.php",
             "fillable": [
                 "user_id",
+                "distribution_area_level_id",
                 "name",
                 "code",
                 "description",
@@ -2562,6 +2661,15 @@
             ],
             "casts": [],
             "relations": [
+                {
+                    "method": "level",
+                    "type": "belongsTo",
+                    "target": "DistributionAreaLevel",
+                    "table": null,
+                    "foreign_key": "distribution_area_level_id",
+                    "related_key": null,
+                    "pivot": []
+                },
                 {
                     "method": "species",
                     "type": "belongsToMany",
@@ -2574,6 +2682,30 @@
                         "threat_category_id",
                         "user_id"
                     ]
+                }
+            ]
+        },
+        {
+            "class": "DistributionAreaLevel",
+            "table": "distribution_area_levels",
+            "file": "app/Models/DistributionAreaLevel.php",
+            "fillable": [
+                "name",
+                "code",
+                "sort_order",
+                "map_role",
+                "description"
+            ],
+            "casts": [],
+            "relations": [
+                {
+                    "method": "distributionAreas",
+                    "type": "hasMany",
+                    "target": "DistributionArea",
+                    "table": null,
+                    "foreign_key": null,
+                    "related_key": null,
+                    "pivot": []
                 }
             ]
         },

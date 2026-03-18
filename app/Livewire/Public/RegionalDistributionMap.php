@@ -32,9 +32,13 @@ class RegionalDistributionMap extends Component
     public function aggregateRegionData()
     {
         $areas = DistributionArea::query()
-            ->select(['id', 'name', 'code', 'geojson_path'])
-            ->orderBy('name')
-            ->get();
+            ->with('level:id,name,code,sort_order,map_role')
+            ->select(['id', 'distribution_area_level_id', 'name', 'code', 'geojson_path'])
+            ->get()
+            ->sortBy(function (DistributionArea $area) {
+                return sprintf('%05d-%s', $area->level?->sort_order ?? 99999, mb_strtolower($area->name));
+            })
+            ->values();
         $countsByAreaId = $this->loadCountsByAreaId();
         $threatByAreaId = $this->loadThreatByAreaId();
 
@@ -52,6 +56,10 @@ class RegionalDistributionMap extends Component
                 'id' => $area->id,
                 'code' => $area->code,
                 'geometry_available' => !empty($area->geojson_path),
+                'level_name' => $area->level?->name,
+                'level_code' => $area->level?->code,
+                'level_sort_order' => $area->level?->sort_order,
+                'level_map_role' => $area->level?->map_role ?? 'detail',
                 'threat_code' => $threat['code'] ?? null,
                 'threat_label' => $threat['label'] ?? null,
                 'threat_color' => $threat['color_code'] ?? null,

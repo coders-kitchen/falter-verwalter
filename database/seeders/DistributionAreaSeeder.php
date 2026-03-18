@@ -3,12 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\DistributionArea;
+use App\Models\DistributionAreaLevel;
 use Illuminate\Database\Seeder;
 
 class DistributionAreaSeeder extends Seeder
 {
     public function run(): void
     {
+        $detailLevelId = DistributionAreaLevel::query()
+            ->where('code', 'detail')
+            ->value('id');
+
         $areas = [
             [
                 'name' => 'Mitteleuropa',
@@ -38,7 +43,13 @@ class DistributionAreaSeeder extends Seeder
         ];
 
         foreach ($areas as $area) {
-            DistributionArea::create(array_merge($area, ['user_id' => 1]));
+            DistributionArea::query()->updateOrCreate(
+                ['code' => $area['code']],
+                array_merge($area, [
+                    'user_id' => 1,
+                    'distribution_area_level_id' => $detailLevelId,
+                ]),
+            );
         }
     }
 }

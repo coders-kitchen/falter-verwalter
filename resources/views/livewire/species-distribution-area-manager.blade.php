@@ -28,6 +28,7 @@
                 <thead>
                     <tr class="bg-base-200">
                         <th>Verbreitungsgebiet</th>
+                        <th>Ebene</th>
                         <th>Zustand</th>
                         <th>Gefährdungstatus</th>
                         <th>Aktionen</th>
@@ -37,6 +38,15 @@
                     @foreach($speciesDistributionAreas as $speciesAreaIterator)
                         <tr>
                             <td class="font-semibold">{{ $speciesAreaIterator->distributionArea->name }}</td>
+                            <td>
+                                @if($speciesAreaIterator->distributionArea->level)
+                                    <span class="badge badge-outline">
+                                        {{ $speciesAreaIterator->distributionArea->level->name }}
+                                    </span>
+                                @else
+                                    —
+                                @endif
+                            </td>
                             <td class="font-semibold">{{ $speciesAreaIterator->status }}</td>
                             @if($speciesAreaIterator->threatCategory)
                             <td class="font-semibold">{{ $speciesAreaIterator->threatCategory->label }} ({{ $speciesAreaIterator->threatCategory->code }})</td>                    
@@ -91,10 +101,10 @@
                         <select wire:model="form.distribution_area_id" class="select select-bordered @error('form.distribution_area_id') select-error @enderror">
                             <option value="">— Wählen Sie Gebiet —</option>
                             @if ($speciesArea)
-                                <option value="{{ $speciesArea->distributionArea->id }}">{{ $speciesArea->distributionArea->name }}</option>
+                                <option value="{{ $speciesArea->distributionArea->id }}">{{ $speciesArea->distributionArea->level?->name ? '[' . $speciesArea->distributionArea->level->name . '] ' : '' }}{{ $speciesArea->distributionArea->name }}</option>
                             @endif
                             @foreach($distribution_areas as $distribution_area)
-                                <option value="{{ $distribution_area->id }}">{{ $distribution_area->name }}</option>
+                                <option value="{{ $distribution_area->id }}">{{ $distribution_area->level?->name ? '[' . $distribution_area->level->name . '] ' : '' }}{{ $distribution_area->name }}</option>
                             @endforeach
                         </select>
                         @error('form.distribution_area_id')

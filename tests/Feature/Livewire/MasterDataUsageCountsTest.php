@@ -6,6 +6,7 @@ use App\Livewire\LifeFormManager;
 use App\Livewire\TagManager;
 use App\Livewire\ThreatCategoryManager;
 use App\Models\DistributionArea;
+use App\Models\DistributionAreaLevel;
 use App\Models\Family;
 use App\Models\Habitat;
 use App\Models\LifeForm;
@@ -102,8 +103,16 @@ test('distribution area manager blocks deletion when species are assigned', func
     $fixture = createMasterDataFixture();
     $this->actingAs($fixture['user']);
 
+    $level = DistributionAreaLevel::create([
+        'name' => 'Detail',
+        'code' => 'detail-test',
+        'sort_order' => 20,
+        'map_role' => 'detail',
+    ]);
+
     $distributionArea = DistributionArea::create([
         'user_id' => $fixture['user']->id,
+        'distribution_area_level_id' => $level->id,
         'name' => 'Bergisches Land',
         'code' => 'bergisches-land',
     ]);
@@ -115,6 +124,7 @@ test('distribution area manager blocks deletion when species are assigned', func
 
     Livewire::test(DistributionAreaManager::class)
         ->assertSee('Bergisches Land')
+        ->assertSee('Detail')
         ->assertSee('1')
         ->call('delete', $distributionArea->id);
 
@@ -137,8 +147,16 @@ test('threat category manager shows combined usage and blocks deletion', functio
     $fixture = createMasterDataFixture();
     $this->actingAs($fixture['user']);
 
+    $level = DistributionAreaLevel::create([
+        'name' => 'Detail',
+        'code' => 'detail-threat-test',
+        'sort_order' => 20,
+        'map_role' => 'detail',
+    ]);
+
     $distributionArea = DistributionArea::create([
         'user_id' => $fixture['user']->id,
+        'distribution_area_level_id' => $level->id,
         'name' => 'Rheinland',
         'code' => 'rheinland',
     ]);

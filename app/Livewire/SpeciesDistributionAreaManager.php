@@ -60,12 +60,18 @@ class SpeciesDistributionAreaManager extends Component
 
     public function render()
     {
-
-        $species_distribution_areas = SpeciesDistributionArea::where('species_id', $this->species_id)
-           ->paginate(20);
-        $distribution_areas = DistributionArea::whereNotIn('id', SpeciesDistributionArea::where('species_id', $this->species_id)->pluck('distribution_area_id'))
-            ->orderBy('name')
-            ->get();
+        $species_distribution_areas = SpeciesDistributionArea::query()
+            ->with(['distributionArea.level', 'threatCategory'])
+            ->where('species_id', $this->species_id)
+            ->paginate(20);
+        $distribution_areas = DistributionArea::query()
+            ->with('level:id,name,code,sort_order,map_role')
+            ->whereNotIn('id', SpeciesDistributionArea::where('species_id', $this->species_id)->pluck('distribution_area_id'))
+            ->get()
+            ->sortBy(function (DistributionArea $area) {
+                return sprintf('%05d-%s', $area->level?->sort_order ?? 99999, mb_strtolower($area->name));
+            })
+            ->values();
         $threat_categories = ThreatCategory::orderBy('rank')->get();
 
         return view('livewire.species-distribution-area-manager', [

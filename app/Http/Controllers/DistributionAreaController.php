@@ -12,7 +12,8 @@ class DistributionAreaController extends Controller
     public function index(): JsonResponse
     {
         $areas = DistributionArea::query()
-            ->select(['id', 'name', 'code', 'description', 'geojson_path', 'created_at', 'updated_at'])
+            ->with('level:id,name,code,sort_order,map_role')
+            ->select(['id', 'distribution_area_level_id', 'name', 'code', 'description', 'geojson_path', 'created_at', 'updated_at'])
             ->orderBy('name')
             ->paginate(50);
 
@@ -27,6 +28,7 @@ class DistributionAreaController extends Controller
     {
         $payload = $request->validated();
         $area = DistributionArea::create(array_merge($payload, ['user_id' => auth()->id()]));
+        $area->load('level:id,name,code,sort_order,map_role');
 
         return response()->json([
             'data' => new DistributionAreaResource($area),
@@ -36,7 +38,7 @@ class DistributionAreaController extends Controller
     public function show(DistributionArea $distributionArea): JsonResponse
     {
         return response()->json([
-            'data' => new DistributionAreaResource($distributionArea),
+            'data' => new DistributionAreaResource($distributionArea->load('level:id,name,code,sort_order,map_role')),
         ]);
     }
 
@@ -44,6 +46,7 @@ class DistributionAreaController extends Controller
     {
         $payload = $request->validated();
         $distributionArea->update($payload);
+        $distributionArea->load('level:id,name,code,sort_order,map_role');
 
         return response()->json([
             'data' => new DistributionAreaResource($distributionArea),

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\DistributionArea;
+use App\Models\DistributionAreaLevel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -21,6 +22,7 @@ class DistributionAreaManager extends Component
     public $removeGeojson = false;
 
     public $form = [
+        'distribution_area_level_id' => '',
         'name' => '',
         'code' => '',
         'description' => '',
@@ -32,6 +34,7 @@ class DistributionAreaManager extends Component
         $distributionAreaId = $this->distributionArea?->id ?? 'NULL';
 
         return [
+            'form.distribution_area_level_id' => 'required|exists:distribution_area_levels,id',
             'form.name' => 'required|string|max:255|unique:distribution_areas,name,' . $distributionAreaId,
             'form.code' => 'required|string|max:120|alpha_dash|unique:distribution_areas,code,' . $distributionAreaId,
             'form.description' => 'nullable|string',
@@ -43,6 +46,8 @@ class DistributionAreaManager extends Component
     protected function messages(): array
     {
         return [
+            'form.distribution_area_level_id.required' => 'Bitte eine Ebene auswaehlen.',
+            'form.distribution_area_level_id.exists' => 'Die ausgewaehlte Ebene ist ungueltig.',
             'form.name.required' => 'Bitte einen Namen eingeben.',
             'form.name.unique' => 'Dieser Name ist bereits vergeben.',
             'form.code.required' => 'Bitte einen Code eingeben.',
@@ -56,6 +61,7 @@ class DistributionAreaManager extends Component
     protected function validationAttributes(): array
     {
         return [
+            'form.distribution_area_level_id' => 'Ebene',
             'form.name' => 'Name',
             'form.code' => 'Code',
             'form.description' => 'Beschreibung',
@@ -66,22 +72,36 @@ class DistributionAreaManager extends Component
     public function render()
     {
         $query = DistributionArea::query()
-            ->select(['id', 'name', 'code', 'description', 'geojson_path'])
+            ->with('level:id,name,code,sort_order,map_role')
+            ->select(['id', 'distribution_area_level_id', 'name', 'code', 'description', 'geojson_path'])
             ->withCount('species');
 
         if ($this->search) {
             $query->where(function ($subQuery) {
                 $subQuery->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('code', 'like', '%' . $this->search . '%')
-                    ->orWhere('description', 'like', '%' . $this->search . '%');
+                    ->orWhere('description', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('level', function ($levelQuery) {
+                        $levelQuery->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('code', 'like', '%' . $this->search . '%');
+                    });
             });
         }
 
-        $items = $query->orderBy('name')
-                       ->paginate(50);
+        $items = $query->get()
+            ->sortBy(function (DistributionArea $area) {
+                return sprintf('%05d-%s', $area->level?->sort_order ?? 99999, mb_strtolower($area->name));
+            })
+            ->values();
+
+        $levels = DistributionAreaLevel::query()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'code', 'map_role']);
 
         return view('livewire.distribution-area-manager', [
             'items' => $items,
+            'levels' => $levels,
         ]);
     }
 
@@ -95,6 +115,7 @@ class DistributionAreaManager extends Component
     {
         $this->distributionArea = $distributionArea;
         $this->form = [
+            'distribution_area_level_id' => $distributionArea->distribution_area_level_id,
             'name' => $distributionArea->name,
             'code' => $distributionArea->code,
             'description' => $distributionArea->description,
@@ -164,6 +185,7 @@ class DistributionAreaManager extends Component
     {
         $this->distributionArea = null;
         $this->form = [
+            'distribution_area_level_id' => $this->defaultLevelId(),
             'name' => '',
             'code' => '',
             'description' => '',
@@ -172,6 +194,13 @@ class DistributionAreaManager extends Component
         $this->geojsonFile = null;
         $this->removeGeojson = false;
         $this->resetErrorBag();
+    }
+
+    private function defaultLevelId(): string
+    {
+        return (string) (DistributionAreaLevel::query()
+            ->where('code', DistributionAreaLevel::MAP_ROLE_DETAIL)
+            ->value('id') ?? '');
     }
 
     private function resolveGeometryPayload($geojsonFile): array

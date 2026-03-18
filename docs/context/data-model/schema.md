@@ -1,6 +1,6 @@
 # Data Model Schema
 
-- Generated at: 2026-03-15T08:11:13+00:00
+- Generated at: 2026-03-18T21:15:50+00:00
 - Source: `app/Models` + `database/migrations`
 - Note: Static extraction from source files. Treat as a context snapshot.
 
@@ -48,16 +48,37 @@
 Indexes:
 - `unique` on `version`
 
+## `distribution_area_levels`
+
+- Model: `DistributionAreaLevel`
+- Migrations: `2026_03_18_100000_create_distribution_area_levels_table.php`
+
+| Column | Type | Nullable | Default | References |
+| --- | --- | --- | --- | --- |
+| `code` | `string` | no | `` | `` |
+| `created_at` | `timestamp` | yes | `` | `` |
+| `description` | `text` | yes | `` | `` |
+| `id` | `bigint` | no | `` | `` |
+| `map_role` | `string(32)` | no | `detail` | `` |
+| `name` | `string` | no | `` | `` |
+| `sort_order` | `unsignedInteger` | no | `100` | `` |
+| `updated_at` | `timestamp` | yes | `` | `` |
+
+Indexes:
+- `unique` on `code`
+- `index` on `map_role`, `sort_order`
+
 ## `distribution_areas`
 
 - Model: `DistributionArea`
-- Migrations: `2025_11_02_000002_create_distribution_areas_table.php`, `2026_02_16_002000_add_code_and_geometry_to_distribution_areas_table.php`, `2026_02_16_003000_add_geojson_path_to_distribution_areas_table.php`, `2026_02_16_004000_drop_geometry_geojson_from_distribution_areas_table.php`
+- Migrations: `2025_11_02_000002_create_distribution_areas_table.php`, `2026_02_16_002000_add_code_and_geometry_to_distribution_areas_table.php`, `2026_02_16_003000_add_geojson_path_to_distribution_areas_table.php`, `2026_02_16_004000_drop_geometry_geojson_from_distribution_areas_table.php`, `2026_03_18_100000_create_distribution_area_levels_table.php`
 
 | Column | Type | Nullable | Default | References |
 | --- | --- | --- | --- | --- |
 | `code` | `string(120)` | yes | `` | `` |
 | `created_at` | `timestamp` | yes | `` | `` |
 | `description` | `text` | yes | `` | `` |
+| `distribution_area_level_id` | `foreignId` | yes | `` | `distribution_area_levels.id` |
 | `geojson_path` | `string` | yes | `` | `` |
 | `id` | `bigint` | no | `` | `` |
 | `name` | `string` | no | `` | `` |
@@ -71,6 +92,7 @@ Indexes:
 - `index` on `code`
 - `unique` on `code`
 - `index` on `geojson_path`
+- `index` on `distribution_area_level_id`, `name`
 
 ## `families`
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DistributionArea extends Model
@@ -12,11 +13,17 @@ class DistributionArea extends Model
 
     protected $fillable = [
         'user_id',
+        'distribution_area_level_id',
         'name',
         'code',
         'description',
         'geojson_path',
     ];
+
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(DistributionAreaLevel::class, 'distribution_area_level_id');
+    }
 
     public function species(): BelongsToMany
     {

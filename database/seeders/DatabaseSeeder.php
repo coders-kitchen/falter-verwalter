@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             LifeFormSeeder::class,
+            DistributionAreaLevelSeeder::class,
             DistributionAreaSeeder::class,
             ThreatCategorySeeder::class,
             TagSeeder::class,

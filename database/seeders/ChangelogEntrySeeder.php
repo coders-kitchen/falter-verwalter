@@ -274,6 +274,17 @@ class ChangelogEntrySeeder extends Seeder
                 'is_active' => true,
                 'commit_refs' => [],
             ],
+            [
+                'version' => '2026.03.18.1',
+                'title' => 'Verbreitungsgebiete koennen jetzt in Karten-Ebenen gepflegt werden',
+                'summary' => 'Verbreitungsgebiete lassen sich jetzt Ebenen zuordnen, damit Hintergrund- und Detail-Layer auf der Karte getrennt dargestellt werden koennen.',
+                'details_public' => "Public: Die Verbreitungskarte kann grobe Hintergrundflaechen und feinere Detailgebiete jetzt getrennt darstellen und sauberer strukturieren.\nQuelle: features/feature_distribution_area_layer_hierarchy.md",
+                'details_admin' => "Admin: Verbreitungsgebiete haben jetzt eine eigene Ebene mit Layer-Rolle; Pflege, Auswahl und Kartenmetadaten wurden auf Hintergrund- und Detail-Layer erweitert.\nQuelle: features/feature_distribution_area_layer_hierarchy.md",
+                'audience' => 'both',
+                'published_at' => '2026-03-18T12:00:00+01:00',
+                'is_active' => true,
+                'commit_refs' => [],
+            ],
         ];
 
         foreach ($entries as $entry) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\DistributionArea;
+use App\Models\DistributionAreaLevel;
 use App\Models\Family;
 use App\Models\Species;
 use App\Models\ThreatCategory;
@@ -25,8 +26,16 @@ function createPublicMapFixture(): array
         'size_category' => 'M',
     ]);
 
+    $detailLevel = DistributionAreaLevel::create([
+        'name' => 'Detail',
+        'code' => 'detail-test',
+        'sort_order' => 20,
+        'map_role' => 'detail',
+    ]);
+
     $area = DistributionArea::create([
         'user_id' => $user->id,
+        'distribution_area_level_id' => $detailLevel->id,
         'name' => 'Niedersachsen West',
         'code' => 'niedersachsen-west',
         'geojson_path' => 'distribution-areas/niedersachsen-west.geojson',
@@ -41,7 +50,7 @@ function createPublicMapFixture(): array
         'color_code' => '#f59e0b',
     ]);
 
-    return compact('user', 'family', 'species', 'area', 'threatCategory');
+    return compact('user', 'family', 'species', 'area', 'threatCategory', 'detailLevel');
 }
 
 test('public map meta endpoint returns general area meta', function () {
@@ -59,6 +68,10 @@ test('public map meta endpoint returns general area meta', function () {
             'data' => [
                 'code' => 'niedersachsen-west',
                 'name' => 'Niedersachsen West',
+                'level' => [
+                    'name' => 'Detail',
+                    'map_role' => 'detail',
+                ],
                 'species_distribution_area_count' => 1,
             ],
         ]);
@@ -80,6 +93,10 @@ test('public map meta endpoint returns species specific threat status', function
             'data' => [
                 'code' => 'niedersachsen-west',
                 'name' => 'Niedersachsen West',
+                'level' => [
+                    'name' => 'Detail',
+                    'map_role' => 'detail',
+                ],
                 'species' => [
                     'id' => $fixture['species']->id,
                     'threat_status' => [
@@ -102,6 +119,10 @@ test('public map meta endpoint returns species null when no species specific map
             'data' => [
                 'code' => 'niedersachsen-west',
                 'name' => 'Niedersachsen West',
+                'level' => [
+                    'name' => 'Detail',
+                    'map_role' => 'detail',
+                ],
                 'species' => null,
             ],
         ]);
